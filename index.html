@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 14 Vocabulary Practice</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f6fa;
+            --accent-color: #2ecc71;
+            --text-color: #2c3e50;
+            --card-bg: #ffffff;
+            --wrong-color: #e74c3c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            margin-bottom: 25px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            background-color: #e0e0e0;
+            color: #555;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 8px rgba(74, 144, 226, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:hover:not(.active) {
+            background-color: #d0d0d0;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* List View */
+        .word-item {
+            background: var(--card-bg);
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .word-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .word-title {
+            font-size: 1.6em;
+            font-weight: 800;
+            color: var(--text-color);
+        }
+
+        .pos {
+            background: #f0f2f5;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            color: #666;
+            margin-left: 10px;
+            font-weight: normal;
+        }
+
+        .speak-btn {
+            background: none;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 6px 12px;
+            font-size: 0.85em;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .speak-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .definition {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .example {
+            font-style: italic;
+            color: #666;
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+
+        /* Flashcard View */
+        .flashcard-container {
+            perspective: 1000px;
+            height: 320px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 20px;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+            background-color: #fff8e1;
+            border: 2px solid #ffe082;
+        }
+
+        .fc-word-text {
+            font-size: 2.8em;
+            color: var(--primary-color);
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .control-btn {
+            background: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .control-btn:hover { background: #eee; }
+
+        /* Quiz & Spelling View Common */
+        .quiz-container {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .question-box {
+            margin-bottom: 25px;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .spelling-word {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 2.5em;
+            letter-spacing: 5px;
+            color: var(--primary-color);
+            font-weight: bold;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.2s;
+            color: #444;
+        }
+
+        .option-btn:hover {
+            border-color: var(--primary-color);
+            background: #f0f7ff;
+        }
+
+        .option-btn.correct {
+            background-color: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724;
+        }
+
+        .option-btn.wrong {
+            background-color: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24;
+        }
+
+        .feedback-msg {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+            min-height: 1.5em;
+        }
+
+        .next-btn {
+            margin-top: 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(74, 144, 226, 0.3);
+        }
+        
+        .next-btn:hover { background: #357abd; }
+
+    </style>
+</head>
+<body>
+
+    <h1>📚 ESL Vocabulary - Week 14</h1>
+
+    <div class="nav-buttons">
+        <button onclick="showSection('list')" id="btn-list" class="nav-btn active">單字列表 (List)</button>
+        <button onclick="showSection('flashcards')" id="btn-flashcards" class="nav-btn">單字卡 (Cards)</button>
+        <button onclick="showSection('quiz')" id="btn-quiz" class="nav-btn">意思測驗 (Meaning)</button>
+        <button onclick="showSection('spelling')" id="btn-spelling" class="nav-btn">拼字練習 (Spelling)</button>
+    </div>
+
+    <!-- 1. List View -->
+    <div id="section-list" class="section active">
+        <div id="word-list-container"></div>
+    </div>
+
+    <!-- 2. Flashcard View -->
+    <div id="section-flashcards" class="section">
+        <div class="flashcard-container" onclick="flipCard()">
+            <div class="flashcard" id="flashcard">
+                <div class="card-face card-front">
+                    <div id="fc-word" class="fc-word-text">Word</div>
+                    <div id="fc-pos" style="font-size: 1em; color: #666; background: #eee; padding: 2px 10px; border-radius: 10px;">(n.)</div>
+                    <div style="font-size: 0.8em; color: #aaa; margin-top: auto;">Tap to flip ↻</div>
+                </div>
+                <div class="card-face card-back">
+                    <div id="fc-def" class="definition" style="font-size: 1.2em;">Definition</div>
+                    <div id="fc-ex" class="example" style="font-size: 1em; margin-top: 15px;">Example</div>
+                </div>
+            </div>
+        </div>
+        <div class="controls">
+            <button class="control-btn" onclick="prevCard()">← Prev</button>
+            <button class="control-btn speak-btn" onclick="speakCurrentCard()">🔊 唸給我聽</button>
+            <button class="control-btn" onclick="nextCard()">Next →</button>
+        </div>
+        <p style="text-align: center; margin-top: 10px; color: #888;" id="card-counter">1 / 8</p>
+    </div>
+
+    <!-- 3. Meaning Quiz View -->
+    <div id="section-quiz" class="section">
+        <div class="quiz-container">
+            <div class="question-box">
+                <div style="font-size: 0.9em; color: #666; margin-bottom: 5px;">Which word means:</div>
+                <div id="quiz-question" class="question-text">Definition here</div>
+            </div>
+            <div id="quiz-options" class="options-list"></div>
+            <div id="quiz-feedback" class="feedback-msg"></div>
+            <button onclick="generateQuiz()" class="next-btn">Next Question →</button>
+        </div>
+    </div>
+
+    <!-- 4. Spelling Quiz View -->
+    <div id="section-spelling" class="section">
+        <div class="quiz-container">
+            <div class="question-box">
+                <div style="font-size: 0.9em; color: #666; margin-bottom: 10px;">Fill in the missing letter:</div>
+                <div id="spelling-display" class="spelling-word">t _ u c a n</div>
+            </div>
+            <div id="spelling-options" class="options-grid"></div>
+            <div id="spelling-feedback" class="feedback-msg"></div>
+            <button onclick="generateSpellingQuiz()" class="next-btn">Next Word →</button>
+        </div>
+    </div>
+
+    <script>
+        // Data
+        const vocabData = [
+            { word: "toucan", pos: "(n.)", def: "a big, brightly colored bird with a large beak", ex: "1. Toucans live in tropical America.<br>2. We can see toucans in the zoo." },
+            { word: "find out", pos: "(v.)", def: "to learn something by asking or studying", ex: "1. Please find out the mistake on your worksheet.<br>2. Let's find out the answer together." },
+            { word: "branch", pos: "(n.)", def: "a part of a tree growing from the trunk", ex: "1. I climbed up the tree and sat on a branch.<br>2. When I throw a little branch, my dog catches it." },
+            { word: "poisonous", pos: "(adj.)", def: "something that can kill you if you get it in your body", ex: "1. A rattlesnake is a poisonous animal.<br>2. Snow White ate a poisonous apple." },
+            { word: "iguana", pos: "(n.)", def: "a kind of lizard", ex: "1. James wants an iguana for a pet.<br>2. I see a red iguana on the ground." },
+            { word: "caterpillar", pos: "(n.)", def: "an insect like a worm with many legs", ex: "1. A caterpillar will change into a butterfly.<br>2. There is a caterpillar on the branch." },
+            { word: "asleep", pos: "(adj.)", def: "not awake; sleeping", ex: "1. The baby fell asleep soon.<br>2. He was so tired that he fell asleep on the sofa." },
+            { word: "another", pos: "(adj.)", def: "one more; an additional thing or person", ex: "1. We will talk about it in another day.<br>2. Sam lost his pen and borrowed one from another boy." }
+        ];
+
+        // --- List View ---
+        function renderList() {
+            const container = document.getElementById('word-list-container');
+            container.innerHTML = '';
+            vocabData.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'word-item';
+                div.innerHTML = `
+                    <div class="word-header">
+                        <div>
+                            <span class="word-title">${item.word}</span>
+                            <span class="pos">${item.pos}</span>
+                        </div>
+                        <button class="speak-btn" onclick="speak('${item.word}')">🔊 Listen</button>
+                    </div>
+                    <div class="definition">${item.def}</div>
+                    <div class="example">${item.ex}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // --- Flashcards ---
+        let currentCardIndex = 0;
+        function updateFlashcard() {
+            const item = vocabData[currentCardIndex];
+            document.getElementById('fc-word').innerText = item.word;
+            document.getElementById('fc-pos').innerText = item.pos;
+            document.getElementById('fc-def').innerText = item.def;
+            document.getElementById('fc-ex').innerHTML = item.ex;
+            document.getElementById('card-counter').innerText = `${currentCardIndex + 1} / ${vocabData.length}`;
+            document.getElementById('flashcard').classList.remove('flipped');
+        }
+        function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
+        function nextCard() { currentCardIndex = (currentCardIndex + 1) % vocabData.length; updateFlashcard(); }
+        function prevCard() { currentCardIndex = (currentCardIndex - 1 + vocabData.length) % vocabData.length; updateFlashcard(); }
+        function speakCurrentCard() { speak(vocabData[currentCardIndex].word); }
+
+        // --- Meaning Quiz ---
+        function generateQuiz() {
+            document.getElementById('quiz-feedback').innerText = '';
+            const correctIndex = Math.floor(Math.random() * vocabData.length);
+            const correctItem = vocabData[correctIndex];
+            
+            // Distractors
+            let distractors = [];
+            while(distractors.length < 3) {
+                let idx = Math.floor(Math.random() * vocabData.length);
+                if (idx !== correctIndex && !distractors.includes(idx)) distractors.push(idx);
+            }
+            
+            let optionsIndices = [correctIndex, ...distractors].sort(() => Math.random() - 0.5);
+
+            document.getElementById('quiz-question').innerText = `"${correctItem.def}"`;
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            
+            optionsIndices.forEach(idx => {
+                const item = vocabData[idx];
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = item.word;
+                btn.onclick = () => checkQuizAnswer(btn, idx === correctIndex, 'quiz-feedback');
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkQuizAnswer(btn, isCorrect, feedbackId) {
+            const feedback = document.getElementById(feedbackId);
+            const parent = btn.parentElement;
+            const buttons = parent.querySelectorAll('.option-btn');
+            
+            buttons.forEach(b => b.disabled = true); // Disable all
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+                feedback.innerText = "Correct! Great job! 🎉";
+                feedback.style.color = "#27ae60";
+                speak("Correct!"); 
+            } else {
+                btn.classList.add('wrong');
+                feedback.innerText = "Oops! Try again next time.";
+                feedback.style.color = "#c0392b";
+                speak("Try again");
+            }
+        }
+
+        // --- Spelling Quiz ---
+        function generateSpellingQuiz() {
+            document.getElementById('spelling-feedback').innerText = '';
+            
+            // 1. Pick word
+            const randomItem = vocabData[Math.floor(Math.random() * vocabData.length)];
+            const word = randomItem.word;
+            
+            // 2. Identify indices
+            let validIndices = [];
+            for (let i = 0; i < word.length; i++) {
+                if (/[a-z]/i.test(word[i])) {
+                    validIndices.push(i);
+                }
+            }
+            
+            // 3. Hide index
+            const hideIndex = validIndices[Math.floor(Math.random() * validIndices.length)];
+            const correctChar = word[hideIndex].toLowerCase();
+            
+            // 4. Display String
+            let displayString = "";
+            for (let i = 0; i < word.length; i++) {
+                if (i === hideIndex) {
+                    displayString += "_ ";
+                } else {
+                    displayString += word[i] + " ";
+                }
+            }
+            document.getElementById('spelling-display').innerText = displayString;
+
+            // 5. Generate Options
+            const alphabet = "abcdefghijklmnopqrstuvwxyz";
+            let options = [correctChar];
+            while (options.length < 4) {
+                const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
+                if (!options.includes(randomChar)) options.push(randomChar);
+            }
+            options.sort(() => Math.random() - 0.5);
+            
+            // 6. Render
+            const container = document.getElementById('spelling-options');
+            container.innerHTML = '';
+            
+            options.forEach(char => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.style.fontWeight = 'bold';
+                btn.innerText = char;
+                btn.onclick = () => checkSpellingAnswer(btn, char === correctChar, word);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkSpellingAnswer(btn, isCorrect, fullWord) {
+            const feedback = document.getElementById('spelling-feedback');
+            const buttons = document.querySelectorAll('#spelling-options .option-btn');
+            buttons.forEach(b => b.disabled = true);
+
+            // Cancel any current speech
+            window.speechSynthesis.cancel();
+            
+            // Create the utterance object
+            let speechMsg = new SpeechSynthesisUtterance();
+            speechMsg.lang = 'en-US';
+            
+            // ⚠️ 這裡修改了：只唸單字，不唸 Correct/Wrong
+            speechMsg.text = fullWord;
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+                feedback.innerText = `Correct! The word is "${fullWord}".`;
+                feedback.style.color = "#27ae60";
+                
+                // Fill in the blank
+                document.getElementById('spelling-display').innerText = fullWord.split('').join(' ');
+            } else {
+                btn.classList.add('wrong');
+                feedback.innerText = `Incorrect. The word was "${fullWord}".`;
+                feedback.style.color = "#c0392b";
+            }
+
+            // Play audio (只會唸單字)
+            window.speechSynthesis.speak(speechMsg);
+        }
+
+        // --- Shared ---
+        function showSection(id) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(`section-${id}`).classList.add('active');
+            document.getElementById(`btn-${id}`).classList.add('active');
+
+            if(id === 'quiz') generateQuiz();
+            if(id === 'spelling') generateSpellingQuiz();
+        }
+
+        function speak(text) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // Init
+        renderList();
+        updateFlashcard();
+
+    </script>
+</body>
+</html>
