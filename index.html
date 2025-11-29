@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Week 14 Vocabulary Practice</title>
+    <title>Week Vocabulary Practice</title>
     <style>
         :root {
             --primary-color: #4a90e2;
@@ -29,7 +29,24 @@
         h1 {
             color: var(--primary-color);
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Dropdown Style */
+        .week-select {
+            font-size: 0.6em;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 2px solid var(--primary-color);
+            background: white;
+            color: var(--text-color);
+            font-weight: bold;
+            cursor: pointer;
+            outline: none;
         }
 
         /* Navigation */
@@ -318,7 +335,15 @@
 </head>
 <body>
 
-    <h1>📚 ESL Vocabulary - Week 14</h1>
+    <h1>
+        <span>📚 ESL Vocabulary</span>
+        <!-- 下拉式選單 -->
+        <select id="week-selector" class="week-select" onchange="changeWeek()">
+            <option value="14">Week 14</option>
+            <!-- 未來如果有 Week 15，就在這裡加一行： -->
+            <!-- <option value="15">Week 15</option> -->
+        </select>
+    </h1>
 
     <div class="nav-buttons">
         <button onclick="showSection('list')" id="btn-list" class="nav-btn active">單字列表 (List)</button>
@@ -352,7 +377,7 @@
             <button class="control-btn speak-btn" onclick="speakCurrentCard()">🔊 唸給我聽</button>
             <button class="control-btn" onclick="nextCard()">Next →</button>
         </div>
-        <p style="text-align: center; margin-top: 10px; color: #888;" id="card-counter">1 / 8</p>
+        <p style="text-align: center; margin-top: 10px; color: #888;" id="card-counter">1 / 10</p>
     </div>
 
     <!-- 3. Meaning Quiz View -->
@@ -381,18 +406,50 @@
         </div>
     </div>
 
+    <!-- 載入資料庫 (目前只有 Week 14) -->
+    <script src="week14_data.js"></script>
+    
+    <!-- 未來如果有 Week 15，請取消下面這行的註解並上傳 week15_data.js -->
+    <!-- <script src="week15_data.js"></script> -->
+
     <script>
-        // Data
-        const vocabData = [
-            { word: "toucan", pos: "(n.)", def: "a big, brightly colored bird with a large beak", ex: "1. Toucans live in tropical America.<br>2. We can see toucans in the zoo." },
-            { word: "find out", pos: "(v.)", def: "to learn something by asking or studying", ex: "1. Please find out the mistake on your worksheet.<br>2. Let's find out the answer together." },
-            { word: "branch", pos: "(n.)", def: "a part of a tree growing from the trunk", ex: "1. I climbed up the tree and sat on a branch.<br>2. When I throw a little branch, my dog catches it." },
-            { word: "poisonous", pos: "(adj.)", def: "something that can kill you if you get it in your body", ex: "1. A rattlesnake is a poisonous animal.<br>2. Snow White ate a poisonous apple." },
-            { word: "iguana", pos: "(n.)", def: "a kind of lizard", ex: "1. James wants an iguana for a pet.<br>2. I see a red iguana on the ground." },
-            { word: "caterpillar", pos: "(n.)", def: "an insect like a worm with many legs", ex: "1. A caterpillar will change into a butterfly.<br>2. There is a caterpillar on the branch." },
-            { word: "asleep", pos: "(adj.)", def: "not awake; sleeping", ex: "1. The baby fell asleep soon.<br>2. He was so tired that he fell asleep on the sofa." },
-            { word: "another", pos: "(adj.)", def: "one more; an additional thing or person", ex: "1. We will talk about it in another day.<br>2. Sam lost his pen and borrowed one from another boy." }
-        ];
+        // 初始化變數
+        let vocabData = []; 
+        let currentCardIndex = 0;
+
+        // --- 切換週數邏輯 ---
+        function changeWeek() {
+            const selector = document.getElementById('week-selector');
+            const selectedWeek = selector.value;
+            
+            // 根據選單的值切換資料
+            if (selectedWeek === '14') {
+                // 檢查是否已載入 week14Data
+                if (typeof week14Data !== 'undefined') {
+                    vocabData = week14Data;
+                } else {
+                    alert("Error: Week 14 data missing!");
+                    return;
+                }
+            } 
+            // 未來擴充 Week 15:
+            // else if (selectedWeek === '15') { vocabData = week15Data; }
+
+            // 重置狀態
+            currentCardIndex = 0;
+            resetUI();
+        }
+
+        function resetUI() {
+            // 重新渲染當前所在的分頁
+            renderList();
+            updateFlashcard();
+            
+            // 判斷目前在哪個分頁，如果是在測驗中，重新生成題目
+            const activeSection = document.querySelector('.section.active').id;
+            if (activeSection === 'section-quiz') generateQuiz();
+            if (activeSection === 'section-spelling') generateSpellingQuiz();
+        }
 
         // --- List View ---
         function renderList() {
@@ -417,8 +474,8 @@
         }
 
         // --- Flashcards ---
-        let currentCardIndex = 0;
         function updateFlashcard() {
+            if (vocabData.length === 0) return;
             const item = vocabData[currentCardIndex];
             document.getElementById('fc-word').innerText = item.word;
             document.getElementById('fc-pos').innerText = item.pos;
@@ -438,7 +495,6 @@
             const correctIndex = Math.floor(Math.random() * vocabData.length);
             const correctItem = vocabData[correctIndex];
             
-            // Distractors
             let distractors = [];
             while(distractors.length < 3) {
                 let idx = Math.floor(Math.random() * vocabData.length);
@@ -463,10 +519,8 @@
 
         function checkQuizAnswer(btn, isCorrect, feedbackId) {
             const feedback = document.getElementById(feedbackId);
-            const parent = btn.parentElement;
-            const buttons = parent.querySelectorAll('.option-btn');
-            
-            buttons.forEach(b => b.disabled = true); // Disable all
+            const buttons = btn.parentElement.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.disabled = true);
 
             if (isCorrect) {
                 btn.classList.add('correct');
@@ -484,35 +538,24 @@
         // --- Spelling Quiz ---
         function generateSpellingQuiz() {
             document.getElementById('spelling-feedback').innerText = '';
-            
-            // 1. Pick word
             const randomItem = vocabData[Math.floor(Math.random() * vocabData.length)];
             const word = randomItem.word;
             
-            // 2. Identify indices
             let validIndices = [];
             for (let i = 0; i < word.length; i++) {
-                if (/[a-z]/i.test(word[i])) {
-                    validIndices.push(i);
-                }
+                if (/[a-z]/i.test(word[i])) validIndices.push(i);
             }
             
-            // 3. Hide index
             const hideIndex = validIndices[Math.floor(Math.random() * validIndices.length)];
             const correctChar = word[hideIndex].toLowerCase();
             
-            // 4. Display String
             let displayString = "";
             for (let i = 0; i < word.length; i++) {
-                if (i === hideIndex) {
-                    displayString += "_ ";
-                } else {
-                    displayString += word[i] + " ";
-                }
+                if (i === hideIndex) displayString += "_ ";
+                else displayString += word[i] + " ";
             }
             document.getElementById('spelling-display').innerText = displayString;
 
-            // 5. Generate Options
             const alphabet = "abcdefghijklmnopqrstuvwxyz";
             let options = [correctChar];
             while (options.length < 4) {
@@ -521,7 +564,6 @@
             }
             options.sort(() => Math.random() - 0.5);
             
-            // 6. Render
             const container = document.getElementById('spelling-options');
             container.innerHTML = '';
             
@@ -540,30 +582,21 @@
             const buttons = document.querySelectorAll('#spelling-options .option-btn');
             buttons.forEach(b => b.disabled = true);
 
-            // Cancel any current speech
             window.speechSynthesis.cancel();
-            
-            // Create the utterance object
             let speechMsg = new SpeechSynthesisUtterance();
             speechMsg.lang = 'en-US';
-            
-            // ⚠️ 這裡修改了：只唸單字，不唸 Correct/Wrong
             speechMsg.text = fullWord;
 
             if (isCorrect) {
                 btn.classList.add('correct');
                 feedback.innerText = `Correct! The word is "${fullWord}".`;
                 feedback.style.color = "#27ae60";
-                
-                // Fill in the blank
                 document.getElementById('spelling-display').innerText = fullWord.split('').join(' ');
             } else {
                 btn.classList.add('wrong');
                 feedback.innerText = `Incorrect. The word was "${fullWord}".`;
                 feedback.style.color = "#c0392b";
             }
-
-            // Play audio (只會唸單字)
             window.speechSynthesis.speak(speechMsg);
         }
 
@@ -586,9 +619,10 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        // Init
-        renderList();
-        updateFlashcard();
+        // 程式啟動時，預設載入選單上的第一個選項 (Week 14)
+        window.onload = function() {
+            changeWeek();
+        }
 
     </script>
 </body>
