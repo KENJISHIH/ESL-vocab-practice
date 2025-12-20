@@ -218,7 +218,7 @@
                 <option value="17">Week 17</option>
             </select>
         </div>
-        <div class="coin-display" id="coin-display">
+        <div class="coin-display" id="coin-display" onclick="devMode()" style="cursor: pointer;"></div>
             <span class="coin-icon">💰</span>
             <span id="coin-count">0</span>
         </div>
@@ -685,6 +685,41 @@
             utterance.lang = 'en-US';
             window.speechSynthesis.speak(utterance);
         }
+
+// --- 開發者模式 (測試用) ---
+        function devMode() {
+            // 1. 跳出輸入視窗
+            const password = prompt("請輸入開發者密碼：");
+
+            // 2. 檢查密碼 (大小寫必須完全一樣)
+            if (password === 'kenji') {
+                
+                // 3. 密碼正確 -> 執行獎勵
+                userProfile.coins += 5000;
+                
+                // (選用) 如果想要順便解鎖所有商品，把下面這兩行註解拿掉
+                /*
+                shopData.shirts.forEach(i => { if(!userProfile.ownedItems.includes(i.id)) userProfile.ownedItems.push(i.id) });
+                shopData.hats.forEach(i => { if(!userProfile.ownedItems.includes(i.id)) userProfile.ownedItems.push(i.id) });
+                */
+
+                saveProfile(); // 存檔
+                
+                // 讓金幣動畫跑一下
+                const display = document.getElementById('coin-display');
+                display.classList.remove('coin-anim');
+                void display.offsetWidth; 
+                display.classList.add('coin-anim');
+
+                alert("✅ 驗證成功！獲得 5000 金幣！");
+
+            } else if (password !== null) {
+                // 4. 密碼錯誤 (如果使用者按取消，password 會是 null，就不跳錯誤)
+                alert("❌ 密碼錯誤，無法啟用。");
+            }
+        }            
+
+        // --- Init ---
 
         window.onload = function() {
             loadProfile(); 
