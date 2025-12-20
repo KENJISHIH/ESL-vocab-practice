@@ -227,16 +227,16 @@
     <!-- 角色展示區 (更新為圖片疊加模式) -->
     <div class="avatar-container" onclick="showSection('shop')">
         <!-- 1. 素體 (最下層) -->
-        <img id="img-base" class="avatar-layer layer-base" src="">
+        <img id="img-base" class="avatar-layer layer-base" src="" onerror="this.style.display='none'">
         
         <!-- 2. 衣服 (中間層) -->
-        <img id="img-shirt" class="avatar-layer layer-shirt" src="">
+        <img id="img-shirt" class="avatar-layer layer-shirt" src="" onerror="this.style.display='none'">
         
         <!-- 3. 頭髮 (長髮蓋在衣服上) -->
-        <img id="img-hair" class="avatar-layer layer-hair" src="">
+        <img id="img-hair" class="avatar-layer layer-hair" src="" onerror="this.style.display='none'">
 
         <!-- 4. 帽子 (最上層) -->
-        <img id="img-hat" class="avatar-layer layer-hat" src=""> 
+        <img id="img-hat" class="avatar-layer layer-hat" src="" onerror="this.style.display='none'">
     </div>
 
     <!-- 1. Home / List View -->
@@ -374,34 +374,42 @@
         function updateUI() {
             document.getElementById('coin-count').innerText = userProfile.coins;
 
-            // 1. 設定素體與頭髮 (這些是固定的)
-            document.getElementById('img-base').src = shopData.base;
-            document.getElementById('img-hair').src = shopData.hair;
+            // 1. 設定素體與頭髮
+            // 先檢查有沒有資料，有才設定，避免報錯
+            if (shopData.base) {
+                const baseEl = document.getElementById('img-base');
+                baseEl.src = shopData.base;
+                baseEl.style.display = 'block';
+            }
+            if (shopData.hair) {
+                const hairEl = document.getElementById('img-hair');
+                hairEl.src = shopData.hair;
+                hairEl.style.display = 'block';
+            }
 
             // 2. 找出目前穿著的衣服與帽子
             const currentShirt = shopData.shirts.find(i => i.id === userProfile.equipped.shirt);
             const currentHat = shopData.hats.find(i => i.id === userProfile.equipped.hat);
 
-            // 3. 更新圖片 Src
+            // 3. 更新衣服圖片
+            const shirtEl = document.getElementById('img-shirt');
             if (currentShirt && currentShirt.img) {
-                document.getElementById('img-shirt').src = currentShirt.img;
-                document.getElementById('img-shirt').style.display = 'block';
+                shirtEl.src = currentShirt.img;
+                shirtEl.style.display = 'block';
             } else {
-                // 如果是預設白背心，可能 img 是空字串，就隱藏衣服層(顯示素體)
-                // 或者是顯示預設圖片
-                document.getElementById('img-shirt').style.display = 'none'; 
-                if(currentShirt && currentShirt.img) {
-                     document.getElementById('img-shirt').src = currentShirt.img;
-                     document.getElementById('img-shirt').style.display = 'block';
-                }
+                // 如果沒有圖片，隱藏並清空 src 以免 iPad 顯示邊框
+                shirtEl.style.display = 'none';
+                shirtEl.src = ''; 
             }
 
-            const hatImg = document.getElementById('img-hat');
+            // 4. 更新帽子圖片
+            const hatEl = document.getElementById('img-hat');
             if (currentHat && currentHat.img) {
-                hatImg.src = currentHat.img;
-                hatImg.style.display = 'block';
+                hatEl.src = currentHat.img;
+                hatEl.style.display = 'block';
             } else {
-                hatImg.style.display = 'none'; // 沒戴帽子就隱藏
+                hatEl.style.display = 'none';
+                hatEl.src = '';
             }
 
             // 重新渲染商店狀態
