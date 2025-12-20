@@ -6,17 +6,17 @@
     <title>Vocabulary Animal Crossing</title>
     <style>
         :root {
-            --primary-color: #26c6da; /* 森友會風格的藍綠色 */
-            --secondary-color: #f7f9e3; /* 溫暖的米色背景 */
-            --accent-color: #ffca28; /* 金幣黃 */
-            --text-color: #5d4037; /* 深咖啡色文字 */
+            --primary-color: #26c6da; 
+            --secondary-color: #f7f9e3; 
+            --accent-color: #ffca28; 
+            --text-color: #5d4037; 
             --card-bg: #ffffff;
             --success: #66bb6a;
             --danger: #ef5350;
         }
 
         body {
-            font-family: 'Varela Round', 'Segoe UI', Tahoma, sans-serif; /* 圓潤字體 */
+            font-family: 'Varela Round', 'Segoe UI', Tahoma, sans-serif;
             background-color: var(--secondary-color);
             color: var(--text-color);
             margin: 0;
@@ -25,7 +25,7 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding-bottom: 80px; /* 為底部導航留空間 */
+            padding-bottom: 80px;
         }
 
         /* --- 頂部資訊列 --- */
@@ -54,68 +54,40 @@
             border-radius: 20px;
         }
 
-        .coin-icon {
-            margin-right: 5px;
-        }
+        .coin-icon { margin-right: 5px; }
 
-        /* --- 角色顯示區 (Avatar) --- */
+        /* --- 角色顯示區 (Avatar - Paper Doll System) --- */
         .avatar-container {
-            width: 150px;
-            height: 150px;
-            background: #e0f7fa;
-            border-radius: 50%;
+            width: 220px; /* 設定合適的顯示大小 */
+            height: 220px;
+            position: relative;
+            margin: 0 auto 20px;
+            background: #e0f7fa; /* 淺藍背景 */
+            border-radius: 20px;
+            overflow: hidden;
             border: 5px solid white;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-            overflow: hidden;
         }
 
-        /* 這裡是用 CSS 畫的簡單角色，你可以之後換成圖片 */
-        .character-base {
-            width: 80px;
-            height: 80px;
-            background: #ffccbc; /* 膚色 */
-            border-radius: 50%;
-            position: relative;
-            top: 10px;
-        }
-        .character-body {
-            width: 100px;
-            height: 80px;
-            background: #81d4fa; /* 預設衣服顏色 */
-            border-radius: 40px 40px 0 0;
+        /* 所有圖層通用設定 */
+        .avatar-layer {
             position: absolute;
-            bottom: -20px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* 保持圖片比例 */
+            pointer-events: none; /* 讓點擊事件可以穿透圖片 */
         }
-        .character-eyes {
-            display: flex;
-            gap: 20px;
-            position: absolute;
-            top: 30px;
-            left: 18px;
-        }
-        .eye { width: 10px; height: 10px; background: #333; border-radius: 50%; }
-        
-        /* 裝備圖層 */
-        .equip-hat {
-            width: 100px;
-            height: 40px;
-            background: transparent;
-            position: absolute;
-            top: -15px;
-            left: -10px;
-            border-radius: 50px 50px 0 0;
-            z-index: 10;
-        }
+
+        /* 圖層堆疊順序 (Z-Index) - 關鍵！ */
+        .layer-base  { z-index: 1; }   /* 身體最下面 */
+        .layer-shirt { z-index: 2; }   /* 衣服在中間 */
+        .layer-hair  { z-index: 3; }   /* 頭髮蓋在衣服上 (長髮設定) */
+        .layer-hat   { z-index: 4; }   /* 帽子最上面 */
         
         /* --- 週數選擇 --- */
-        .week-selector-container {
-            margin-bottom: 15px;
-        }
+        .week-selector-container { margin-bottom: 15px; }
         select {
             padding: 8px 15px;
             border-radius: 20px;
@@ -133,7 +105,6 @@
             animation: fadeIn 0.3s;
         }
         .section.active { display: block; }
-        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- 商店樣式 --- */
@@ -153,15 +124,9 @@
             border: 2px solid transparent;
         }
         .shop-item:hover { transform: translateY(-3px); }
-        .shop-item.owned { border-color: #ddd; opacity: 0.7; }
-        .shop-item.equipped { border-color: var(--primary-color); background: #e0f7fa; }
+        .shop-item.owned { border-color: #ddd; opacity: 0.8; background: #f9f9f9; }
+        .shop-item.equipped { border-color: var(--primary-color); background: #e0f7fa; opacity: 1; }
         
-        .item-preview {
-            width: 50px;
-            height: 50px;
-            margin: 0 auto 10px;
-            border-radius: 10px;
-        }
         .price-tag {
             background: var(--accent-color);
             color: white;
@@ -171,7 +136,7 @@
             display: inline-block;
         }
 
-        /* --- 學習卡片樣式 (沿用之前的邏輯但美化) --- */
+        /* --- 學習卡片樣式 --- */
         .word-item {
             background: white;
             padding: 20px;
@@ -218,16 +183,14 @@
         }
         .spelling-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-        /* --- 底部導航列 (Tab Bar) --- */
+        /* --- 底部導航列 --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: white; display: flex; justify-content: space-around;
             padding: 10px 0; border-radius: 20px 20px 0 0;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.05); z-index: 100;
         }
-        .nav-item {
-            text-align: center; cursor: pointer; color: #aaa; flex: 1;
-        }
+        .nav-item { text-align: center; cursor: pointer; color: #aaa; flex: 1; }
         .nav-item.active { color: var(--primary-color); font-weight: bold; }
         .nav-icon { font-size: 1.5em; display: block; margin-bottom: 3px; }
         .nav-text { font-size: 0.8em; }
@@ -261,18 +224,19 @@
         </div>
     </div>
 
-    <!-- 角色展示 -->
+    <!-- 角色展示區 (更新為圖片疊加模式) -->
     <div class="avatar-container" onclick="showSection('shop')">
-        <div class="character-base">
-            <div class="character-eyes">
-                <div class="eye"></div>
-                <div class="eye"></div>
-            </div>
-            <!-- 帽子層 -->
-            <div id="avatar-hat" class="equip-hat"></div>
-        </div>
-        <!-- 衣服層 -->
-        <div id="avatar-body" class="character-body"></div>
+        <!-- 1. 素體 (最下層) -->
+        <img id="img-base" class="avatar-layer layer-base" src="">
+        
+        <!-- 2. 衣服 (中間層) -->
+        <img id="img-shirt" class="avatar-layer layer-shirt" src="">
+        
+        <!-- 3. 頭髮 (長髮蓋在衣服上) -->
+        <img id="img-hair" class="avatar-layer layer-hair" src="">
+
+        <!-- 4. 帽子 (最上層) -->
+        <img id="img-hat" class="avatar-layer layer-hat" src=""> 
     </div>
 
     <!-- 1. Home / List View -->
@@ -326,7 +290,7 @@
         </div>
     </div>
 
-    <!-- 5. Shop (New!) -->
+    <!-- 5. Shop -->
     <div id="section-shop" class="section">
         <h2 style="text-align:center; color:var(--text-color)">👗 Clothing Shop</h2>
         <p style="text-align:center; font-size:0.9em; color:#888">Customize your character!</p>
@@ -368,37 +332,22 @@
     <script src="week15_data.js"></script>
     <script src="week16_data.js"></script>
     <script src="week17_data.js"></script>
+    <!-- 載入商店資料庫 -->
+    <script src="shop_data.js"></script>
 
     <script>
         // --- 1. 全域變數與存檔系統 ---
         let vocabData = []; 
         let currentCardIndex = 0;
         
-        // 預設的使用者資料
+        // 預設的使用者資料 (注意：這裡的 ID 必須跟 shop_data.js 對應)
         let userProfile = {
             coins: 0,
-            ownedItems: ['shirt_blue', 'hat_none'], // 初始擁有的物品
+            ownedItems: ['shirt_default', 'hat_none'], 
             equipped: {
-                shirt: 'shirt_blue',
+                shirt: 'shirt_default',
                 hat: 'hat_none'
             }
-        };
-
-        // 商店物品清單 (定義商品價格與樣式)
-        const shopItems = {
-            shirts: [
-                { id: 'shirt_blue', name: 'Blue Tee', price: 0, color: '#81d4fa' },
-                { id: 'shirt_red', name: 'Red Shirt', price: 50, color: '#ef5350' },
-                { id: 'shirt_green', name: 'Green Shirt', price: 100, color: '#66bb6a' },
-                { id: 'shirt_purple', name: 'Purple Shirt', price: 150, color: '#ab47bc' },
-                { id: 'shirt_black', name: 'Cool Black', price: 300, color: '#424242' }
-            ],
-            hats: [
-                { id: 'hat_none', name: 'No Hat', price: 0, color: 'transparent' },
-                { id: 'hat_cap', name: 'Yellow Cap', price: 100, color: '#fdd835' },
-                { id: 'hat_beanie', name: 'Pink Beanie', price: 150, color: '#f48fb1' },
-                { id: 'hat_top', name: 'Gentleman', price: 500, color: '#333' }
-            ]
         };
 
         // 讀取存檔
@@ -407,7 +356,12 @@
             if (saved) {
                 userProfile = JSON.parse(saved);
             }
-            updateUI();
+            // 確保 shopData 已經載入，再更新 UI
+            if (typeof shopData !== 'undefined') {
+                updateUI();
+            } else {
+                console.error("shop_data.js not loaded!");
+            }
         }
 
         // 儲存存檔
@@ -416,18 +370,39 @@
             updateUI();
         }
 
-        // 更新介面 (金幣、角色外觀)
+        // 更新介面 (金幣、角色圖片)
         function updateUI() {
-            // 更新金幣
-            const coinEl = document.getElementById('coin-count');
-            coinEl.innerText = userProfile.coins;
-            
-            // 更新角色外觀
-            const shirtItem = shopItems.shirts.find(i => i.id === userProfile.equipped.shirt);
-            const hatItem = shopItems.hats.find(i => i.id === userProfile.equipped.hat);
-            
-            if(shirtItem) document.getElementById('avatar-body').style.backgroundColor = shirtItem.color;
-            if(hatItem) document.getElementById('avatar-hat').style.backgroundColor = hatItem.color;
+            document.getElementById('coin-count').innerText = userProfile.coins;
+
+            // 1. 設定素體與頭髮 (這些是固定的)
+            document.getElementById('img-base').src = shopData.base;
+            document.getElementById('img-hair').src = shopData.hair;
+
+            // 2. 找出目前穿著的衣服與帽子
+            const currentShirt = shopData.shirts.find(i => i.id === userProfile.equipped.shirt);
+            const currentHat = shopData.hats.find(i => i.id === userProfile.equipped.hat);
+
+            // 3. 更新圖片 Src
+            if (currentShirt && currentShirt.img) {
+                document.getElementById('img-shirt').src = currentShirt.img;
+                document.getElementById('img-shirt').style.display = 'block';
+            } else {
+                // 如果是預設白背心，可能 img 是空字串，就隱藏衣服層(顯示素體)
+                // 或者是顯示預設圖片
+                document.getElementById('img-shirt').style.display = 'none'; 
+                if(currentShirt && currentShirt.img) {
+                     document.getElementById('img-shirt').src = currentShirt.img;
+                     document.getElementById('img-shirt').style.display = 'block';
+                }
+            }
+
+            const hatImg = document.getElementById('img-hat');
+            if (currentHat && currentHat.img) {
+                hatImg.src = currentHat.img;
+                hatImg.style.display = 'block';
+            } else {
+                hatImg.style.display = 'none'; // 沒戴帽子就隱藏
+            }
 
             // 重新渲染商店狀態
             renderShop();
@@ -437,18 +412,21 @@
             userProfile.coins += amount;
             saveProfile();
             
-            // 簡單的金幣跳動特效
             const display = document.getElementById('coin-display');
             display.classList.remove('coin-anim');
-            void display.offsetWidth; // trigger reflow
+            void display.offsetWidth; 
             display.classList.add('coin-anim');
         }
 
-        // --- 2. 商店系統 ---
+        // --- 2. 商店系統 (圖片版) ---
         function renderShop() {
+            // 輔助函式：產生商品列表
             const renderCategory = (items, containerId, type) => {
                 const container = document.getElementById(containerId);
                 container.innerHTML = '';
+                
+                if (!items) return;
+
                 items.forEach(item => {
                     const isOwned = userProfile.ownedItems.includes(item.id);
                     const isEquipped = userProfile.equipped[type] === item.id;
@@ -457,9 +435,19 @@
                     div.className = `shop-item ${isOwned ? 'owned' : ''} ${isEquipped ? 'equipped' : ''}`;
                     div.onclick = () => handleItemClick(item, type);
                     
+                    // 圖片預覽區域
+                    let previewHtml = '';
+                    if(item.img) {
+                        // 顯示縮圖
+                        previewHtml = `<img src="${item.img}" style="width:60px; height:60px; object-fit:contain;">`;
+                    } else {
+                        // 如果是空字串 (例如 No Hat)，顯示文字或圖示
+                        previewHtml = `<div style="width:60px; height:60px; background:#eee; border-radius:10px; line-height:60px; text-align:center; color:#ccc; margin:0 auto;">X</div>`;
+                    }
+
                     div.innerHTML = `
-                        <div class="item-preview" style="background-color:${item.color}; border:1px solid #ddd"></div>
-                        <div style="font-weight:bold; font-size:0.9em">${item.name}</div>
+                        ${previewHtml}
+                        <div style="font-weight:bold; font-size:0.8em; margin-top:5px;">${item.name}</div>
                         ${isOwned 
                             ? (isEquipped ? '<span style="color:green; font-size:0.8em">Equipped</span>' : '<span style="color:#888; font-size:0.8em">Owned</span>') 
                             : `<div class="price-tag">💰 ${item.price}</div>`
@@ -469,8 +457,8 @@
                 });
             };
 
-            renderCategory(shopItems.shirts, 'shop-shirts', 'shirt');
-            renderCategory(shopItems.hats, 'shop-hats', 'hat');
+            renderCategory(shopData.shirts, 'shop-shirts', 'shirt');
+            renderCategory(shopData.hats, 'shop-hats', 'hat');
         }
 
         function handleItemClick(item, type) {
@@ -514,7 +502,6 @@
         function refreshActiveSection() {
             renderList();
             updateFlashcard();
-            // 如果當前在測驗頁面，刷新題目
             const activeSection = document.querySelector('.section.active');
             if (activeSection.id === 'section-quiz') generateQuiz();
             if (activeSection.id === 'section-spelling') generateSpellingQuiz();
@@ -557,7 +544,7 @@
         function prevCard() { currentCardIndex = (currentCardIndex - 1 + vocabData.length) % vocabData.length; updateFlashcard(); }
         function speakCurrentCard() { speak(vocabData[currentCardIndex].word); }
 
-        // Quiz (Earn Money!)
+        // Quiz
         function generateQuiz() {
             document.getElementById('quiz-feedback').innerText = '';
             const correctIndex = Math.floor(Math.random() * vocabData.length);
@@ -595,7 +582,7 @@
                 feedback.innerText = "Correct! +10 Coins 💰";
                 feedback.style.color = "green";
                 speak("Correct!"); 
-                addCoins(10); // 賺錢邏輯
+                addCoins(10); 
             } else {
                 btn.classList.add('wrong');
                 feedback.innerText = "Try again next time!";
@@ -604,7 +591,7 @@
             }
         }
 
-        // Spelling (Earn More Money!)
+        // Spelling
         function generateSpellingQuiz() {
             document.getElementById('spelling-feedback').innerText = '';
             const randomItem = vocabData[Math.floor(Math.random() * vocabData.length)];
@@ -661,7 +648,7 @@
                 feedback.innerText = `Correct! +20 Coins 💰`;
                 feedback.style.color = "green";
                 document.getElementById('spelling-display').innerText = fullWord.split('').join(' ');
-                addCoins(20); // 賺錢邏輯
+                addCoins(20); 
             } else {
                 btn.classList.add('wrong');
                 feedback.innerText = `The word was "${fullWord}".`;
@@ -670,20 +657,15 @@
             window.speechSynthesis.speak(speechMsg);
         }
 
-
-        // --- UI Navigation ---
         function showSection(id, navEl) {
-            // 切換 Section
             document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
             document.getElementById(`section-${id}`).classList.add('active');
             
-            // 切換底部按鈕狀態 (如果有傳入 navEl)
             if(navEl) {
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 navEl.classList.add('active');
             }
 
-            // 特殊處理：如果是進入測驗，自動出題
             if(id === 'quiz') generateQuiz();
             if(id === 'spelling') generateSpellingQuiz();
         }
@@ -695,10 +677,9 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        // --- Init ---
         window.onload = function() {
-            loadProfile(); // 載入存檔
-            changeWeek(); // 載入週數資料
+            loadProfile(); 
+            changeWeek(); 
         }
 
     </script>
