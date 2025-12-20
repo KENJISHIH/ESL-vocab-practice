@@ -3,7 +3,6 @@
 const shopData = {
     // --- 基礎素體與頭髮 ---
     base: "images/char_base.png",
-    hair: "images/char_hair.png",
 
     // --- 衣服清單 (Shirts) ---
     shirts: [
