@@ -11,7 +11,7 @@ const shopData = {
             id: 'shirt_default', 
             name: 'White Tank', 
             price: 0, 
-            img: '' // 預設不穿衣服 (顯示素體)
+            img: 'images/char_base.png' // <--- 要指向身體(素體)的圖，因為素體就穿著白背心
         },
         { 
             id: 'shirt_elsa', 
@@ -39,7 +39,7 @@ const shopData = {
             id: 'hat_none', 
             name: 'No Hat', 
             price: 0, 
-            img: '' // 不戴帽子
+            img: 'images/char_hair.png' 
         },
         { 
             id: 'hat_cap', 
