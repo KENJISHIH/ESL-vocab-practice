@@ -1,10 +1,18 @@
 // shop_data.js
-const shopData = {
-    // 身體素體 (Base Character)
-    base: "images/base_char.png",
 
-    // 衣服清單
+const shopData = {
+    // --- 基礎素體與頭髮 ---
+    base: "images/char_base.png",
+    hair: "images/char_hair.png",
+
+    // --- 衣服清單 (Shirts) ---
     shirts: [
+        { 
+            id: 'shirt_default', 
+            name: 'White Tank', 
+            price: 0, 
+            img: '' // 預設不穿衣服 (顯示素體)
+        },
         { 
             id: 'shirt_elsa', 
             name: 'Ice Queen', 
@@ -22,26 +30,50 @@ const shopData = {
             name: 'Pink Yukata', 
             price: 300, 
             img: 'images/shirt_kimono.png' 
+        },
+        { 
+            id: 'shirt_xmas', 
+            name: 'Xmas Dress', 
+            price: 400, 
+            img: 'images/shirt_xmas.png' 
         }
     ],
 
-    // 帽子清單
+    // --- 帽子清單 (Hats) ---
     hats: [
         { 
             id: 'hat_none', 
             name: 'No Hat', 
             price: 0, 
-            img: '' // 空字串代表沒戴帽子
+            img: '' // 不戴帽子
         },
         { 
             id: 'hat_cap', 
-            name: 'Baseball Cap', 
+            name: 'Yellow Cap', 
             price: 150, 
             img: 'images/hat_cap.png' 
         },
         { 
+            id: 'hat_cap_back', 
+            name: 'Cool Cap', 
+            price: 200, 
+            img: 'images/hat_cap_back.png' 
+        },
+        { 
+            id: 'hat_wizard', 
+            name: 'Wizard Hat', 
+            price: 300, 
+            img: 'images/hat_wizard.png' 
+        },
+        { 
+            id: 'hat_tiara', 
+            name: 'Princess Tiara', 
+            price: 600, 
+            img: 'images/hat_tiara.png' 
+        },
+        { 
             id: 'hat_crown', 
-            name: 'Golden Crown', 
+            name: 'Royal Crown', 
             price: 1000, 
             img: 'images/hat_crown.png' 
         }
