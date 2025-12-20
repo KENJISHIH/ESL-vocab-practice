@@ -447,7 +447,8 @@
                     let previewHtml = '';
                     if(item.img) {
                         // 顯示縮圖
-                        previewHtml = `<img src="${item.img}" style="width:60px; height:60px; object-fit:contain;">`;
+                        // 這裡針對帽子做了一點優化，讓它在預覽框裡看起來大一點
+                        previewHtml = `<img src="${item.img}" style="width:60px; height:60px; object-fit: cover; object-position: top center;">`;
                     } else {
                         // 如果是空字串 (例如 No Hat)，顯示文字或圖示
                         previewHtml = `<div style="width:60px; height:60px; background:#eee; border-radius:10px; line-height:60px; text-align:center; color:#ccc; margin:0 auto;">X</div>`;

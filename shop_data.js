@@ -31,12 +31,6 @@ const shopData = {
             price: 300, 
             img: 'images/shirt_kimono.png' 
         },
-        { 
-            id: 'shirt_xmas', 
-            name: 'Xmas Dress', 
-            price: 400, 
-            img: 'images/shirt_xmas.png' 
-        }
     ],
 
     // --- 帽子清單 (Hats) ---
