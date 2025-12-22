@@ -1,8 +1,9 @@
 // shop_data.js
 
 const shopData = {
-    // --- 基礎素體與頭髮 ---
+    // --- 基礎素體與頭髮 (這裡一定要有 hair!) ---
     base: "images/char_base.png",
+    hair: "images/char_hair.png", // <--- 補回這一行！
 
     // --- 衣服清單 (Shirts) ---
     shirts: [
@@ -10,7 +11,7 @@ const shopData = {
             id: 'shirt_default', 
             name: 'White Tank', 
             price: 0, 
-            img: 'images/char_base.png' // <--- 要指向身體(素體)的圖，因為素體就穿著白背心
+            img: 'images/char_base.png' // 正確：縮圖顯示素體
         },
         { 
             id: 'shirt_elsa', 
@@ -30,6 +31,7 @@ const shopData = {
             price: 300, 
             img: 'images/shirt_kimono.png' 
         },
+
     ],
 
     // --- 帽子清單 (Hats) ---
@@ -38,7 +40,7 @@ const shopData = {
             id: 'hat_none', 
             name: 'No Hat', 
             price: 0, 
-            img: 'images/char_hair.png' 
+            img: 'images/char_hair.png' // 正確：縮圖顯示頭髮(無帽)
         },
         { 
             id: 'hat_cap', 
