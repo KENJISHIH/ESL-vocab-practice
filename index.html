@@ -218,7 +218,7 @@
                 <option value="17">Week 17</option>
             </select>
         </div>
-        <div class="coin-display" id="coin-display" onclick="devMode()" style="cursor: pointer;"></div>
+        <div class="coin-display" id="coin-display" onclick="devMode()" style="cursor: pointer;">
             <span class="coin-icon">💰</span>
             <span id="coin-count">0</span>
         </div>
@@ -270,7 +270,8 @@
     <div id="section-quiz" class="section">
         <div class="quiz-container">
             <h3>Meaning Quiz</h3>
-            <div style="color:#666; margin-bottom:10px;">Earn <span style="color:orange; font-weight:bold;">10 Coins</span> per correct answer!</div>
+            <!-- ⬇️ 這裡改成 20 Coins -->
+            <div style="color:#666; margin-bottom:10px;">Earn <span style="color:orange; font-weight:bold;">20 Coins</span> per correct answer!</div>
             <div id="quiz-question" style="font-size:1.2em; font-weight:bold; margin:20px 0;">Question</div>
             <div id="quiz-options"></div>
             <div id="quiz-feedback" class="feedback-msg" style="height:20px;"></div>
@@ -282,7 +283,8 @@
     <div id="section-spelling" class="section">
         <div class="quiz-container">
             <h3>Spelling Practice</h3>
-            <div style="color:#666; margin-bottom:10px;">Earn <span style="color:orange; font-weight:bold;">20 Coins</span>!</div>
+            <!-- ⬇️ 這裡改成 10 Coins -->
+            <div style="color:#666; margin-bottom:10px;">Earn <span style="color:orange; font-weight:bold;">10 Coins</span>!</div>
             <div id="spelling-display" class="spelling-word">_ _ _ _</div>
             <div id="spelling-options" class="spelling-options"></div>
             <div id="spelling-feedback" class="feedback-msg" style="height:20px; margin-top:10px;"></div>
@@ -340,7 +342,7 @@
         let vocabData = []; 
         let currentCardIndex = 0;
         
-        // 預設的使用者資料 (注意：這裡的 ID 必須跟 shop_data.js 對應)
+        // 預設的使用者資料
         let userProfile = {
             coins: 0,
             ownedItems: ['shirt_default', 'hat_none'], 
@@ -356,7 +358,6 @@
             if (saved) {
                 userProfile = JSON.parse(saved);
             }
-            // 確保 shopData 已經載入，再更新 UI
             if (typeof shopData !== 'undefined') {
                 updateUI();
             } else {
@@ -374,22 +375,30 @@
         function updateUI() {
             document.getElementById('coin-count').innerText = userProfile.coins;
 
-            // 1. 設定素體與頭髮
-            // 先檢查有沒有資料，有才設定，避免報錯
+            // 1. 設定素體
             if (shopData.base) {
                 const baseEl = document.getElementById('img-base');
                 baseEl.src = shopData.base;
                 baseEl.style.display = 'block';
             }
-            if (shopData.hair) {
-                const hairEl = document.getElementById('img-hair');
-                hairEl.src = shopData.hair;
-                hairEl.style.display = 'block';
-            }
 
             // 2. 找出目前穿著的衣服與帽子
             const currentShirt = shopData.shirts.find(i => i.id === userProfile.equipped.shirt);
             const currentHat = shopData.hats.find(i => i.id === userProfile.equipped.hat);
+
+            // --- 智慧判斷頭髮 ---
+            let hairToUse = shopData.hair; // 預設使用長髮
+
+            if (currentShirt && currentShirt.custom_hair) {
+                hairToUse = currentShirt.custom_hair;
+            }
+
+            const hairEl = document.getElementById('img-hair');
+            if (hairToUse) {
+                hairEl.src = hairToUse;
+                hairEl.style.display = 'block';
+            }
+            // ------------------
 
             // 3. 更新衣服圖片
             const shirtEl = document.getElementById('img-shirt');
@@ -397,7 +406,6 @@
                 shirtEl.src = currentShirt.img;
                 shirtEl.style.display = 'block';
             } else {
-                // 如果沒有圖片，隱藏並清空 src 以免 iPad 顯示邊框
                 shirtEl.style.display = 'none';
                 shirtEl.src = ''; 
             }
@@ -426,9 +434,8 @@
             display.classList.add('coin-anim');
         }
 
-        // --- 2. 商店系統 (圖片版) ---
+        // --- 2. 商店系統 ---
         function renderShop() {
-            // 輔助函式：產生商品列表
             const renderCategory = (items, containerId, type) => {
                 const container = document.getElementById(containerId);
                 container.innerHTML = '';
@@ -443,14 +450,10 @@
                     div.className = `shop-item ${isOwned ? 'owned' : ''} ${isEquipped ? 'equipped' : ''}`;
                     div.onclick = () => handleItemClick(item, type);
                     
-                    // 圖片預覽區域
                     let previewHtml = '';
                     if(item.img) {
-                        // 顯示縮圖
-                        // 這裡針對帽子做了一點優化，讓它在預覽框裡看起來大一點
                         previewHtml = `<img src="${item.img}" style="width:60px; height:60px; object-fit: cover; object-position: top center;">`;
                     } else {
-                        // 如果是空字串 (例如 No Hat)，顯示文字或圖示
                         previewHtml = `<div style="width:60px; height:60px; background:#eee; border-radius:10px; line-height:60px; text-align:center; color:#ccc; margin:0 auto;">X</div>`;
                     }
 
@@ -481,7 +484,7 @@
                     if(confirm(`Buy ${item.name} for ${item.price} coins?`)) {
                         userProfile.coins -= item.price;
                         userProfile.ownedItems.push(item.id);
-                        userProfile.equipped[type] = item.id; // 買了直接穿
+                        userProfile.equipped[type] = item.id; 
                         saveProfile();
                         alert("Thank you for purchase!");
                     }
@@ -491,8 +494,7 @@
             }
         }
 
-        // --- 3. 頁面邏輯 (舊功能整合) ---
-        
+        // --- 3. 頁面邏輯 ---
         function changeWeek() {
             const selector = document.getElementById('week-selector');
             const selectedWeek = selector.value;
@@ -553,7 +555,7 @@
         function prevCard() { currentCardIndex = (currentCardIndex - 1 + vocabData.length) % vocabData.length; updateFlashcard(); }
         function speakCurrentCard() { speak(vocabData[currentCardIndex].word); }
 
-        // Quiz
+        // Quiz (20 Coins)
         function generateQuiz() {
             document.getElementById('quiz-feedback').innerText = '';
             const correctIndex = Math.floor(Math.random() * vocabData.length);
@@ -587,11 +589,12 @@
             buttons.forEach(b => b.disabled = true);
 
             if (isCorrect) {
+                // ⬇️ 這裡改成 +20 Coins
                 btn.classList.add('correct');
-                feedback.innerText = "Correct! +10 Coins 💰";
+                feedback.innerText = "Correct! +20 Coins 💰";
                 feedback.style.color = "green";
                 speak("Correct!"); 
-                addCoins(10); 
+                addCoins(20); 
             } else {
                 btn.classList.add('wrong');
                 feedback.innerText = "Try again next time!";
@@ -600,7 +603,7 @@
             }
         }
 
-        // Spelling
+        // Spelling (10 Coins)
         function generateSpellingQuiz() {
             document.getElementById('spelling-feedback').innerText = '';
             const randomItem = vocabData[Math.floor(Math.random() * vocabData.length)];
@@ -653,11 +656,12 @@
             speechMsg.text = fullWord;
 
             if (isCorrect) {
+                // ⬇️ 這裡改成 +10 Coins
                 btn.classList.add('correct');
-                feedback.innerText = `Correct! +20 Coins 💰`;
+                feedback.innerText = `Correct! +10 Coins 💰`;
                 feedback.style.color = "green";
                 document.getElementById('spelling-display').innerText = fullWord.split('').join(' ');
-                addCoins(20); 
+                addCoins(10); 
             } else {
                 btn.classList.add('wrong');
                 feedback.innerText = `The word was "${fullWord}".`;
@@ -666,60 +670,23 @@
             window.speechSynthesis.speak(speechMsg);
         }
 
-        function showSection(id, navEl) {
-            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-            document.getElementById(`section-${id}`).classList.add('active');
-            
-            if(navEl) {
-                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                navEl.classList.add('active');
-            }
-
-            if(id === 'quiz') generateQuiz();
-            if(id === 'spelling') generateSpellingQuiz();
-        }
-
-        function speak(text) {
-            window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            window.speechSynthesis.speak(utterance);
-        }
-
-// --- 開發者模式 (測試用) ---
+        // --- 開發者模式 ---
         function devMode() {
-            // 1. 跳出輸入視窗
             const password = prompt("請輸入開發者密碼：");
-
-            // 2. 檢查密碼 (大小寫必須完全一樣)
             if (password === 'kenji') {
-                
-                // 3. 密碼正確 -> 執行獎勵
                 userProfile.coins += 5000;
+                saveProfile();
                 
-                // (選用) 如果想要順便解鎖所有商品，把下面這兩行註解拿掉
-                /*
-                shopData.shirts.forEach(i => { if(!userProfile.ownedItems.includes(i.id)) userProfile.ownedItems.push(i.id) });
-                shopData.hats.forEach(i => { if(!userProfile.ownedItems.includes(i.id)) userProfile.ownedItems.push(i.id) });
-                */
-
-                saveProfile(); // 存檔
-                
-                // 讓金幣動畫跑一下
                 const display = document.getElementById('coin-display');
                 display.classList.remove('coin-anim');
                 void display.offsetWidth; 
                 display.classList.add('coin-anim');
 
                 alert("✅ 驗證成功！獲得 5000 金幣！");
-
             } else if (password !== null) {
-                // 4. 密碼錯誤 (如果使用者按取消，password 會是 null，就不跳錯誤)
                 alert("❌ 密碼錯誤，無法啟用。");
             }
-        }            
-
-        // --- Init ---
+        }
 
         window.onload = function() {
             loadProfile(); 

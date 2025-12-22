@@ -3,7 +3,8 @@
 const shopData = {
     // --- 基礎素體與頭髮 (這裡一定要有 hair!) ---
     base: "images/char_base.png",
-    hair: "images/char_hair.png", // <--- 補回這一行！
+    hair: "images/char_hair.png",       // 預設長髮
+    hair_short: "images/char_hair_short.png", // [新增] 特殊短髮
 
     // --- 衣服清單 (Shirts) ---
     shirts: [
@@ -23,15 +24,48 @@ const shopData = {
             id: 'shirt_wizard', 
             name: 'Magic Robe', 
             price: 350, 
-            img: 'images/shirt_wizard.png' 
+            img: 'images/shirt_wizard.png',
+            //  [新增這行] 指定這件衣服也要用短髮
+            custom_hair: 'images/char_hair_short.png'
         },
         { 
             id: 'shirt_kimono', 
             name: 'Pink Yukata', 
             price: 300, 
-            img: 'images/shirt_kimono.png' 
+            img: 'images/shirt_kimono.png',
+            //  [新增這行] 指定這件衣服也要用短髮
+            custom_hair: 'images/char_hair_short.png' 
         },
-
+                { 
+            id: 'shirt_casual_blue', 
+            name: 'Casual Blue', 
+            price: 850, 
+            img: 'images/shirt_casual_blue.png' 
+        },
+        { 
+            id: 'shirt_yellow_coat', 
+            name: 'Yellow Coat', 
+            price: 2150, 
+            img: 'images/shirt_yellow_coat.png' 
+        },
+        { 
+            id: 'shirt_black_glitter', 
+            name: 'Black Glitter', 
+            price: 2150, 
+            img: 'images/shirt_black_glitter.png' 
+        },
+        { 
+            id: 'shirt_teal_jumpsuit', 
+            name: 'Teal Jumpsuit', 
+            price: 2150, 
+            img: 'images/shirt_teal_jumpsuit.png' 
+        },
+        { 
+            id: 'shirt_kpop_idol', 
+            name: 'Idol Stage', 
+            price: 1680, // 這套很華麗，賣貴一點！
+            img: 'images/shirt_kpop_idol.png' 
+        }
     ],
 
     // --- 帽子清單 (Hats) ---
