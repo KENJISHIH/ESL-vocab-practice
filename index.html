@@ -270,7 +270,7 @@
     <div id="section-quiz" class="section">
         <div class="quiz-container">
             <h3>Meaning Quiz</h3>
-            <div style="color:#666; margin-bottom:10px;">Earn <span style="color:orange; font-weight:bold;">10 Coins</span> per correct answer!</div>
+            <div style="color:#666; margin-bottom:10px;">Earn <span style="color:orange; font-weight:bold;">20 Coins</span> per correct answer!</div>
             <div id="quiz-question" style="font-size:1.2em; font-weight:bold; margin:20px 0;">Question</div>
             <div id="quiz-options"></div>
             <div id="quiz-feedback" class="feedback-msg" style="height:20px;"></div>
@@ -282,7 +282,7 @@
     <div id="section-spelling" class="section">
         <div class="quiz-container">
             <h3>Spelling Practice</h3>
-            <div style="color:#666; margin-bottom:10px;">Earn <span style="color:orange; font-weight:bold;">20 Coins</span>!</div>
+            <div style="color:#666; margin-bottom:10px;">Earn <span style="color:orange; font-weight:bold;">10 Coins</span>!</div>
             <div id="spelling-display" class="spelling-word">_ _ _ _</div>
             <div id="spelling-options" class="spelling-options"></div>
             <div id="spelling-feedback" class="feedback-msg" style="height:20px; margin-top:10px;"></div>
@@ -390,6 +390,22 @@
             // 2. 找出目前穿著的衣服與帽子
             const currentShirt = shopData.shirts.find(i => i.id === userProfile.equipped.shirt);
             const currentHat = shopData.hats.find(i => i.id === userProfile.equipped.hat);
+
+            // --- 🔥 [關鍵修改] 智慧判斷頭髮 ---
+            let hairToUse = shopData.hair; // 預設使用長髮
+
+            // 如果目前穿的衣服有指定 "custom_hair"，就換成指定的頭髮
+            if (currentShirt && currentShirt.custom_hair) {
+                hairToUse = currentShirt.custom_hair;
+            }
+
+            // 更新頭髮圖片
+            const hairEl = document.getElementById('img-hair');
+            if (hairToUse) {
+                hairEl.src = hairToUse;
+                hairEl.style.display = 'block';
+            }
+            // ------------------------------------
 
             // 3. 更新衣服圖片
             const shirtEl = document.getElementById('img-shirt');
@@ -588,10 +604,10 @@
 
             if (isCorrect) {
                 btn.classList.add('correct');
-                feedback.innerText = "Correct! +10 Coins 💰";
+                feedback.innerText = "Correct! +20 Coins 💰";
                 feedback.style.color = "green";
                 speak("Correct!"); 
-                addCoins(10); 
+                addCoins(20); 
             } else {
                 btn.classList.add('wrong');
                 feedback.innerText = "Try again next time!";
@@ -654,10 +670,10 @@
 
             if (isCorrect) {
                 btn.classList.add('correct');
-                feedback.innerText = `Correct! +20 Coins 💰`;
+                feedback.innerText = `Correct! +10 Coins 💰`;
                 feedback.style.color = "green";
                 document.getElementById('spelling-display').innerText = fullWord.split('').join(' ');
-                addCoins(20); 
+                addCoins(10); 
             } else {
                 btn.classList.add('wrong');
                 feedback.innerText = `The word was "${fullWord}".`;
