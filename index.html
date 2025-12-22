@@ -218,6 +218,7 @@
                 <option value="17">Week 17</option>
             </select>
         </div>
+        <!-- 修正後的金幣顯示區 HTML -->
         <div class="coin-display" id="coin-display" onclick="devMode()" style="cursor: pointer;">
             <span class="coin-icon">💰</span>
             <span id="coin-count">0</span>
@@ -270,7 +271,6 @@
     <div id="section-quiz" class="section">
         <div class="quiz-container">
             <h3>Meaning Quiz</h3>
-            <!-- ⬇️ 這裡改成 20 Coins -->
             <div style="color:#666; margin-bottom:10px;">Earn <span style="color:orange; font-weight:bold;">20 Coins</span> per correct answer!</div>
             <div id="quiz-question" style="font-size:1.2em; font-weight:bold; margin:20px 0;">Question</div>
             <div id="quiz-options"></div>
@@ -283,7 +283,6 @@
     <div id="section-spelling" class="section">
         <div class="quiz-container">
             <h3>Spelling Practice</h3>
-            <!-- ⬇️ 這裡改成 10 Coins -->
             <div style="color:#666; margin-bottom:10px;">Earn <span style="color:orange; font-weight:bold;">10 Coins</span>!</div>
             <div id="spelling-display" class="spelling-word">_ _ _ _</div>
             <div id="spelling-options" class="spelling-options"></div>
@@ -589,7 +588,6 @@
             buttons.forEach(b => b.disabled = true);
 
             if (isCorrect) {
-                // ⬇️ 這裡改成 +20 Coins
                 btn.classList.add('correct');
                 feedback.innerText = "Correct! +20 Coins 💰";
                 feedback.style.color = "green";
@@ -656,7 +654,6 @@
             speechMsg.text = fullWord;
 
             if (isCorrect) {
-                // ⬇️ 這裡改成 +10 Coins
                 btn.classList.add('correct');
                 feedback.innerText = `Correct! +10 Coins 💰`;
                 feedback.style.color = "green";

@@ -36,7 +36,7 @@ const shopData = {
             //  [新增這行] 指定這件衣服也要用短髮
             custom_hair: 'images/char_hair_short.png' 
         },
-                { 
+        { 
             id: 'shirt_casual_blue', 
             name: 'Casual Blue', 
             price: 850, 
