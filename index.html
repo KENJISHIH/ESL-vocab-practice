@@ -588,6 +588,7 @@
             buttons.forEach(b => b.disabled = true);
 
             if (isCorrect) {
+                // ⬇️ 這裡改成 +20 Coins
                 btn.classList.add('correct');
                 feedback.innerText = "Correct! +20 Coins 💰";
                 feedback.style.color = "green";
@@ -654,6 +655,7 @@
             speechMsg.text = fullWord;
 
             if (isCorrect) {
+                // ⬇️ 這裡改成 +10 Coins
                 btn.classList.add('correct');
                 feedback.innerText = `Correct! +10 Coins 💰`;
                 feedback.style.color = "green";
