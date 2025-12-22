@@ -46,25 +46,33 @@ const shopData = {
             id: 'shirt_yellow_coat', 
             name: 'Yellow Coat', 
             price: 2150, 
-            img: 'images/shirt_yellow_coat.png' 
+            img: 'images/shirt_yellow_coat.png',
+            //  [新增這行] 指定這件衣服也要用短髮
+            custom_hair: 'images/char_hair_short.png'  
         },
         { 
             id: 'shirt_black_glitter', 
             name: 'Black Glitter', 
             price: 2150, 
-            img: 'images/shirt_black_glitter.png' 
+            img: 'images/shirt_black_glitter.png',
+            //  [新增這行] 指定這件衣服也要用短髮
+            custom_hair: 'images/char_hair_short.png'  
         },
         { 
             id: 'shirt_teal_jumpsuit', 
             name: 'Teal Jumpsuit', 
             price: 2150, 
-            img: 'images/shirt_teal_jumpsuit.png' 
+            img: 'images/shirt_teal_jumpsuit.png',
+            //  [新增這行] 指定這件衣服也要用短髮
+            custom_hair: 'images/char_hair_short.png'  
         },
         { 
             id: 'shirt_kpop_idol', 
             name: 'Idol Stage', 
             price: 1680, // 這套很華麗，賣貴一點！
-            img: 'images/shirt_kpop_idol.png' 
+            img: 'images/shirt_kpop_idol.png',
+            //  [新增這行] 指定這件衣服也要用短髮
+            custom_hair: 'images/char_hair_short.png'  
         }
     ],
 
