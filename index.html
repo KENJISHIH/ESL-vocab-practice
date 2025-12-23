@@ -216,6 +216,8 @@
                 <option value="15">Week 15</option>
                 <option value="16">Week 16</option>
                 <option value="17">Week 17</option>
+                <option value="18">Week 18</option>
+                <option value="19">Week 19</option>
             </select>
         </div>
         <div class="coin-display" id="coin-display" onclick="devMode()" style="cursor: pointer;"></div>
@@ -332,6 +334,8 @@
     <script src="week15_data.js"></script>
     <script src="week16_data.js"></script>
     <script src="week17_data.js"></script>
+    <script src="week18_data.js"></script>
+    <script src="week19_data.js"></script>
     <!-- 載入商店資料庫 -->
     <script src="shop_data.js"></script>
 
@@ -518,6 +522,8 @@
             else if (selectedWeek === '15' && typeof week15Data !== 'undefined') vocabData = week15Data;
             else if (selectedWeek === '16' && typeof week16Data !== 'undefined') vocabData = week16Data;
             else if (selectedWeek === '17' && typeof week17Data !== 'undefined') vocabData = week17Data;
+            else if (selectedWeek === '18' && typeof week18Data !== 'undefined') vocabData = week18Data;
+            else if (selectedWeek === '19' && typeof week19Data !== 'undefined') vocabData = week19Data;
             else { alert("Data missing for this week!"); return; }
 
             currentCardIndex = 0;
