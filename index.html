@@ -219,6 +219,7 @@
                 <option value="17">Week 17</option>
                 <option value="18">Week 18</option>
                 <option value="19">Week 19</option>
+                <option value="all">🔥 ALL (W12-W19)</option>
             </select>
         </div>
         <div class="coin-display" id="coin-display" onclick="devMode()" style="cursor: pointer;"></div>
@@ -519,6 +520,7 @@
             const selector = document.getElementById('week-selector');
             const selectedWeek = selector.value;
             
+            // --- 單週模式 ---
             if (selectedWeek === '12' && typeof week12Data !== 'undefined') vocabData = week12Data;
             else if (selectedWeek === '13' && typeof week13Data !== 'undefined') vocabData = week13Data;
             else if (selectedWeek === '14' && typeof week14Data !== 'undefined') vocabData = week14Data;
@@ -527,11 +529,36 @@
             else if (selectedWeek === '17' && typeof week17Data !== 'undefined') vocabData = week17Data;
             else if (selectedWeek === '18' && typeof week18Data !== 'undefined') vocabData = week18Data;
             else if (selectedWeek === '19' && typeof week19Data !== 'undefined') vocabData = week19Data;
-            else { alert("Data missing for this week!"); return; }
+            
+            // --- 🔥 總複習模式 (ALL) ---
+            else if (selectedWeek === 'all') {
+                // 1. 合併所有資料 (使用 concat)
+                // 確保所有 weekXXData 都已經載入，不然會報錯
+                let allWords = [];
+                if(typeof week12Data !== 'undefined') allWords = allWords.concat(week12Data);
+                if(typeof week13Data !== 'undefined') allWords = allWords.concat(week13Data);
+                if(typeof week14Data !== 'undefined') allWords = allWords.concat(week14Data);
+                if(typeof week15Data !== 'undefined') allWords = allWords.concat(week15Data);
+                if(typeof week16Data !== 'undefined') allWords = allWords.concat(week16Data);
+                if(typeof week17Data !== 'undefined') allWords = allWords.concat(week17Data);
+                if(typeof week18Data !== 'undefined') allWords = allWords.concat(week18Data);
+                if(typeof week19Data !== 'undefined') allWords = allWords.concat(week19Data);
 
+                // 2. 隨機打亂 (Shuffle)
+                // 這樣每次選 ALL 的時候，順序都不一樣
+                vocabData = allWords.sort(() => Math.random() - 0.5);
+            }
+            
+            else { 
+                alert("Data missing for this week! Please check if JS files are loaded."); 
+                return; 
+            }
+
+            // 重置卡片索引
             currentCardIndex = 0;
             refreshActiveSection();
         }
+
 
         function refreshActiveSection() {
             renderList();
