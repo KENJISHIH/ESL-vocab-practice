@@ -13,9 +13,7 @@
 
 ```bash
 cd ~/Documents/KJ-agent/esl-vocab-practice
-python3 tools/pdf_to_vocab.py "<PDF 完整路徑>" \
-    --semester 2026-fall \
-    --start-week 1
+python3 tools/pdf_to_vocab.py "<PDF 完整路徑>" --semester 2026-fall
 ```
 
 參數說明：
@@ -23,48 +21,31 @@ python3 tools/pdf_to_vocab.py "<PDF 完整路徑>" \
 | 參數 | 用途 |
 |---|---|
 | `--semester` | 學期代號，命名規則 `<year>-<spring/fall>` |
-| `--start-week` | PDF 第 1 頁對應第幾週（一般填 `1`） |
-| `--pages N` | 只跑前 N 頁試水溫（驗 OCR 品質用） |
+| `--start-page` | 從 PDF 第幾頁開始（1-based，預設 1，用於失敗單頁重跑）|
+| `--pages N` | 只處理 N 頁（試水溫或重跑用） |
 | `--out-dir` | 預設 `tools/ocr_output/`，不用改 |
 
-每頁 ≈ 10 秒。輸出在 `tools/ocr_output/<semester>_weekNN.json`。
+**自動處理**：
+- 週次由 Gemini 從頁首 "Week N" 自動讀出（不需手動對應頁→週）
+- 非單字頁（概覽表、Review、封面、空白頁）會自動偵測並跳過
+- 若同週次重複出現會覆寫，並印出警告
 
-### 1a. PDF 結構不規則時
+每頁 ≈ 10 秒。輸出在 `tools/ocr_output/<semester>_weekNN.json`，最後印出收進的週次清單。
 
-實測 2026 Spring 的 PDF 第 10 頁是「W12-21 spelling 概覽表」、不是單週詳細頁，Gemini 會硬掰一份假資料出來。**OCR 完一定要抽查**：
+### 1a. 跑完抽查
+
+雖然週次偵測 + 跳頁邏輯已經很穩，OCR 文字內容仍建議快速抽查：
 
 ```bash
 cd tools/ocr_output
-for w in 01 02 ... 19; do
-  echo "=== Week $w ==="
-  python3 -c "import json; d=json.load(open('<semester>_week${w}.json')); \
+for f in <semester>_week*.json; do
+  echo "=== $f ==="
+  python3 -c "import json; d=json.load(open('$f')); \
     [print(f\"  {x['n']:2d}. {x['word']}\") for x in d['words']]"
 done
 ```
 
-對照 PDF 每頁 header 上的 `Week N` 確認週次有沒有錯位。如果發現有：
-
-- **整頁亂掰** → 砍那個 JSON 檔（如 2026 Spring W10）
-- **頁碼錯位** → 用 Python 一次重命名 + 改內部 `week` 欄位
-
-範例（修正錯位）：
-
-```python
-import json
-from pathlib import Path
-remap = {11: 12, 12: 13, ..., 17: 19, 18: 20, 19: 21}  # 跳過 W18 Review
-loaded = {}
-for cur, real in remap.items():
-    fp = Path(f'2026-spring_week{cur:02d}.json')
-    obj = json.loads(fp.read_text())
-    obj['week'] = real
-    loaded[real] = obj
-    fp.unlink()
-for real, obj in loaded.items():
-    Path(f'2026-spring_week{real:02d}.json').write_text(
-        json.dumps(obj, ensure_ascii=False, indent=2)
-    )
-```
+如果某週 OCR 失敗或內容怪怪的，直接用 `--start-page N --pages 1` 重跑那一頁。
 
 ## 2. JSON → JS 資料檔
 
@@ -136,8 +117,9 @@ git push
 
 | 症狀 | 原因 | 解法 |
 |---|---|---|
-| Gemini OCR 失敗單頁 | API 短暫抖動 | 重跑該頁：`--pages 1 --start-week N` |
-| OCR 出來一頁是別頁的內容 | PDF 有非單字頁，Gemini 幻想 | 砍該 JSON、用上面的 remap 修頁碼 |
+| Gemini OCR 失敗單頁 | API 短暫抖動 | 重跑該頁：`--start-page N --pages 1` |
+| 某頁顯示「⏭ 跳過：…」 | 該頁不是單字表（概覽、Review 等） | 正常行為，不用處理 |
+| 某週的 OCR 有錯字或漏字 | 圖片解析度或 Gemini 偶爾失誤 | 重跑該頁，或手動編輯 JSON 後重跑 json_to_js.py |
 | `Data missing for this week!` | `VOCAB_DATA` 漏列 dataVar | 把名字加進 `vocab_manifest.js` 的 `VOCAB_DATA` |
 | 下拉選單缺新週 | manifest 沒更新 | 把 snippet 貼進 `VOCAB_MANIFEST` |
 | 載入了但選了沒反應 | `<script src>` 沒加 | 在 index.html 補對應的 script 標籤 |
@@ -154,8 +136,9 @@ esl-vocab-practice/
 ├── fall2026_week*.js       ← 下學期會在這
 ├── images/
 └── tools/
-    ├── pdf_to_vocab.py     ← OCR 入口
-    ├── json_to_js.py       ← JSON → JS 轉檔
-    ├── ocr_output/         ← 暫存（gitignored）
-    └── manifest_snippet.txt ← 每次跑會覆蓋
+    ├── pdf_to_vocab.py        ← OCR 入口（自動偵測非單字頁、自動抓週次）
+    ├── json_to_js.py          ← JSON → JS 轉檔
+    ├── backfill_category.py   ← 一次性：為 2025 Fall 舊資料補 category 欄位（已跑過）
+    ├── ocr_output/            ← 暫存（gitignored）
+    └── manifest_snippet.txt   ← 每次跑會覆蓋
 ```

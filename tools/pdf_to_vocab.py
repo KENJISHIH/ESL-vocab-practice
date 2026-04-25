@@ -6,11 +6,17 @@ pdf_to_vocab.py — 把 ESL Vocabulary List PDF 轉成結構化 JSON。
 前 8 字屬 Reading、後 2 字屬 Science。
 
 用法：
-    # 單頁試跑（先跑 Week 1 確認品質）
-    python3 pdf_to_vocab.py <pdf_path> --semester 2026-spring --start-week 1 --pages 1
+    # 全部頁
+    python3 pdf_to_vocab.py <pdf_path> --semester 2026-spring
 
-    # 全部 19 頁
-    python3 pdf_to_vocab.py <pdf_path> --semester 2026-spring --start-week 1
+    # 試跑前 N 頁
+    python3 pdf_to_vocab.py <pdf_path> --semester 2026-spring --pages 3
+
+    # 從第 X 頁開始（用於失敗單頁重跑）
+    python3 pdf_to_vocab.py <pdf_path> --semester 2026-spring --start-page 10 --pages 1
+
+週次由 Gemini 從頁首 "Week N" 自動抓出，不需手動指定。
+非單字頁（概覽 / Review / 封面）會自動跳過。
 """
 
 from __future__ import annotations
@@ -31,26 +37,43 @@ TMP_DIR = Path.home() / ".gemini" / "tmp" / "kj-agent" / "esl_ocr"
 RENDER_DPI = 200
 PAGE_TIMEOUT = 120
 
-PROMPT = """這是一張 ESL 兒童英文單字表的圖片。
-表格分兩段：上半段標題 "Reading"（前 8 個字）、下半段標題 "Science"（後 2 個字）。
-每列有三欄：Vocabulary（單字 + 詞性）、Picture、Definition and Example（定義 + 兩個例句）。
+PROMPT = """這是一張 ESL 兒童英文單字表的可能頁面。
 
-請輸出純 JSON 陣列（不要加 ```json 標記、不要解釋），每個元素格式：
+請先判斷：這頁是否是「單一週次的詳細單字表」？
+合格的頁面特徵：
+- 頁首寫著類似 "ESL1 Vocabulary List ... Week N" 的標題
+- 內容是表格形式，分 Reading 與 Science 兩段，列出 10 個字
+- 每筆有 Vocabulary（單字+詞性）、Picture、Definition and Example 三欄
+
+不合格的頁面（要回傳 SKIP）：
+- 跨週概覽 / spelling 總表 / Review & Final Exam 頁
+- 封面、目錄、空白頁、其他非單字表頁面
+
+——————————————————————————————
+
+如果是「不合格頁面」，只輸出一行：
+SKIP: <一句話原因>
+
+如果是「合格的單週單字表」，輸出純 JSON 物件（不要加 ```json 標記、不要解釋）：
 {
-  "n": 序號(1-10),
-  "word": "單字（小寫，原樣）",
-  "pos": "詞性符號，如 (n.)、(v.)、(adj.)、(adv.)、(prep)、(conj.)、(pronoun)",
-  "category": "Reading 或 Science",
-  "def": "定義（一行，去掉螢光標記）",
-  "ex": "1. 第一句例句<br>2. 第二句例句"
+  "week": 從頁首抓到的週次數字,
+  "words": [
+    {
+      "n": 序號(1-10),
+      "word": "單字（保留原拼字大小寫）",
+      "pos": "詞性符號，如 (n.)、(v.)、(adj.)、(adv.)、(prep)、(conj.)、(pronoun)",
+      "category": "Reading 或 Science",
+      "def": "定義（一行，去掉螢光標記）",
+      "ex": "1. 第一句例句<br>2. 第二句例句"
+    }
+  ]
 }
 
-注意事項：
-- word 保留原拼字大小寫（通常全小寫，專有名詞除外）
-- ex 兩句之間用 <br> 連接，不要換行
-- 例句裡保留底線單字的原樣（不要加任何標記）
-- 若某字有 (plural → xxx) 等補充，併入 def 末尾，例如 "...(plural → people)"
-- 只輸出 JSON 陣列，不要多餘文字"""
+注意：
+- week 一定要從頁首實際看到的 "Week N" 抓出來，不要用推測的
+- ex 兩句之間用 <br>，不要換行
+- 例句裡保留底線單字原樣，不要加標記
+- 若某字有 (plural → xxx) 等補充，併入 def 末尾"""
 
 
 def render_page(pdf_path: Path, page_idx: int, out_path: Path) -> None:
@@ -78,21 +101,39 @@ def call_gemini(img_path: Path) -> str:
     return out.strip()
 
 
-def parse_json_response(text: str) -> list[dict[str, Any]]:
+class SkipPage(Exception):
+    """非單字頁，應跳過。"""
+
+
+def parse_response(text: str) -> dict[str, Any]:
+    """
+    解析 Gemini 回應：
+      - 若以 SKIP: 開頭 → 拋 SkipPage
+      - 否則嘗試解析成 {"week": N, "words": [...]} 物件
+    """
     text = text.strip()
     if text.startswith("```"):
         text = re.sub(r"^```(?:json)?\s*", "", text)
         text = re.sub(r"\s*```$", "", text)
-    m = re.search(r"\[[\s\S]*\]", text)
+
+    if text.lstrip().upper().startswith("SKIP"):
+        # 取冒號後的原因
+        reason = text.split(":", 1)[1].strip() if ":" in text else "non-vocab page"
+        raise SkipPage(reason)
+
+    m = re.search(r"\{[\s\S]*\}", text)
     if not m:
-        raise ValueError(f"找不到 JSON 陣列，原始輸出前 300 字：\n{text[:300]}")
-    return json.loads(m.group(0))
+        raise ValueError(f"找不到 JSON 物件，原始輸出前 300 字：\n{text[:300]}")
+    obj = json.loads(m.group(0))
+    if "words" not in obj or not isinstance(obj["words"], list):
+        raise ValueError(f"回應缺少 words 陣列：{obj}")
+    return obj
 
 
 def process_pdf(
     pdf_path: Path,
     semester: str,
-    start_week: int,
+    start_page: int,
     page_limit: int | None,
     out_dir: Path,
 ) -> list[dict[str, Any]]:
@@ -100,37 +141,50 @@ def process_pdf(
     out_dir.mkdir(parents=True, exist_ok=True)
 
     doc = pdfium.PdfDocument(str(pdf_path))
-    n_pages = len(doc) if page_limit is None else min(page_limit, len(doc))
-    print(f"[OCR] {pdf_path.name}：共 {len(doc)} 頁，本次處理 {n_pages} 頁")
+    total = len(doc)
+    start_idx = start_page - 1  # 1-based → 0-based
+    end_idx = total if page_limit is None else min(start_idx + page_limit, total)
+    n_pages = end_idx - start_idx
+    print(f"[OCR] {pdf_path.name}：共 {total} 頁，本次處理第 {start_page}–{end_idx} 頁（{n_pages} 頁）")
+    print(f"      週次由 Gemini 從頁首 \"Week N\" 抓出；非單字頁會自動跳過")
 
     session = uuid.uuid4().hex[:8]
     all_weeks: list[dict[str, Any]] = []
+    skipped: list[tuple[int, str]] = []
 
-    for i in range(n_pages):
-        week = start_week + i
-        img_path = TMP_DIR / f"{session}_w{week:02d}.png"
+    for i in range(start_idx, end_idx):
+        page_num = i + 1  # 1-based
+        img_path = TMP_DIR / f"{session}_p{page_num:02d}.png"
         try:
             render_page(pdf_path, i, img_path)
-            print(f"[OCR] Week {week}：呼叫 Gemini …")
+            print(f"[OCR] 第 {page_num} 頁：呼叫 Gemini …")
             raw = call_gemini(img_path)
-            entries = parse_json_response(raw)
+            obj = parse_response(raw)
+            week = int(obj["week"])
+            entries = obj["words"]
             if len(entries) != 10:
-                print(f"  ⚠️ Week {week} 解析出 {len(entries)} 筆（預期 10），請檢查")
+                print(f"  ⚠️ 第 {page_num} 頁（Week {week}）解析出 {len(entries)} 筆（預期 10）")
             week_obj = {
                 "semester": semester,
                 "week": week,
+                "source_page": page_num,
                 "words": entries,
             }
             all_weeks.append(week_obj)
 
             per_week = out_dir / f"{semester}_week{week:02d}.json"
+            if per_week.exists():
+                print(f"  ⚠️ {per_week.name} 已存在，覆寫（你可能跑了重複的 PDF？）")
             per_week.write_text(
                 json.dumps(week_obj, ensure_ascii=False, indent=2),
                 encoding="utf-8",
             )
-            print(f"  ✅ Week {week}：{len(entries)} 筆 → {per_week.name}")
+            print(f"  ✅ 第 {page_num} 頁 → Week {week}（{len(entries)} 筆）→ {per_week.name}")
+        except SkipPage as e:
+            skipped.append((page_num, str(e)))
+            print(f"  ⏭  第 {page_num} 頁跳過：{e}")
         except Exception as e:
-            print(f"  ❌ Week {week} 失敗：{e}")
+            print(f"  ❌ 第 {page_num} 頁失敗：{e}")
         finally:
             if img_path.exists():
                 img_path.unlink()
@@ -140,7 +194,13 @@ def process_pdf(
         json.dumps(all_weeks, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
-    print(f"\n[完成] 共 {len(all_weeks)} 週，彙整：{combined}")
+    print(f"\n[完成] 收 {len(all_weeks)} 週、跳過 {len(skipped)} 頁，彙整：{combined.name}")
+    if skipped:
+        print("  跳過的頁：")
+        for p, r in skipped:
+            print(f"    - p{p:02d}: {r}")
+    weeks_seen = sorted({w["week"] for w in all_weeks})
+    print(f"  收進的週次：{weeks_seen}")
     return all_weeks
 
 
@@ -148,8 +208,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("pdf", type=Path)
     ap.add_argument("--semester", required=True, help="例：2026-spring")
-    ap.add_argument("--start-week", type=int, default=1)
-    ap.add_argument("--pages", type=int, default=None, help="只處理前 N 頁，省略則跑完")
+    ap.add_argument("--start-page", type=int, default=1, help="從 PDF 第幾頁開始（1-based，預設 1）")
+    ap.add_argument("--pages", type=int, default=None, help="只處理 N 頁，省略則從 start-page 跑到底")
     ap.add_argument(
         "--out-dir",
         type=Path,
@@ -164,7 +224,7 @@ def main() -> int:
     process_pdf(
         pdf_path=args.pdf,
         semester=args.semester,
-        start_week=args.start_week,
+        start_page=args.start_page,
         page_limit=args.pages,
         out_dir=args.out_dir,
     )

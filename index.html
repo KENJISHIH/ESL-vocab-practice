@@ -107,6 +107,35 @@
             color: var(--text-color);
         }
 
+        /* --- 類別篩選 toggle --- */
+        .category-filter {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 0 auto 15px;
+            max-width: 600px;
+        }
+        .cat-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 2px solid var(--primary-color);
+            background: white;
+            color: var(--primary-color);
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.15s;
+        }
+        .cat-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        .cat-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
         /* --- 主要內容區塊 --- */
         .section {
             display: none;
@@ -228,6 +257,13 @@
             <span class="coin-icon">💰</span>
             <span id="coin-count">0</span>
         </div>
+    </div>
+
+    <!-- 類別篩選：Reading / Science -->
+    <div class="category-filter" id="category-filter">
+        <button class="cat-btn active" data-cat="all" onclick="setCategoryFilter('all', this)">All</button>
+        <button class="cat-btn" data-cat="Reading" onclick="setCategoryFilter('Reading', this)">📖 Reading</button>
+        <button class="cat-btn" data-cat="Science" onclick="setCategoryFilter('Science', this)">🔬 Science</button>
     </div>
 
     <!-- 角色展示區 (更新為圖片疊加模式) -->
@@ -366,8 +402,10 @@
 
     <script>
         // --- 1. 全域變數與存檔系統 ---
-        let vocabData = []; 
+        let vocabData = [];          // 套過篩選後給畫面用
+        let rawWordsForWeek = [];    // 該週原始資料（含 ALL 模式洗牌後的快照）
         let currentCardIndex = 0;
+        let currentCategoryFilter = 'all';  // 'all' | 'Reading' | 'Science'
         
         // 預設的使用者資料 (注意：這裡的 ID 必須跟 shop_data.js 對應)
         let userProfile = {
@@ -589,14 +627,49 @@
             }
 
             if (selection.kind === 'all') {
-                // ALL 模式：洗牌
-                vocabData = selection.words.slice().sort(() => Math.random() - 0.5);
+                // ALL 模式：洗牌一次當原始資料快照
+                rawWordsForWeek = selection.words.slice().sort(() => Math.random() - 0.5);
             } else {
-                vocabData = selection.words;
+                rawWordsForWeek = selection.words;
             }
+
+            applyCategoryFilter();
+        }
+
+        function applyCategoryFilter() {
+            // 若當前篩選在這週沒有資料，自動退回 all
+            if (currentCategoryFilter !== 'all') {
+                const cnt = rawWordsForWeek.filter(w => w.category === currentCategoryFilter).length;
+                if (cnt === 0) {
+                    currentCategoryFilter = 'all';
+                    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelector('.cat-btn[data-cat="all"]')?.classList.add('active');
+                }
+            }
+
+            vocabData = currentCategoryFilter === 'all'
+                ? rawWordsForWeek.slice()
+                : rawWordsForWeek.filter(w => w.category === currentCategoryFilter);
+
+            // 同步按鈕禁用狀態：該類別 0 字就 disable
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                const cat = btn.dataset.cat;
+                if (cat === 'all') return;
+                const count = rawWordsForWeek.filter(w => w.category === cat).length;
+                btn.disabled = count === 0;
+                btn.title = count === 0 ? '本週無此類別單字' : '';
+            });
 
             currentCardIndex = 0;
             refreshActiveSection();
+        }
+
+        function setCategoryFilter(cat, btnEl) {
+            if (btnEl && btnEl.disabled) return;
+            currentCategoryFilter = cat;
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+            applyCategoryFilter();
         }
 
 
@@ -647,22 +720,31 @@
 
         // Quiz
         function generateQuiz() {
-            document.getElementById('quiz-feedback').innerText = '';
+            const feedback = document.getElementById('quiz-feedback');
+            const optionsContainer = document.getElementById('quiz-options');
+            const question = document.getElementById('quiz-question');
+            feedback.innerText = '';
+            optionsContainer.innerHTML = '';
+
+            // 至少要有 2 個字才有得問；< 4 個字時把選項數降到 vocabData.length
+            if (vocabData.length < 2) {
+                question.innerText = '本週這個類別字太少，無法出題 🥲';
+                return;
+            }
+
             const correctIndex = Math.floor(Math.random() * vocabData.length);
             const correctItem = vocabData[correctIndex];
-            
+
+            const maxDistractors = Math.min(3, vocabData.length - 1);
             let distractors = [];
-            while(distractors.length < 3) {
+            while (distractors.length < maxDistractors) {
                 let idx = Math.floor(Math.random() * vocabData.length);
                 if (idx !== correctIndex && !distractors.includes(idx)) distractors.push(idx);
             }
-            
-            let optionsIndices = [correctIndex, ...distractors].sort(() => Math.random() - 0.5);
 
-            document.getElementById('quiz-question').innerText = `"${correctItem.def}"`;
-            const optionsContainer = document.getElementById('quiz-options');
-            optionsContainer.innerHTML = '';
-            
+            const optionsIndices = [correctIndex, ...distractors].sort(() => Math.random() - 0.5);
+
+            question.innerText = `"${correctItem.def}"`;
             optionsIndices.forEach(idx => {
                 const item = vocabData[idx];
                 const btn = document.createElement('button');
@@ -694,7 +776,14 @@
 
         // Spelling
         function generateSpellingQuiz() {
-            document.getElementById('spelling-feedback').innerText = '';
+            const feedback = document.getElementById('spelling-feedback');
+            feedback.innerText = '';
+            if (vocabData.length === 0) {
+                document.getElementById('spelling-display').innerText = '_ _ _';
+                feedback.innerText = '本週這個類別字太少，無法出題 🥲';
+                document.getElementById('spelling-options').innerHTML = '';
+                return;
+            }
             const randomItem = vocabData[Math.floor(Math.random() * vocabData.length)];
             const word = randomItem.word;
             
