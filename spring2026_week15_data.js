@@ -1,0 +1,73 @@
+// 2026-spring Week 15
+const spring2026Week15Data = [
+    {
+        word: 'after',
+        pos: '(conj.)',
+        def: 'behind in place or position; later in time',
+        ex: '1. It started to rain after 10 o\'clock.<br>2. Please brush your teeth after you eat.',
+        category: 'Reading',
+    },
+    {
+        word: 'carefully',
+        pos: '(adv.)',
+        def: 'taking care or paying attention',
+        ex: '1. The students carefully crossed the road.<br>2. Please check your answers carefully.',
+        category: 'Reading',
+    },
+    {
+        word: 'left',
+        pos: '(v.)',
+        def: 'to allow to remain untaken, unused or unchanged (present tense → leave)',
+        ex: '1. There were some chairs left over when some people had sat down.<br>2. David finished his lunch; only the carrot was left.',
+        category: 'Reading',
+    },
+    {
+        word: 'splash',
+        pos: '(v.)',
+        def: 'to fly in drops and make somebody/something wet',
+        ex: '1. Dolphins splash the water with some tricks.<br>2. The girls were splashing each other with water.',
+        category: 'Reading',
+    },
+    {
+        word: 'chicken',
+        pos: '(n.)',
+        def: 'a bird that we eat or get eggs from',
+        ex: '1. We are having fried chicken for dinner.<br>2. There are many chickens in the farm.',
+        category: 'Reading',
+    },
+    {
+        word: 'flap',
+        pos: '(v.)',
+        def: 'to move something up and down or from side to side',
+        ex: '1. The bird flaps its wings and flies away.<br>2. I flapped the flies away but soon they flew back .',
+        category: 'Reading',
+    },
+    {
+        word: 'sight',
+        pos: '(n.)',
+        def: 'what you can see',
+        ex: '1. The child\'s mother can\'t find him. He is out of sight.<br>2. The ducks swam out of sight.',
+        category: 'Reading',
+    },
+    {
+        word: 'gather',
+        pos: '(v.)',
+        def: 'to get together in a group',
+        ex: '1. Families gather together for New Year\'s Eve.<br>2. Students gather around the teacher\'s desk.',
+        category: 'Reading',
+    },
+    {
+        word: 'burn',
+        pos: '(v.)',
+        def: 'to be on fire',
+        ex: '1. The house is burning – call the fire fighters!<br>2. When paper burns, it turns into ash.',
+        category: 'Science',
+    },
+    {
+        word: 'ash',
+        pos: '(n.)',
+        def: 'the gray or black powder which is left after something is burned',
+        ex: '1. They found the ring in the ashes of the fire.<br>2. Those branches were burned into ashes.',
+        category: 'Science',
+    },
+];

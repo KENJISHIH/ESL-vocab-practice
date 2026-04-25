@@ -1,0 +1,73 @@
+// 2026-spring Week 4
+const spring2026Week4Data = [
+    {
+        word: 'pouch',
+        pos: '(n.)',
+        def: 'a small bag',
+        ex: '1. A mother kangaroo keeps her baby in her pouch.<br>2. He puts coins in his pouch.',
+        category: 'Reading',
+    },
+    {
+        word: 'safe',
+        pos: '(adj.)',
+        def: 'not dangerous',
+        ex: '1. It isn\'t safe to drink salty water.<br>2. It\'s safer to stay inside when a typhoon comes.',
+        category: 'Reading',
+    },
+    {
+        word: 'change',
+        pos: '(v.)',
+        def: 'to make something different',
+        ex: '1. In Fall, the leaves change from green to yellow.<br>2. My father knows how to change the tire.',
+        category: 'Reading',
+    },
+    {
+        word: 'anymore',
+        pos: '(adv.)',
+        def: 'not happening now; or no longer true',
+        ex: '1. I don\'t want to talk about it anymore.<br>2. Kelly does not work here anymore.',
+        category: 'Reading',
+    },
+    {
+        word: 'sweet',
+        pos: '(adj.)',
+        def: 'tasting like sugar',
+        ex: '1. The apples are sweet and juicy.<br>2. The butterfly drinks the sweet nectar from the flower.',
+        category: 'Reading',
+    },
+    {
+        word: 'fold',
+        pos: '(v.)',
+        def: 'to bend something to make it smaller',
+        ex: '1. Anita folds the paper to make a paper bird.<br>2. I can fold this chair and put it in my car.',
+        category: 'Reading',
+    },
+    {
+        word: 'warm',
+        pos: '(adj.)',
+        def: 'a little hot',
+        ex: '1. I want a warm bath.<br>2. Drink some warm milk before you go to bed.',
+        category: 'Reading',
+    },
+    {
+        word: 'sunshine',
+        pos: '(n.)',
+        def: 'heat and light from the sun',
+        ex: '1. Wilson sits on the grass and enjoys the sunshine.<br>2. We play outside in the sunshine.',
+        category: 'Reading',
+    },
+    {
+        word: 'water vapor',
+        pos: '(n.)',
+        def: 'water that is in the air',
+        ex: '1. Water vapor cannot be seen.<br>2. As the Sun warms water, some water turns into water vapor.',
+        category: 'Science',
+    },
+    {
+        word: 'cloud',
+        pos: '(n.)',
+        def: 'the tiny drops of water and bits of ice that collect in the sky',
+        ex: '1. Rain or snow can fall from a cloud.<br>2. Look at the cloud. It looks like a horse.',
+        category: 'Science',
+    },
+];

@@ -1,0 +1,73 @@
+// 2026-spring Week 17
+const spring2026Week17Data = [
+    {
+        word: 'greedy',
+        pos: '(adj.)',
+        def: 'wanting too much',
+        ex: '1. Don\'t be so greedy! Leave some cake for the others.<br>2. The greedy man wants more money.',
+        category: 'Reading',
+    },
+    {
+        word: 'cub',
+        pos: '(n.)',
+        def: 'a baby fox, bear, lion, tiger or wolf',
+        ex: '1. The two tiger cubs are looking for their parents in the forest.<br>2. The fox cubs live in the cave.',
+        category: 'Reading',
+    },
+    {
+        word: 'brook',
+        pos: '(n.)',
+        def: 'a small stream',
+        ex: '1. Some elephants stand by the brook drinking water.<br>2. Fish swim in the brook.',
+        category: 'Reading',
+    },
+    {
+        word: 'peek',
+        pos: '(v.)',
+        def: 'look quickly',
+        ex: '1. Close your eyes; don\'t peek. I\'ve got a surprise for you.<br>2. Kitty peeks through the keyhole.',
+        category: 'Reading',
+    },
+    {
+        word: 'drank',
+        pos: '(v.)',
+        def: 'past simple of drink (present tense→ drink)',
+        ex: '1. We drank a lot of water after running.<br>2. The deer put its head down to the water and drank.',
+        category: 'Reading',
+    },
+    {
+        word: 'stomach',
+        pos: '(n.)',
+        def: 'a part of your body where your food goes',
+        ex: '1. The bears sat down on the grass and looked at their stomachs.<br>2. There is a mouse in this cat\'s stomach.',
+        category: 'Reading',
+    },
+    {
+        word: 'laugh',
+        pos: '(v.)',
+        def: 'to show happiness by making a sound',
+        ex: '1. The clown\'s trick made us laugh.<br>2. The joke was funny, so we couldn\'t help laughing.',
+        category: 'Reading',
+    },
+    {
+        word: 'burst',
+        pos: '(v.)',
+        def: 'to break open suddenly',
+        ex: '1. That balloon will burst if you blow it up any more.<br>2. I ate too much. My tummy is going to burst.',
+        category: 'Reading',
+    },
+    {
+        word: 'freeze',
+        pos: '(v.)',
+        def: 'to change from a liquid to a solid',
+        ex: '1. Water freezes to ice at a temperature of 0°C.<br>2. When the lake freezes, we can go skating on it.',
+        category: 'Science',
+    },
+    {
+        word: 'evaporate',
+        pos: '(v.)',
+        def: 'to change from a liquid to a gas',
+        ex: '1. Some water evaporated and the pond got smaller.<br>2. Plants keep cool during summer by evaporating water from their leaves.',
+        category: 'Science',
+    },
+];

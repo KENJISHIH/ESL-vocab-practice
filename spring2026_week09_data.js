@@ -1,0 +1,73 @@
+// 2026-spring Week 9
+const spring2026Week9Data = [
+    {
+        word: 'porch',
+        pos: '(n.)',
+        def: 'a small roof at the front of a house',
+        ex: '1. The house has a large front porch.<br>2. We stood on the porch to say hello.',
+        category: 'Reading',
+    },
+    {
+        word: 'roast',
+        pos: '(v.)',
+        def: 'to cook food over a fire or in an oven',
+        ex: '1. Gina roasted a chicken for dinner.<br>2. In the evening, we can roast corn on a big fire.',
+        category: 'Reading',
+    },
+    {
+        word: 'invite',
+        pos: '(v.)',
+        def: 'to ask someone to come',
+        ex: '1. I will invite my friends to my party.<br>2. Let\'s invite some people to our house for dinner.',
+        category: 'Reading',
+    },
+    {
+        word: 'remember',
+        pos: '(v.)',
+        def: 'to keep something in your mind',
+        ex: '1. I\'ll always remember that wonderful day.<br>2. Did you remember to shut off the water and gas before you left the house?',
+        category: 'Reading',
+    },
+    {
+        word: 'field',
+        pos: '(n.)',
+        def: 'a big open space with grass or crops',
+        ex: '1. The farmers are working hard in the corn field.<br>2. The cows are eating grass in the field.',
+        category: 'Reading',
+    },
+    {
+        word: 'distance',
+        pos: '(n.)',
+        def: 'the amount of space between two places or points',
+        ex: '1. It\'s only a short distance from my home to school.<br>2. I could hear your voice in the distance.',
+        category: 'Reading',
+    },
+    {
+        word: 'chest',
+        pos: '(n.)',
+        def: 'a box with a lid',
+        ex: '1. There is an old chest in grandfather\'s room.<br>2. Mom put her earrings in the wooden chest.',
+        category: 'Reading',
+    },
+    {
+        word: 'imagine',
+        pos: '(v.)',
+        def: 'to think of something that is not real',
+        ex: '1. Imagine that you\'re lying on the beach.<br>2. Try to imagine that you\'re alone on a desert island.',
+        category: 'Reading',
+    },
+    {
+        word: 'phase',
+        pos: '(n.)',
+        def: 'the different Moon shapes we see each month',
+        ex: '1. A first quarter moon is one of the Moon\'s phases.<br>2. Each month, you see the same moon phases.',
+        category: 'Science',
+    },
+    {
+        word: 'planet',
+        pos: '(n.)',
+        def: 'a very large body in space that moves around a star',
+        ex: '1. The planets close to the Sun are warmer.<br>2. There are eight planets that move around the Sun.',
+        category: 'Science',
+    },
+];

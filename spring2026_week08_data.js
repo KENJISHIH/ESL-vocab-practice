@@ -1,0 +1,73 @@
+// 2026-spring Week 8
+const spring2026Week8Data = [
+    {
+        word: 'rocking chair',
+        pos: '(n.)',
+        def: 'a chair that moves back and forth',
+        ex: '1. I like to sit on a rocking chair.<br>2. I sit on a big rocking chair beside my grandfather.',
+        category: 'Reading',
+    },
+    {
+        word: 'picnic',
+        pos: '(n.)',
+        def: 'eating yummy food outside on a blanket',
+        ex: '1. Let\'s go on a picnic this Saturday.<br>2. I have a picnic with my family at the beach.',
+        category: 'Reading',
+    },
+    {
+        word: 'underneath',
+        pos: '(prep.)',
+        def: 'under something',
+        ex: '1. The puppy is hiding underneath the table.<br>2. The girl stands underneath the umbrella.',
+        category: 'Reading',
+    },
+    {
+        word: 'everything',
+        pos: '(pron.)',
+        def: 'all your things',
+        ex: '1. Her son is everything to her.<br>2. Everything is ready for the party.',
+        category: 'Reading',
+    },
+    {
+        word: 'swat',
+        pos: '(v.)',
+        def: 'to hit something, especially an insect, with a flat object or your hand',
+        ex: '1. I swatted the fly with a rolled-up newspaper.<br>2. He swatted the ball too hard and missed it entirely.',
+        category: 'Reading',
+    },
+    {
+        word: 'pond',
+        pos: '(n.)',
+        def: 'a body of water smaller than a lake',
+        ex: '1. I throw some stones into the pond.<br>2. Some cows are drinking water from the pond.',
+        category: 'Reading',
+    },
+    {
+        word: 'around',
+        pos: '(adv. / prep.)',
+        def: 'surrounding a center ; to many places',
+        ex: '1. David will show you around the school.<br>2. Children dance around the tree.',
+        category: 'Reading',
+    },
+    {
+        word: 'canoe',
+        pos: '(n.)',
+        def: 'a boat you paddle',
+        ex: '1. There are many canoes on Sun Moon Lake.<br>2. My dad bought a canoe last Saturday.',
+        category: 'Reading',
+    },
+    {
+        word: 'rotate',
+        pos: '(v.)',
+        def: 'to turn on a fixed point',
+        ex: '1. Earth rotates every 24 hours.<br>2. Earth rotates to make night and day.',
+        category: 'Science',
+    },
+    {
+        word: 'shadow',
+        pos: '(n.)',
+        def: 'an area of darkness, caused by light being blocked by something',
+        ex: '1. The children were jumping on each other\'s shadows.<br>2. This corner of the room is always in the shadows.',
+        category: 'Science',
+    },
+];

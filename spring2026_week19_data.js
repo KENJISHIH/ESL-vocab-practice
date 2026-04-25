@@ -1,0 +1,73 @@
+// 2026-spring Week 19
+const spring2026Week19Data = [
+    {
+        word: 'ache',
+        pos: '(n.)',
+        def: 'a pain that lasts for a long time',
+        ex: '1. The boy has a terrible stomach ache.<br>2. My tooth aches. I need to go to the dentist.',
+        category: 'Reading',
+    },
+    {
+        word: 'continue',
+        pos: '(v.)',
+        def: 'to keep going',
+        ex: '1. Let\'s continue the story.<br>2. He continued working late into the night.',
+        category: 'Reading',
+    },
+    {
+        word: 'journey',
+        pos: '(n.)',
+        def: 'the act of traveling from one place to another',
+        ex: '1. We had a good journey last summer.<br>2. We will have to break the journey.',
+        category: 'Reading',
+    },
+    {
+        word: 'divide',
+        pos: '(v.)',
+        def: 'to split into parts or groups',
+        ex: '1. They want to divide the round cheese.<br>2. The teacher divides the class into three groups.',
+        category: 'Reading',
+    },
+    {
+        word: 'growl',
+        pos: '(v.)',
+        def: 'a low angry sound',
+        ex: '1. Two bears argued, and they growled, and they began to fight.<br>2. The dog growled at the girl on the street.',
+        category: 'Reading',
+    },
+    {
+        word: 'sly',
+        pos: '(adj.)',
+        def: 'deceiving people or doing things in secret',
+        ex: '1. He\'s a sly old man.<br>2. The sly cat follows the mouse.',
+        category: 'Reading',
+    },
+    {
+        word: 'equal',
+        pos: '(adj.)',
+        def: 'the same in amount, number or size',
+        ex: '1. They are equal in weight.<br>2. Divide it into two equal parts.',
+        category: 'Reading',
+    },
+    {
+        word: 'appetite',
+        pos: '(n.)',
+        def: 'wanting to eat',
+        ex: '1. Two greedy bears have good appetite.<br>2. The sad news took away his appetite.',
+        category: 'Reading',
+    },
+    {
+        word: 'magnet',
+        pos: '(n.)',
+        def: 'a thing that can pull, or attract, some objects with metal in them',
+        ex: '1. A magnet can attract metal paper clips.<br>2. Every magnet has two poles.',
+        category: 'Science',
+    },
+    {
+        word: 'repel',
+        pos: '(v.)',
+        def: 'to push away',
+        ex: '1. When the two same poles of magnets face each other, they repel.<br>2. The same poles on magnets will repel each other.',
+        category: 'Science',
+    },
+];

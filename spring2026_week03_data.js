@@ -1,0 +1,73 @@
+// 2026-spring Week 3
+const spring2026Week3Data = [
+    {
+        word: 'split',
+        pos: '(v.)',
+        def: 'to break into parts',
+        ex: '1. The man is splitting the logs in the back yard.<br>2. I split the cookie to share with my friend.',
+        category: 'Reading',
+    },
+    {
+        word: 'chew',
+        pos: '(v.)',
+        def: 'to break food down with your teeth',
+        ex: '1. That naughty dog is chewing my shoe.<br>2. Chew your food well before you swallow it.',
+        category: 'Reading',
+    },
+    {
+        word: 'always',
+        pos: '(adv.)',
+        def: 'at all times',
+        ex: '1. The Sun always rises in the east.<br>2. I always brush my teeth every morning.',
+        category: 'Reading',
+    },
+    {
+        word: 'bright',
+        pos: '(adj.)',
+        def: 'full of light or color',
+        ex: '1. The sun is bright today.<br>2. The box was painted bright red.',
+        category: 'Reading',
+    },
+    {
+        word: 'stripe',
+        pos: '(n.)',
+        def: 'a long, thin band of color',
+        ex: '1. There are lots of stripes on his shirt.<br>2. A zebra has black and white stripes.',
+        category: 'Reading',
+    },
+    {
+        word: 'skin',
+        pos: '(n.)',
+        def: 'the outside of your body',
+        ex: '1. The baby has very soft skin.<br>2. Becky peeled off a banana skin for the child.',
+        category: 'Reading',
+    },
+    {
+        word: 'danger',
+        pos: '(n.)',
+        def: 'something that can hurt you',
+        ex: '1. Mark will be in danger of losing his job if he is late for work again.<br>2. He drove so fast that I felt my life was in danger.',
+        category: 'Reading',
+    },
+    {
+        word: 'enemy',
+        pos: '(n.)',
+        def: 'someone who is not your friend (plural → enemies)',
+        ex: '1. Gary has made a few enemies at school.<br>2. A superhero fights enemies.',
+        category: 'Reading',
+    },
+    {
+        word: 'temperature',
+        pos: '(n.)',
+        def: 'how warm or cold something is',
+        ex: '1. The Sun warms the air, changing the temperature.<br>2. The temperature went down yesterday.',
+        category: 'Science',
+    },
+    {
+        word: 'measure',
+        pos: '(v.)',
+        def: 'to find the size, length, amount, degree. etc., in standard units',
+        ex: '1. Dad measured the height of the cupboard.<br>2. A rain gauge measures how much rain falls.',
+        category: 'Science',
+    },
+];

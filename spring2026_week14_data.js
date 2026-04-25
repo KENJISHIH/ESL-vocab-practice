@@ -1,0 +1,73 @@
+// 2026-spring Week 14
+const spring2026Week14Data = [
+    {
+        word: 'expect',
+        pos: '(v.)',
+        def: 'to think that something will happen',
+        ex: '1. I didn\'t expect to pass my final exams.<br>2. Linda expects to get a car on her birthday.',
+        category: 'Reading',
+    },
+    {
+        word: 'crack',
+        pos: '(v.)',
+        def: 'to break a little bit',
+        ex: '1. The plate cracked when I dropped it.<br>2. Victor carefully cracked a nut and then gave it to me.',
+        category: 'Reading',
+    },
+    {
+        word: 'close',
+        pos: '(adv.)',
+        def: 'near',
+        ex: '1. We live close to the church.<br>2. Don\'t go close to an angry dog!',
+        category: 'Reading',
+    },
+    {
+        word: 'edge',
+        pos: '(n.)',
+        def: 'the place where something ends',
+        ex: '1. Leo\'s eraser falls off the edge of his desk.<br>2. At night, the chick sleeps under the edge of the boy\'s quilt.',
+        category: 'Reading',
+    },
+    {
+        word: 'quilt',
+        pos: '(n.)',
+        def: 'a kind of thick blanket',
+        ex: '1. The quilt is not thick enough to protect him from the cold.<br>2. There\'s a quilt on the child\'s bed.',
+        category: 'Reading',
+    },
+    {
+        word: 'enough',
+        pos: '(adv.)',
+        def: 'as many or as much as somebody needs or wants',
+        ex: '1. I have enough money to buy this robot.<br>2. There are not enough chairs for everyone.',
+        category: 'Reading',
+    },
+    {
+        word: 'build',
+        pos: '(v.)',
+        def: 'to make something',
+        ex: '1. The first pig will build a house with straw.<br>2. We are going to build a shopping mall in this area.',
+        category: 'Reading',
+    },
+    {
+        word: 'nest',
+        pos: '(n.)',
+        def: 'a bird\'s home',
+        ex: '1. There is a nest in the tree.<br>2. I see some baby birds in the nest.',
+        category: 'Reading',
+    },
+    {
+        word: 'liquid',
+        pos: '(n.)',
+        def: 'a state of matter that flows and takes the shape of its container; it can only change shape',
+        ex: '1. Oil, milk and water are all liquids.<br>2. Liquids do not have a shape of their own.',
+        category: 'Science',
+    },
+    {
+        word: 'gas',
+        pos: '(n.)',
+        def: 'a state of matter that does not have its own shape; it can change shape and size',
+        ex: '1. Gas spreads evenly in a space.<br>2. A gas is a form of matter.',
+        category: 'Science',
+    },
+];

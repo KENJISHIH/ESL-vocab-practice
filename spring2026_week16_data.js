@@ -1,0 +1,73 @@
+// 2026-spring Week 16
+const spring2026Week16Data = [
+    {
+        word: 'pointed',
+        pos: '(adj.)',
+        def: 'sharp at one end',
+        ex: '1. Don\'t point at someone with pointed scissors.<br>2. Chickens have pointed beaks.',
+        category: 'Reading',
+    },
+    {
+        word: 'soft',
+        pos: '(adj.)',
+        def: 'not hard',
+        ex: '1. I like to sleep on the soft pillow.<br>2. These are soft teddy bears.',
+        category: 'Reading',
+    },
+    {
+        word: 'sharp',
+        pos: '(adj.)',
+        def: 'thin or pointed',
+        ex: '1. You must be very careful with this sharp knife.<br>2. Your pencil is not sharp enough.',
+        category: 'Reading',
+    },
+    {
+        word: 'beak',
+        pos: '(n.)',
+        def: 'the mouth of a bird',
+        ex: '1. Ducks\' beaks are soft and flat.<br>2. The chick has a worm in its beak.',
+        category: 'Reading',
+    },
+    {
+        word: 'waterproof',
+        pos: '(adj.)',
+        def: 'something that doesn\'t let water go through',
+        ex: '1. Cindy is wearing a waterproof jacket.<br>2. My camera is waterproof, so I can take pictures in the water.',
+        category: 'Reading',
+    },
+    {
+        word: 'duckling',
+        pos: '(n.)',
+        def: 'a baby duck',
+        ex: '1. The ducklings are following the mother duck.<br>2. The farmer is feeding the ducklings.',
+        category: 'Reading',
+    },
+    {
+        word: 'fluffy',
+        pos: '(adj.)',
+        def: 'light and soft',
+        ex: '1. Fluffy white clouds were floating across the sky.<br>2. I have a fluffy little kitten.',
+        category: 'Reading',
+    },
+    {
+        word: 'together',
+        pos: '(adv.)',
+        def: 'with other people or things',
+        ex: '1. The ducks and the hen go to the pond together.<br>2. The boys do everything together.',
+        category: 'Reading',
+    },
+    {
+        word: 'mixture',
+        pos: '(n.)',
+        def: 'a set of two or more different things mixed together',
+        ex: '1. A fruit salad is a mixture of different fruits.<br>2. Put the mixture into a baking pan.',
+        category: 'Science',
+    },
+    {
+        word: 'dissolve',
+        pos: '(v.)',
+        def: 'to completely mix into a liquid',
+        ex: '1. Mom dissolved some sugar in cold water.<br>2. Salt dissolves in hot water quickly.',
+        category: 'Science',
+    },
+];

@@ -1,0 +1,73 @@
+// 2026-spring Week 7
+const spring2026Week7Data = [
+    {
+        word: 'pass',
+        pos: '(v.)',
+        def: 'time to go by',
+        ex: '1. Many years passed. The girl grew into a woman.<br>2. The hours passed slowly and I waited for my snack.',
+        category: 'Reading',
+    },
+    {
+        word: 'everywhere',
+        pos: '(adv.)',
+        def: 'in every place or area',
+        ex: '1. There are toys everywhere in the room.<br>2. We need to clean because it’s messy everywhere.',
+        category: 'Reading',
+    },
+    {
+        word: 'swing',
+        pos: '(v.)',
+        def: 'to move backwards and forwards',
+        ex: '1. Kevin swings his arms as he walks.<br>2. A girl is swinging under a big tree.',
+        category: 'Reading',
+    },
+    {
+        word: 'work',
+        pos: '(v.)',
+        def: 'to do something which needs effort',
+        ex: '1. My aunt works at a hospital.<br>2. You have to work hard to finish your drawing.',
+        category: 'Reading',
+    },
+    {
+        word: 'start',
+        pos: '(v.)',
+        def: 'to begin',
+        ex: '1. Diana starts to work at 8:30 every morning.<br>2. I start to eat my breakfast at 7 o’clock.',
+        category: 'Reading',
+    },
+    {
+        word: 'bloom',
+        pos: '(v.)',
+        def: 'to produce flowers',
+        ex: '1. The trees bloomed with pink flowers.<br>2. All the flowers will bloom in the spring.',
+        category: 'Reading',
+    },
+    {
+        word: 'ripe',
+        pos: '(adj.)',
+        def: 'ready to be picked and eaten',
+        ex: '1. The banana is ripe and yellow.<br>2. We picked ripe apples from the tree.',
+        category: 'Reading',
+    },
+    {
+        word: 'stay',
+        pos: '(v.)',
+        def: 'to stop and remain rather than to leave',
+        ex: '1. I want to stay here and play.<br>2. We stayed home because it was raining.',
+        category: 'Reading',
+    },
+    {
+        word: 'star',
+        pos: '(n.)',
+        def: 'an object in the sky that makes its own light',
+        ex: '1. We can see many stars in the night sky.<br>2. The nearest star to Earth is the Sun.',
+        category: 'Science',
+    },
+    {
+        word: 'Sun',
+        pos: '(n.)',
+        def: 'the star closest to Earth',
+        ex: '1. The Sun gives light and heat to the Earth.<br>2. When I woke up, the Sun was shining on my face.',
+        category: 'Science',
+    },
+];

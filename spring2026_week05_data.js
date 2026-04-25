@@ -1,0 +1,73 @@
+// 2026-spring Week 5
+const spring2026Week5Data = [
+    {
+        word: 'young',
+        pos: '(adj.)',
+        def: 'not old',
+        ex: '1. Nancy is 17 years old. She’s very young.<br>2. The young man helped me carry the bag.',
+        category: 'Reading',
+    },
+    {
+        word: 'real',
+        pos: '(adj.)',
+        def: 'true',
+        ex: '1. Are these fruits real?<br>2. Mrs. Harbor’s ring is real diamond!',
+        category: 'Reading',
+    },
+    {
+        word: 'person',
+        pos: '(n.)',
+        def: 'a man, woman, or child (plural → people)',
+        ex: '1. There is a nice person at the park.<br>2. I’m a happy person when I play with my toys.',
+        category: 'Reading',
+    },
+    {
+        word: 'lots of',
+        pos: '(pronoun)',
+        def: 'a large amount or number',
+        ex: '1. Grace got lots of presents from her friends.<br>2. There is lots of water in the bottle.',
+        category: 'Reading',
+    },
+    {
+        word: 'fill',
+        pos: '(v.)',
+        def: 'to make full',
+        ex: '1. Karen filled the basket with apples.<br>2. Scott filled my glass with lemonade.',
+        category: 'Reading',
+    },
+    {
+        word: 'clothes',
+        pos: '(n.)',
+        def: 'things you wear to cover your body',
+        ex: '1. Take off the dirty clothes before you take a shower.<br>2. I wear warm clothes in winter.',
+        category: 'Reading',
+    },
+    {
+        word: 'kind',
+        pos: '(n.)',
+        def: 'a group of things that are the same in some way.',
+        ex: '1. Apples and bananas are a kind of fruit.<br>2. What kind of hat did he have?',
+        category: 'Reading',
+    },
+    {
+        word: 'carry',
+        pos: '(v.)',
+        def: 'to hold something in one’s arms',
+        ex: '1. I can’t carry the box because it’s too heavy.<br>2. I carry my backpack to school.',
+        category: 'Reading',
+    },
+    {
+        word: 'season',
+        pos: '(n.)',
+        def: 'a time of year; when the weather changes',
+        ex: '1. Spring, summer, fall and winter are the four seasons.<br>2. Winter is my favorite season of the year.',
+        category: 'Science',
+    },
+    {
+        word: 'summer',
+        pos: '(n.)',
+        def: 'the season after spring',
+        ex: '1. My brother goes swimming every summer.<br>2. Lemonade can cool you off in the hot summer.',
+        category: 'Science',
+    },
+];

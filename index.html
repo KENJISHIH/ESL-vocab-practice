@@ -221,15 +221,7 @@
     <div class="top-bar">
         <div class="week-selector-container">
             <select id="week-selector" onchange="changeWeek()">
-                <option value="12">Week 12</option>    
-                <option value="13">Week 13</option>
-                <option value="14">Week 14</option>
-                <option value="15">Week 15</option>
-                <option value="16">Week 16</option>
-                <option value="17">Week 17</option>
-                <option value="18">Week 18</option>
-                <option value="19">Week 19</option>
-                <option value="all">🔥 ALL (W12-W19)</option>
+                <!-- 由 buildWeekSelector() 依 vocab_manifest.js 自動產生 -->
             </select>
         </div>
         <div class="coin-display" id="coin-display" onclick="devMode()" style="cursor: pointer;"></div>
@@ -340,8 +332,8 @@
         </div>
     </div>
 
-    <!-- 載入資料庫 -->
-    <script src="week12_data.js"></script> 
+    <!-- 載入單字資料庫 (2025 Fall) -->
+    <script src="week12_data.js"></script>
     <script src="week13_data.js"></script>
     <script src="week14_data.js"></script>
     <script src="week15_data.js"></script>
@@ -349,7 +341,27 @@
     <script src="week17_data.js"></script>
     <script src="week18_data.js"></script>
     <script src="week19_data.js"></script>
-    <!-- 載入商店資料庫 -->
+    <!-- 載入單字資料庫 (2026 Spring) -->
+    <script src="spring2026_week01_data.js"></script>
+    <script src="spring2026_week02_data.js"></script>
+    <script src="spring2026_week03_data.js"></script>
+    <script src="spring2026_week04_data.js"></script>
+    <script src="spring2026_week05_data.js"></script>
+    <script src="spring2026_week06_data.js"></script>
+    <script src="spring2026_week07_data.js"></script>
+    <script src="spring2026_week08_data.js"></script>
+    <script src="spring2026_week09_data.js"></script>
+    <script src="spring2026_week12_data.js"></script>
+    <script src="spring2026_week13_data.js"></script>
+    <script src="spring2026_week14_data.js"></script>
+    <script src="spring2026_week15_data.js"></script>
+    <script src="spring2026_week16_data.js"></script>
+    <script src="spring2026_week17_data.js"></script>
+    <script src="spring2026_week19_data.js"></script>
+    <script src="spring2026_week20_data.js"></script>
+    <script src="spring2026_week21_data.js"></script>
+    <!-- 載入週次清單 (manifest) 與商店資料庫 -->
+    <script src="vocab_manifest.js"></script>
     <script src="shop_data.js"></script>
 
     <script>
@@ -526,45 +538,63 @@
 
         // --- 3. 頁面邏輯 (舊功能整合) ---
         
+        // 依 vocab_manifest.js 自動建立週數下拉選單
+        function buildWeekSelector() {
+            const selector = document.getElementById('week-selector');
+            if (!selector || typeof VOCAB_MANIFEST === 'undefined') return;
+            selector.innerHTML = '';
+
+            const semesters = getSemesters();
+            // 預設選最新一個 semester 的最新一週
+            let defaultValue = null;
+
+            semesters.forEach(s => {
+                const group = document.createElement('optgroup');
+                group.label = s.label;
+
+                const weeks = VOCAB_MANIFEST.filter(e => e.semester === s.semester);
+                weeks.forEach(e => {
+                    const opt = document.createElement('option');
+                    opt.value = `${e.semester}:${e.week}`;
+                    opt.textContent = `Week ${e.week}`;
+                    group.appendChild(opt);
+                });
+
+                // 該 semester 的 ALL 選項
+                const allOpt = document.createElement('option');
+                allOpt.value = `all:${s.semester}`;
+                const minW = Math.min(...weeks.map(w => w.week));
+                const maxW = Math.max(...weeks.map(w => w.week));
+                allOpt.textContent = `🔥 ALL (W${minW}-W${maxW})`;
+                group.appendChild(allOpt);
+
+                selector.appendChild(group);
+
+                // 最後一個 semester 的最後一週為預設
+                if (weeks.length > 0) {
+                    defaultValue = `${s.semester}:${weeks[weeks.length - 1].week}`;
+                }
+            });
+
+            if (defaultValue) selector.value = defaultValue;
+        }
+
         function changeWeek() {
             const selector = document.getElementById('week-selector');
-            const selectedWeek = selector.value;
-            
-            // --- 單週模式 ---
-            if (selectedWeek === '12' && typeof week12Data !== 'undefined') vocabData = week12Data;
-            else if (selectedWeek === '13' && typeof week13Data !== 'undefined') vocabData = week13Data;
-            else if (selectedWeek === '14' && typeof week14Data !== 'undefined') vocabData = week14Data;
-            else if (selectedWeek === '15' && typeof week15Data !== 'undefined') vocabData = week15Data;
-            else if (selectedWeek === '16' && typeof week16Data !== 'undefined') vocabData = week16Data;
-            else if (selectedWeek === '17' && typeof week17Data !== 'undefined') vocabData = week17Data;
-            else if (selectedWeek === '18' && typeof week18Data !== 'undefined') vocabData = week18Data;
-            else if (selectedWeek === '19' && typeof week19Data !== 'undefined') vocabData = week19Data;
-            
-            // --- 🔥 總複習模式 (ALL) ---
-            else if (selectedWeek === 'all') {
-                // 1. 合併所有資料 (使用 concat)
-                // 確保所有 weekXXData 都已經載入，不然會報錯
-                let allWords = [];
-                if(typeof week12Data !== 'undefined') allWords = allWords.concat(week12Data);
-                if(typeof week13Data !== 'undefined') allWords = allWords.concat(week13Data);
-                if(typeof week14Data !== 'undefined') allWords = allWords.concat(week14Data);
-                if(typeof week15Data !== 'undefined') allWords = allWords.concat(week15Data);
-                if(typeof week16Data !== 'undefined') allWords = allWords.concat(week16Data);
-                if(typeof week17Data !== 'undefined') allWords = allWords.concat(week17Data);
-                if(typeof week18Data !== 'undefined') allWords = allWords.concat(week18Data);
-                if(typeof week19Data !== 'undefined') allWords = allWords.concat(week19Data);
+            const selection = resolveSelection(selector.value);
 
-                // 2. 隨機打亂 (Shuffle)
-                // 這樣每次選 ALL 的時候，順序都不一樣
-                vocabData = allWords.sort(() => Math.random() - 0.5);
-            }
-            
-            else { 
-                alert("Data missing for this week! Please check if JS files are loaded."); 
-                return; 
+            if (!selection) {
+                alert("Data missing for this week! Please check if JS files are loaded.");
+                return;
             }
 
-            // 重置卡片索引
+            if (selection.kind === 'all') {
+                // ALL 模式：洗牌
+                vocabData = selection.words.slice().sort(() => Math.random() - 0.5);
+            } else {
+                vocabData = selection.words;
+            }
+
             currentCardIndex = 0;
             refreshActiveSection();
         }
@@ -784,8 +814,9 @@
         // --- Init ---
 
         window.onload = function() {
-            loadProfile(); 
-            changeWeek(); 
+            buildWeekSelector();
+            loadProfile();
+            changeWeek();
         }
 
     </script>

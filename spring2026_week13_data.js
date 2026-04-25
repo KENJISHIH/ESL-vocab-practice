@@ -1,0 +1,73 @@
+// 2026-spring Week 13
+const spring2026Week13Data = [
+    {
+        word: 'unpack',
+        pos: '(v.)',
+        def: 'to take out something from a bag or box',
+        ex: '1. We unpacked our suitcases.<br>2. I can\'t wait for my father to unpack his bag.',
+        category: 'Reading',
+    },
+    {
+        word: 'bring',
+        pos: '(v.)',
+        def: 'to take someone or something with you',
+        ex: '1. Don\'t forget to bring your lunch bag.<br>2. I bring my homework home.',
+        category: 'Reading',
+    },
+    {
+        word: 'page',
+        pos: '(n.)',
+        def: 'a piece of paper in a book',
+        ex: '1. Please open your book and turn to the first page.<br>2. There is a picture on the next page.',
+        category: 'Reading',
+    },
+    {
+        word: 'birthday',
+        pos: '(n.)',
+        def: 'the date you were born',
+        ex: '1. I bought a toy for Sam\'s birthday.<br>2. When is your birthday?',
+        category: 'Reading',
+    },
+    {
+        word: 'myself',
+        pos: '(pronoun)',
+        def: 'strong form of I',
+        ex: '1. I made the dinner all by myself.<br>2. I\'m afraid I can\'t help you; I\'m a stranger here myself.',
+        category: 'Reading',
+    },
+    {
+        word: 'meet',
+        pos: '(v.)',
+        def: 'to see someone',
+        ex: '1. It\'s my pleasure to meet you today.<br>2. I\'ll come and meet you at the bus station.',
+        category: 'Reading',
+    },
+    {
+        word: 'repaid',
+        pos: '(v.)',
+        def: 'to give back for help or kindness (present tense → repay)',
+        ex: '1. Mom repaid me with a toy for cleaning the house.<br>2. My teacher repaid Kyle with cookies for helping.',
+        category: 'Reading',
+    },
+    {
+        word: 'still',
+        pos: '(adj. / adv.)',
+        def: 'happening now',
+        ex: '1. Makoto still had lots of boxes to unpack.<br>2. Mrs. Lee is 70 years old, and she\'s still very healthy.',
+        category: 'Reading',
+    },
+    {
+        word: 'solid',
+        pos: '(n.)',
+        def: 'a state of matter that has a shape of its own',
+        ex: '1. A block is a solid.<br>2. The amount of matter in a solid always stays the same.',
+        category: 'Science',
+    },
+    {
+        word: 'bend',
+        pos: '(v.)',
+        def: 'to make something not straight',
+        ex: '1. Tom bends over to pick up a coin on the floor.<br>2. It\'s hard to bend an iron stick.',
+        category: 'Science',
+    },
+];

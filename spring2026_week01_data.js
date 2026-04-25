@@ -1,0 +1,73 @@
+// 2026-spring Week 1
+const spring2026Week1Data = [
+    {
+        word: 'also',
+        pos: '(adv.)',
+        def: 'too',
+        ex: '1. Fred is nine years old. Mike is also nine years old.<br>2. I have math class. I also have music class today.',
+        category: 'Reading',
+    },
+    {
+        word: 'about',
+        pos: '(prep)',
+        def: 'on the subject of',
+        ex: '1. The students learn about animals in science class.<br>2. My mother often tells me about her best friend.',
+        category: 'Reading',
+    },
+    {
+        word: 'squirrel',
+        pos: '(n.)',
+        def: 'a small animal that climbs trees and eats nuts',
+        ex: '1. Nuts are squirrels\' favorite food.<br>2. There is a squirrel in the tree.',
+        category: 'Reading',
+    },
+    {
+        word: 'tell',
+        pos: '(v.)',
+        def: 'to say something to someone',
+        ex: '1. Tell me all about your new job.<br>2. My teacher tells us a lot of stories.',
+        category: 'Reading',
+    },
+    {
+        word: 'pinecone',
+        pos: '(n.)',
+        def: 'a part of a tree with seeds inside',
+        ex: '1. I see a pinecone on the ground.<br>2. My parents put pinecones on the Christmas tree.',
+        category: 'Reading',
+    },
+    {
+        word: 'acorn',
+        pos: '(n.)',
+        def: 'a small nut from an oak tree',
+        ex: '1. There are many acorns on the oak tree.<br>2. A squirrel eats acorns.',
+        category: 'Reading',
+    },
+    {
+        word: 'hang',
+        pos: '(v.)',
+        def: 'to put something up',
+        ex: '1. My dad hangs his coat on the hook.<br>2. Please help me hang this clock on the wall.',
+        category: 'Reading',
+    },
+    {
+        word: 'thick',
+        pos: '(adj.)',
+        def: 'not thin',
+        ex: '1. My jacket is thick and warm.<br>2. The wall is very thick. We can\'t break it.',
+        category: 'Reading',
+    },
+    {
+        word: 'pollution',
+        pos: '(n.)',
+        def: 'dirty things in the air, land, or water',
+        ex: '1. Water pollution can harm animals.<br>2. When our air and water get dirty, it is called pollution.',
+        category: 'Science',
+    },
+    {
+        word: 'trash',
+        pos: '(n.)',
+        def: 'things that you do not want anymore',
+        ex: '1. Please throw your trash in the trash can.<br>2. Tim picks up the trash on the floor.',
+        category: 'Science',
+    },
+];

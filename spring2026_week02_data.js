@@ -1,0 +1,73 @@
+// 2026-spring Week 2
+const spring2026Week2Data = [
+    {
+        word: 'wood',
+        pos: '(n.)',
+        def: 'the hard part of a tree',
+        ex: '1. He gathered some wood to build a fire.<br>2. The chair is made of wood.',
+        category: 'Reading',
+    },
+    {
+        word: 'spark',
+        pos: '(n.)',
+        def: 'a small piece of fire',
+        ex: '1. A spark from a match started the fire.<br>2. One spark can start a forest fire.',
+        category: 'Reading',
+    },
+    {
+        word: 'interesting',
+        pos: '(adj.)',
+        def: 'something that you like to do',
+        ex: '1. That game is interesting. Let\'s play it again.<br>2. I am reading an interesting story now.',
+        category: 'Reading',
+    },
+    {
+        word: 'different',
+        pos: '(adj.)',
+        def: 'not the same',
+        ex: '1. Their three children all go to different schools.<br>2. These shoes are different colors.',
+        category: 'Reading',
+    },
+    {
+        word: 'label',
+        pos: '(v.)',
+        def: 'to put a name on something',
+        ex: '1. Please label every bottle.<br>2. We label the box before we mail it.',
+        category: 'Reading',
+    },
+    {
+        word: 'because',
+        pos: '(conj.)',
+        def: 'why something happens',
+        ex: '1. Don\'t run in the hallway because it\'s dangerous.<br>2. The weather is bad because a typhoon is coming.',
+        category: 'Reading',
+    },
+    {
+        word: 'proud',
+        pos: '(adj.)',
+        def: 'feeling happy about doing something good',
+        ex: '1. Garry is proud of his brother.<br>2. I\'m proud of my drawing.',
+        category: 'Reading',
+    },
+    {
+        word: 'straight',
+        pos: '(adj.)',
+        def: 'not bent or curved',
+        ex: '1. Sally has straight blonde hair.<br>2. The road is straight.',
+        category: 'Reading',
+    },
+    {
+        word: 'reuse',
+        pos: '(v.)',
+        def: 'to use something again',
+        ex: '1. We can reuse the paper in the box.<br>2. It is important to reuse natural resources.',
+        category: 'Science',
+    },
+    {
+        word: 'reduce',
+        pos: '(v.)',
+        def: 'to use less of something; to make something smaller',
+        ex: '1. Mr. Smith reduced his weight by exercising.<br>2. You can reduce the electricity bill by turning off a light when you leave a room.',
+        category: 'Science',
+    },
+];

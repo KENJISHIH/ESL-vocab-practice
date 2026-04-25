@@ -1,0 +1,5 @@
+# OCR 暫存與輸出（不需進 repo）
+tools/ocr_output/
+tools/manifest_snippet.txt
+tools/__pycache__/
+.DS_Store

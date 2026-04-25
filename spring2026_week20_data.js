@@ -1,0 +1,73 @@
+// 2026-spring Week 20
+const spring2026Week20Data = [
+    {
+        word: 'jar',
+        pos: '(n.)',
+        def: 'a glass container with a lid',
+        ex: '1. There is a jar of honey on the table.<br>2. My mom opened up a jar of strawberry jam.',
+        category: 'Reading',
+    },
+    {
+        word: 'caught',
+        pos: '(v.)',
+        def: 'past simple of catch—to take or hold something',
+        ex: '1. I caught the glass before it hit the ground.<br>2. The eagle caught a rabbit.',
+        category: 'Reading',
+    },
+    {
+        word: 'firefly',
+        pos: '(n.)',
+        def: 'a tiny insect that can make light',
+        ex: '1. There are a lot of fireflies at night.<br>2. My grandpa caught some fireflies for me.',
+        category: 'Reading',
+    },
+    {
+        word: 'glow',
+        pos: '(v.)',
+        def: 'to shine with light',
+        ex: '1. The full moon glows in the sky.<br>2. Scientists have found a jellyfish that glows in the dark.',
+        category: 'Reading',
+    },
+    {
+        word: 'appear',
+        pos: '(v.)',
+        def: 'to start to be seen',
+        ex: '1. The Sun appeared from behind the clouds.<br>2. A rabbit appeared from the magician\'s hat.',
+        category: 'Reading',
+    },
+    {
+        word: 'lawn',
+        pos: '(n.)',
+        def: 'an area of grass that is cut to keep it short',
+        ex: '1. My dad mows the lawn every Saturday.<br>2. The children are flying kites on the lawn.',
+        category: 'Reading',
+    },
+    {
+        word: 'whisper',
+        pos: '(v.)',
+        def: 'to talk very quietly',
+        ex: '1. The boy whispered something in his mom\'s ear.<br>2. What are you two boys whispering about?',
+        category: 'Reading',
+    },
+    {
+        word: 'promise',
+        pos: '(v.)',
+        def: 'to say you will do something',
+        ex: '1. I promised my teacher that I will work harder.<br>2. Her dad promised her a new car if she got 100 on the quiz.',
+        category: 'Reading',
+    },
+    {
+        word: 'energy',
+        pos: '(n.)',
+        def: 'power to make things work and change',
+        ex: '1. We use different forms of energy every day.<br>2. Light is one form of energy.',
+        category: 'Science',
+    },
+    {
+        word: 'heat',
+        pos: '(n.)',
+        def: 'one kind of energy that makes things warm',
+        ex: '1. We can get heat from burning things like wood, oil, or gas.<br>2. Most of the heat energy on Earth comes from the Sun.',
+        category: 'Science',
+    },
+];

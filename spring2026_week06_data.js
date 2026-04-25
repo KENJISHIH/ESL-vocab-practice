@@ -1,0 +1,73 @@
+// 2026-spring Week 6
+const spring2026Week6Data = [
+    {
+        word: 'himself',
+        pos: '(pronoun)',
+        def: 'used for a particular man, boy, or male animal',
+        ex: '1. Tom was going to buy a bookcase, but in the end he made one himself.<br>2. Little Timmy made that snowman all by himself.',
+        category: 'Reading',
+    },
+    {
+        word: 'dirt',
+        pos: '(n.)',
+        def: 'soil',
+        ex: '1. The dog likes to dig in the dirt.<br>2. Johnny puts dirt over the seed.',
+        category: 'Reading',
+    },
+    {
+        word: 'again',
+        pos: '(adv.)',
+        def: 'one more time',
+        ex: '1. My brother jumps again and again.<br>2. I cannot hear you. Can you say it again?',
+        category: 'Reading',
+    },
+    {
+        word: 'someday',
+        pos: '(adv.)',
+        def: 'at a time in the future',
+        ex: '1. Perhaps I\'ll be rich someday.<br>2. Someday mom will get old and I\'ll take care of her.',
+        category: 'Reading',
+    },
+    {
+        word: 'sand',
+        pos: '(n.)',
+        def: 'small grains of rock',
+        ex: '1. The kids made a castle with sand at the beach.<br>2. The white sand was almost as blinding as snow.',
+        category: 'Reading',
+    },
+    {
+        word: 'alone',
+        pos: '(adj.)',
+        def: 'without anyone else',
+        ex: '1. He is alone, but he is okay.<br>2. I don\'t like to be alone at home.',
+        category: 'Reading',
+    },
+    {
+        word: 'spring',
+        pos: '(n.)',
+        def: 'the season before summer',
+        ex: '1. We see baby animals in spring.<br>2. I love spring because the trees and flowers are pretty.',
+        category: 'Reading',
+    },
+    {
+        word: 'wink',
+        pos: '(v.)',
+        def: 'to close and open one eye quickly',
+        ex: '1. The stars in the sky are winking like eyes.<br>2. My teacher winked at me and said good job.',
+        category: 'Reading',
+    },
+    {
+        word: 'fall',
+        pos: '(n.)',
+        def: 'the season after summer',
+        ex: '1. We will visit our grandparents in the fall.<br>2. The weather gets colder in fall.',
+        category: 'Science',
+    },
+    {
+        word: 'winter',
+        pos: '(n.)',
+        def: 'the season after fall',
+        ex: '1. There is not much food for animals to eat in winter.<br>2. I need a thick coat in winter because it\'s very cold.',
+        category: 'Science',
+    },
+];

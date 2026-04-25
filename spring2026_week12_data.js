@@ -1,0 +1,73 @@
+// 2026-spring Week 12
+const spring2026Week12Data = [
+    {
+        word: 'brush',
+        pos: '(n.)',
+        def: 'a tool to paint with or make hair neat',
+        ex: '1. I paint the house with a brush.<br>2. When she gets up, she gives her hair a quick brush.',
+        category: 'Reading',
+    },
+    {
+        word: 'crate',
+        pos: '(n.)',
+        def: 'a box made of wood, plastic, or metal',
+        ex: '1. We moved the big milk crate into the car.<br>2. Lisa puts bottles in the crate.',
+        category: 'Reading',
+    },
+    {
+        word: 'live',
+        pos: '(v.)',
+        def: 'to stay in a home',
+        ex: '1. She lives about ten miles from my house.<br>2. A new family will soon live here.',
+        category: 'Reading',
+    },
+    {
+        word: 'pretty',
+        pos: '(adj.)',
+        def: 'nice to look at',
+        ex: '1. The house looks pretty and new.<br>2. My mother wants to buy that pretty dress.',
+        category: 'Reading',
+    },
+    {
+        word: 'unload',
+        pos: '(v.)',
+        def: 'to take out or to take off something',
+        ex: '1. The crew unloaded the boxes from the truck.<br>2. Tina unloaded her bags from the car.',
+        category: 'Reading',
+    },
+    {
+        word: 'while',
+        pos: '(conj.)',
+        def: 'at the same time',
+        ex: '1. While she read the book, I cleaned up the kitchen.<br>2. The phone rang while we were having dinner.',
+        category: 'Reading',
+    },
+    {
+        word: 'buy',
+        pos: '(v.)',
+        def: 'to pay money for something',
+        ex: '1. Peter will buy a house at the end of the year.<br>2. I don\'t have enough money to buy that toy.',
+        category: 'Reading',
+    },
+    {
+        word: 'end',
+        pos: '(n.)',
+        def: 'the last part',
+        ex: '1. Do you know the end of the story?<br>2. I started to work at the end of October.',
+        category: 'Reading',
+    },
+    {
+        word: 'property',
+        pos: '(n.)',
+        def: 'how something looks, feels, smells, tastes, or sounds',
+        ex: '1. Colors, sizes and shapes are properties.<br>2. Every kind of matter has its own properties.',
+        category: 'Science',
+    },
+    {
+        word: 'matter',
+        pos: '(n.)',
+        def: 'what all things are made of',
+        ex: '1. Solids, liquids, and gases are three forms of matter.<br>2. The water, raft, girl and boy are all made of matter.',
+        category: 'Science',
+    },
+];
