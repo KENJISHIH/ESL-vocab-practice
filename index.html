@@ -598,6 +598,18 @@
                     group.appendChild(opt);
                 });
 
+                // 該 semester 的考試範圍快選（如期中考 W1-W9）
+                if (typeof EXAM_RANGES !== 'undefined') {
+                    EXAM_RANGES
+                        .filter(r => r.semester === s.semester)
+                        .forEach(r => {
+                            const rangeOpt = document.createElement('option');
+                            rangeOpt.value = `range:${r.semester}:${r.id}`;
+                            rangeOpt.textContent = r.label;
+                            group.appendChild(rangeOpt);
+                        });
+                }
+
                 // 該 semester 的 ALL 選項
                 const allOpt = document.createElement('option');
                 allOpt.value = `all:${s.semester}`;
@@ -626,8 +638,8 @@
                 return;
             }
 
-            if (selection.kind === 'all') {
-                // ALL 模式：洗牌一次當原始資料快照
+            if (selection.kind === 'all' || selection.kind === 'range') {
+                // ALL 與考試範圍：跨週合併後洗牌一次當原始資料快照
                 rawWordsForWeek = selection.words.slice().sort(() => Math.random() - 0.5);
             } else {
                 rawWordsForWeek = selection.words;

@@ -35,6 +35,12 @@ const VOCAB_MANIFEST = [
     { semester: '2026-spring', semesterLabel: '2026 Spring', week: 21, dataVar: 'spring2026Week21Data', scriptSrc: 'spring2026_week21_data.js' },
 ];
 
+// 考試範圍登記：將某個 semester 的若干週合併成一個快選選項
+// 新增考試範圍只要在這裡加一行；buildWeekSelector 會自動長出選項
+const EXAM_RANGES = [
+    { semester: '2026-spring', id: 'midterm', label: '📝 期中考範圍 (W1-W9)', weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9] },
+];
+
 // 顯式 registry：頂層 const 不會自動掛上 window，要列名稱抓進來
 const VOCAB_DATA = {
     // 2025 Fall
@@ -62,7 +68,10 @@ function getSemesters() {
     return out;
 }
 
-// 依 select 的 value（如 "2026-spring:5" 或 "all:2026-spring"）查資料
+// 依 select 的 value 查資料：
+//   "2026-spring:5"        → 單一週
+//   "all:2026-spring"      → 該 semester 全部週
+//   "range:2026-spring:midterm" → 該 semester 預定義的考試範圍
 function resolveSelection(value) {
     if (value.startsWith('all:')) {
         const sem = value.slice(4);
@@ -73,6 +82,19 @@ function resolveSelection(value) {
             if (Array.isArray(arr)) words = words.concat(arr);
         });
         return { kind: 'all', semester: sem, words };
+    }
+    if (value.startsWith('range:')) {
+        const [, sem, rangeId] = value.split(':');
+        const range = EXAM_RANGES.find(r => r.semester === sem && r.id === rangeId);
+        if (!range) return null;
+        let words = [];
+        range.weeks.forEach(w => {
+            const entry = VOCAB_MANIFEST.find(e => e.semester === sem && e.week === w);
+            if (!entry) return;
+            const arr = VOCAB_DATA[entry.dataVar];
+            if (Array.isArray(arr)) words = words.concat(arr);
+        });
+        return { kind: 'range', semester: sem, rangeId, label: range.label, words };
     }
     const [sem, weekStr] = value.split(':');
     const entry = VOCAB_MANIFEST.find(e => e.semester === sem && e.week === Number(weekStr));
