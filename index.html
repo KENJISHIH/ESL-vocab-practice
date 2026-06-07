@@ -840,11 +840,6 @@
             const buttons = document.querySelectorAll('#spelling-options .option-btn');
             buttons.forEach(b => b.disabled = true);
 
-            window.speechSynthesis.cancel();
-            let speechMsg = new SpeechSynthesisUtterance();
-            speechMsg.lang = 'en-US';
-            speechMsg.text = fullWord;
-
             if (isCorrect) {
                 btn.classList.add('correct');
                 feedback.innerText = `Correct! +10 Coins 💰`;
@@ -856,7 +851,7 @@
                 feedback.innerText = `The word was "${fullWord}".`;
                 feedback.style.color = "red";
             }
-            window.speechSynthesis.speak(speechMsg);
+            speak(fullWord);
         }
 
         function showSection(id, navEl) {
@@ -872,11 +867,25 @@
             if(id === 'spelling') generateSpellingQuiz();
         }
 
+        // 預錄音檔（一查究竟 Achernar 音色）優先，沒有的字 fallback 瀏覽器 TTS
+        let currentAudio = null;
         function speak(text) {
             window.speechSynthesis.cancel();
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            window.speechSynthesis.speak(utterance);
+            if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+
+            let fellBack = false;
+            const fallback = () => {
+                if (fellBack) return;
+                fellBack = true;
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                window.speechSynthesis.speak(utterance);
+            };
+
+            const audio = new Audio(`audio/${text.trim().toLowerCase()}.m4a`);
+            audio.onerror = fallback;
+            currentAudio = audio;
+            audio.play().catch(fallback);
         }
 
 // --- 開發者模式 (測試用) ---
