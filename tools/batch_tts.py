@@ -34,7 +34,7 @@ import hashlib
 MODEL = "gemini-2.5-flash-preview-tts"
 VOICE = "Achernar"
 ENDPOINT = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent"
-PACE_SEC = 3  # 請求間隔，保守避開 RPM 限流
+PACE_SEC = 8  # 請求間隔；preview TTS 模型 RPM 很低，3 秒實測會被 429 轟炸
 
 
 def api_key() -> str:
@@ -77,22 +77,22 @@ def synthesize(word: str, key: str) -> bytes:
         ENDPOINT, data=body,
         headers={"Content-Type": "application/json", "x-goog-api-key": key},
     )
-    for attempt in range(4):
+    for attempt in range(5):
         try:
             with urllib.request.urlopen(req, timeout=60, context=SSL_CTX) as resp:
                 payload = json.load(resp)
             b64 = payload["candidates"][0]["content"]["parts"][0]["inlineData"]["data"]
             return base64.b64decode(b64)
         except (KeyError, IndexError):
-            if attempt < 3:
+            if attempt < 4:
                 time.sleep(3)  # preview 模型間歇回空回應（無 content），重試
                 continue
             raise RuntimeError("重試後回應仍無音訊")
         except urllib.error.HTTPError as e:
-            if e.code == 429 and attempt < 3:
-                time.sleep(20 * (attempt + 1))  # 限流退避
+            if e.code == 429 and attempt < 4:
+                time.sleep(30 * (attempt + 1))  # 限流退避（30/60/90/120s）
                 continue
-            if e.code == 500 and attempt < 3:
+            if e.code == 500 and attempt < 4:
                 time.sleep(3)  # Google 端暫時性錯誤（同 app 的重試邏輯）
                 continue
             raise
