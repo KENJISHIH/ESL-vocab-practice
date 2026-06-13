@@ -91,10 +91,41 @@
         }
 
         /* 圖層堆疊順序 (Z-Index) - 關鍵！ */
-        .layer-base  { z-index: 1; }   /* 身體最下面 */
-        .layer-shirt { z-index: 2; }   /* 衣服在中間 */
-        .layer-hair  { z-index: 3; }   /* 頭髮蓋在衣服上 (長髮設定) */
-        .layer-hat   { z-index: 4; }   /* 帽子最上面 */
+        .layer-bg     { z-index: 0; }  /* 背景場景最底 */
+        .layer-pet    { z-index: 1; }  /* 寵物在背景之上、人物之前/之下都行 */
+        .layer-base   { z-index: 2; }  /* 身體 */
+        .layer-bottom { z-index: 3; }  /* 褲子/裙子蓋在素體腿上 */
+        .layer-shirt  { z-index: 4; }  /* 衣服在腰上方 */
+        .layer-shoes  { z-index: 5; }  /* 鞋子蓋在腳上 */
+        .layer-hair   { z-index: 6; }  /* 頭髮蓋在衣服上 (長髮) */
+        .layer-hat    { z-index: 7; }  /* 帽子蓋在頭髮上 */
+        .layer-acc    { z-index: 8; }  /* 配件 (眼鏡/光環/翅膀) 最上層 */
+
+        /* DREAM 高價區徽章 */
+        .badge-new {
+            display: inline-block;
+            background: #ff5252;
+            color: white;
+            font-size: 0.65em;
+            padding: 1px 6px;
+            border-radius: 8px;
+            margin-left: 4px;
+            font-weight: bold;
+        }
+        .badge-dream {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd54f, #ff80ab);
+            color: white;
+            font-size: 0.65em;
+            padding: 1px 6px;
+            border-radius: 8px;
+            margin-left: 4px;
+            font-weight: bold;
+        }
+        .shop-item.dream {
+            background: linear-gradient(135deg, #fff9e6 0%, #ffe0f0 100%);
+            border-color: #ffd54f;
+        }
         
         /* --- 週數選擇 --- */
         .week-selector-container { margin-bottom: 15px; }
@@ -266,19 +297,14 @@
         <button class="cat-btn" data-cat="Science" onclick="setCategoryFilter('Science', this)">🔬 Science</button>
     </div>
 
-    <!-- 角色展示區 (更新為圖片疊加模式) -->
+    <!-- 角色展示區 (圖層：背景 → 寵物 → 整套 outfit (含人物) → 鞋 → 帽 → 配件) -->
     <div class="avatar-container" onclick="showSection('shop')">
-        <!-- 1. 素體 (最下層) -->
-        <img id="img-base" class="avatar-layer layer-base" src="" onerror="this.style.display='none'">
-        
-        <!-- 2. 衣服 (中間層) -->
-        <img id="img-shirt" class="avatar-layer layer-shirt" src="" onerror="this.style.display='none'">
-        
-        <!-- 3. 頭髮 (長髮蓋在衣服上) -->
-        <img id="img-hair" class="avatar-layer layer-hair" src="" onerror="this.style.display='none'">
-
-        <!-- 4. 帽子 (最上層) -->
-        <img id="img-hat" class="avatar-layer layer-hat" src="" onerror="this.style.display='none'">
+        <img id="img-bg"     class="avatar-layer layer-bg"     src="" onerror="this.style.display='none'">
+        <img id="img-pet"    class="avatar-layer layer-pet"    src="" onerror="this.style.display='none'">
+        <img id="img-base"   class="avatar-layer layer-base"   src="" onerror="this.style.display='none'">
+        <img id="img-shoes"  class="avatar-layer layer-shoes"  src="" onerror="this.style.display='none'">
+        <img id="img-hat"    class="avatar-layer layer-hat"    src="" onerror="this.style.display='none'">
+        <img id="img-acc"    class="avatar-layer layer-acc"    src="" onerror="this.style.display='none'">
     </div>
 
     <!-- 1. Home / List View -->
@@ -334,14 +360,28 @@
 
     <!-- 5. Shop -->
     <div id="section-shop" class="section">
-        <h2 style="text-align:center; color:var(--text-color)">👗 Clothing Shop</h2>
-        <p style="text-align:center; font-size:0.9em; color:#888">Customize your character!</p>
-        
-        <h3 style="margin-left:10px;">Shirts</h3>
-        <div class="shop-grid" id="shop-shirts"></div>
-        
-        <h3 style="margin-left:10px; margin-top:20px;">Hats</h3>
+        <h2 style="text-align:center; color:var(--text-color)">✨ Avatar Shop</h2>
+        <p style="text-align:center; font-size:0.9em; color:#888">Dress up your character!</p>
+
+        <h3 style="margin-left:10px;">👗 Outfits</h3>
+        <div class="shop-grid" id="shop-outfits"></div>
+
+        <h3 style="margin-left:10px; margin-top:20px;">👟 Shoes</h3>
+        <div class="shop-grid" id="shop-shoes"></div>
+
+        <h3 style="margin-left:10px; margin-top:20px;">🎩 Hats</h3>
         <div class="shop-grid" id="shop-hats"></div>
+
+        <h3 style="margin-left:10px; margin-top:20px;">🕶️ Accessories</h3>
+        <div class="shop-grid" id="shop-accessories"></div>
+
+        <h3 style="margin-left:10px; margin-top:25px; color:#ff80ab;">🌟 Dream Backgrounds</h3>
+        <p style="margin-left:10px; font-size:0.8em; color:#999;">Special items for big goals!</p>
+        <div class="shop-grid" id="shop-backgrounds"></div>
+
+        <h3 style="margin-left:10px; margin-top:20px; color:#ff80ab;">🐾 Dream Pets</h3>
+        <p style="margin-left:10px; font-size:0.8em; color:#999;">Your magical companion!</p>
+        <div class="shop-grid" id="shop-pets"></div>
     </div>
 
     <!-- 底部導航 -->
@@ -407,21 +447,49 @@
         let currentCardIndex = 0;
         let currentCategoryFilter = 'all';  // 'all' | 'Reading' | 'Science'
         
-        // 預設的使用者資料 (注意：這裡的 ID 必須跟 shop_data.js 對應)
+        // 預設的使用者資料
         let userProfile = {
             coins: 0,
-            ownedItems: ['shirt_default', 'hat_none'], 
+            ownedItems: [
+                'outfit_default', 'hat_none', 'shoes_none', 'acc_none',
+                'bg_default', 'pet_none'
+            ],
             equipped: {
-                shirt: 'shirt_default',
-                hat: 'hat_none'
+                outfit: 'outfit_default',
+                hat: 'hat_none',
+                shoes: 'shoes_none',
+                acc: 'acc_none',
+                bg: 'bg_default',
+                pet: 'pet_none'
             }
         };
+
+        // 舊版存檔升級：補齊新欄位 + 移除已 deprecated 的 shirt/bottom slot
+        function migrateProfile() {
+            const defaults = {
+                outfit: 'outfit_default',
+                hat: 'hat_none',
+                shoes: 'shoes_none',
+                acc: 'acc_none',
+                bg: 'bg_default',
+                pet: 'pet_none'
+            };
+            userProfile.equipped = userProfile.equipped || {};
+            // 移除 deprecated slots
+            delete userProfile.equipped.shirt;
+            delete userProfile.equipped.bottom;
+            for (const [slot, defId] of Object.entries(defaults)) {
+                if (!userProfile.equipped[slot]) userProfile.equipped[slot] = defId;
+                if (!userProfile.ownedItems.includes(defId)) userProfile.ownedItems.push(defId);
+            }
+        }
 
         // 讀取存檔
         function loadProfile() {
             const saved = localStorage.getItem('esl_user_profile');
             if (saved) {
                 userProfile = JSON.parse(saved);
+                migrateProfile();
             }
             // 確保 shopData 已經載入，再更新 UI
             if (typeof shopData !== 'undefined') {
@@ -437,65 +505,72 @@
             updateUI();
         }
 
+        // 開發階段 cache-bust：頁面載入時固定一個 token，圖片改檔後重整即生效
+        // (不用 Date.now() 每次都不同，避免每次 updateUI 都重抓圖)
+        const IMG_VERSION = window.performance && performance.timing
+            ? performance.timing.navigationStart
+            : Date.now();
+
+        // 輔助：把單一圖層 set 起來，沒有圖就隱藏
+        function setLayer(elId, src) {
+            const el = document.getElementById(elId);
+            if (!el) return;
+            if (src) {
+                const bust = src + (src.includes('?') ? '&' : '?') + 'v=' + IMG_VERSION;
+                if (el.src !== bust) el.src = bust;
+                el.style.display = 'block';
+            } else {
+                el.style.display = 'none';
+                el.src = '';
+            }
+        }
+
+        // 取目前穿戴的物件
+        function findEquipped(category, slot) {
+            const list = shopData[category];
+            if (!list) return null;
+            return list.find(i => i.id === userProfile.equipped[slot]) || null;
+        }
+
         // 更新介面 (金幣、角色圖片)
         function updateUI() {
             document.getElementById('coin-count').innerText = userProfile.coins;
 
-            // 1. 設定素體與頭髮
-            // 先檢查有沒有資料，有才設定，避免報錯
-            if (shopData.base) {
-                const baseEl = document.getElementById('img-base');
-                baseEl.src = shopData.base;
-                baseEl.style.display = 'block';
-            }
-            if (shopData.hair) {
-                const hairEl = document.getElementById('img-hair');
-                hairEl.src = shopData.hair;
-                hairEl.style.display = 'block';
-            }
+            // 取出所有穿戴的物品
+            const eqOutfit = findEquipped('outfits',     'outfit');
+            const eqHat    = findEquipped('hats',        'hat');
+            const eqShoes  = findEquipped('shoes',       'shoes');
+            const eqAcc    = findEquipped('accessories', 'acc');
+            const eqBg     = findEquipped('backgrounds', 'bg');
+            const eqPet    = findEquipped('pets',        'pet');
 
-            // 2. 找出目前穿著的衣服與帽子
-            const currentShirt = shopData.shirts.find(i => i.id === userProfile.equipped.shirt);
-            const currentHat = shopData.hats.find(i => i.id === userProfile.equipped.hat);
-
-            // --- 🔥 [關鍵修改] 智慧判斷頭髮 ---
-            let hairToUse = shopData.hair; // 預設使用長髮
-
-            // 如果目前穿的衣服有指定 "custom_hair"，就換成指定的頭髮
-            if (currentShirt && currentShirt.custom_hair) {
-                hairToUse = currentShirt.custom_hair;
-            }
-
-            // 更新頭髮圖片
-            const hairEl = document.getElementById('img-hair');
-            if (hairToUse) {
-                hairEl.src = hairToUse;
-                hairEl.style.display = 'block';
-            }
-            // ------------------------------------
-
-            // 3. 更新衣服圖片
-            const shirtEl = document.getElementById('img-shirt');
-            if (currentShirt && currentShirt.img) {
-                shirtEl.src = currentShirt.img;
-                shirtEl.style.display = 'block';
+            // base 邏輯：
+            //   - 預設 (outfit_default 且無帽) → 用長髮版 char_base.png
+            //   - 戴帽 → 切短髮 base 避免長髮頂出帽子
+            //   - 穿任何 outfit (非 default) → outfit 圖本身就是完整人物，直接當 base
+            let baseToUse;
+            if (eqOutfit && eqOutfit.img) {
+                baseToUse = eqOutfit.img;  // outfit 全身圖直接當 base
             } else {
-                // 如果沒有圖片，隱藏並清空 src 以免 iPad 顯示邊框
-                shirtEl.style.display = 'none';
-                shirtEl.src = ''; 
+                // 預設狀態：根據是否戴帽切換長/短髮
+                baseToUse = (eqHat && eqHat.id !== 'hat_none' && shopData.base_short)
+                    ? shopData.base_short
+                    : shopData.base;
             }
 
-            // 4. 更新帽子圖片
-            const hatEl = document.getElementById('img-hat');
-            if (currentHat && currentHat.img) {
-                hatEl.src = currentHat.img;
-                hatEl.style.display = 'block';
-            } else {
-                hatEl.style.display = 'none';
-                hatEl.src = '';
+            setLayer('img-bg',    eqBg    ? eqBg.img    : '');
+            setLayer('img-pet',   eqPet   ? eqPet.img   : '');
+            setLayer('img-base',  baseToUse);
+            setLayer('img-shoes', eqShoes ? eqShoes.img : '');
+            setLayer('img-hat',   eqHat   ? eqHat.img   : '');
+            setLayer('img-acc',   eqAcc   ? eqAcc.img   : '');
+
+            // 動態鞋子 z-index：穿長裙裝 (coversShoes) 時 shoes 移到 outfit 後面，只露鞋尖
+            const shoesEl = document.getElementById('img-shoes');
+            if (shoesEl) {
+                shoesEl.style.zIndex = (eqOutfit && eqOutfit.coversShoes) ? '1' : '';
             }
 
-            // 重新渲染商店狀態
             renderShop();
         }
 
@@ -511,46 +586,55 @@
 
         // --- 2. 商店系統 (圖片版) ---
         function renderShop() {
-            // 輔助函式：產生商品列表
-            const renderCategory = (items, containerId, type) => {
+            const renderCategory = (items, containerId, slot) => {
                 const container = document.getElementById(containerId);
+                if (!container) return;
                 container.innerHTML = '';
-                
                 if (!items) return;
 
                 items.forEach(item => {
                     const isOwned = userProfile.ownedItems.includes(item.id);
-                    const isEquipped = userProfile.equipped[type] === item.id;
-                    
+                    const isEquipped = userProfile.equipped[slot] === item.id;
+                    const isDream = item.tier === 'dream';
+
                     const div = document.createElement('div');
-                    div.className = `shop-item ${isOwned ? 'owned' : ''} ${isEquipped ? 'equipped' : ''}`;
-                    div.onclick = () => handleItemClick(item, type);
-                    
-                    // 圖片預覽區域
-                    let previewHtml = '';
-                    if(item.img) {
-                        // 顯示縮圖
-                        // 這裡針對帽子做了一點優化，讓它在預覽框裡看起來大一點
-                        previewHtml = `<img src="${item.img}" style="width:60px; height:60px; object-fit: cover; object-position: top center;">`;
+                    div.className = `shop-item ${isOwned ? 'owned' : ''} ${isEquipped ? 'equipped' : ''} ${isDream ? 'dream' : ''}`;
+                    div.onclick = () => handleItemClick(item, slot);
+
+                    // 縮圖
+                    let previewHtml;
+                    if (item.img) {
+                        const bustedSrc = item.img + (item.img.includes('?') ? '&' : '?') + 'v=' + IMG_VERSION;
+                        previewHtml = `<img src="${bustedSrc}" style="width:60px; height:60px; object-fit: cover; object-position: top center;">`;
                     } else {
-                        // 如果是空字串 (例如 No Hat)，顯示文字或圖示
-                        previewHtml = `<div style="width:60px; height:60px; background:#eee; border-radius:10px; line-height:60px; text-align:center; color:#ccc; margin:0 auto;">X</div>`;
+                        previewHtml = `<div style="width:60px; height:60px; background:#eee; border-radius:10px; line-height:60px; text-align:center; color:#ccc; margin:0 auto;">∅</div>`;
+                    }
+
+                    // 徽章 (只有「未擁有」時才顯示，避免買完還在喊 NEW)
+                    let badges = '';
+                    if (!isOwned) {
+                        if (isDream) badges += '<span class="badge-dream">DREAM</span>';
+                        else if (item.isNew) badges += '<span class="badge-new">NEW</span>';
                     }
 
                     div.innerHTML = `
                         ${previewHtml}
-                        <div style="font-weight:bold; font-size:0.8em; margin-top:5px;">${item.name}</div>
-                        ${isOwned 
-                            ? (isEquipped ? '<span style="color:green; font-size:0.8em">Equipped</span>' : '<span style="color:#888; font-size:0.8em">Owned</span>') 
-                            : `<div class="price-tag">💰 ${item.price}</div>`
+                        <div style="font-weight:bold; font-size:0.8em; margin-top:5px;">${item.name}${badges}</div>
+                        ${isOwned
+                            ? (isEquipped ? '<span style="color:green; font-size:0.8em">Equipped</span>' : '<span style="color:#888; font-size:0.8em">Owned</span>')
+                            : `<div class="price-tag">💰 ${item.price.toLocaleString()}</div>`
                         }
                     `;
                     container.appendChild(div);
                 });
             };
 
-            renderCategory(shopData.shirts, 'shop-shirts', 'shirt');
-            renderCategory(shopData.hats, 'shop-hats', 'hat');
+            renderCategory(shopData.outfits,     'shop-outfits',     'outfit');
+            renderCategory(shopData.shoes,       'shop-shoes',       'shoes');
+            renderCategory(shopData.hats,        'shop-hats',        'hat');
+            renderCategory(shopData.accessories, 'shop-accessories', 'acc');
+            renderCategory(shopData.backgrounds, 'shop-backgrounds', 'bg');
+            renderCategory(shopData.pets,        'shop-pets',        'pet');
         }
 
         function handleItemClick(item, type) {
@@ -898,11 +982,14 @@
                 
                 // 3. 密碼正確 -> 執行獎勵
                 userProfile.coins += 5000;
-                
-                // (選用) 如果想要順便解鎖所有商品，把下面這兩行註解拿掉
+
+                // (選用) 如果想要順便解鎖所有商品，把下面這段註解拿掉
                 /*
-                shopData.shirts.forEach(i => { if(!userProfile.ownedItems.includes(i.id)) userProfile.ownedItems.push(i.id) });
-                shopData.hats.forEach(i => { if(!userProfile.ownedItems.includes(i.id)) userProfile.ownedItems.push(i.id) });
+                ['outfits','hats','shoes','accessories','backgrounds','pets'].forEach(cat => {
+                    (shopData[cat] || []).forEach(i => {
+                        if(!userProfile.ownedItems.includes(i.id)) userProfile.ownedItems.push(i.id);
+                    });
+                });
                 */
 
                 saveProfile(); // 存檔

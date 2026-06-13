@@ -1,3 +1,6 @@
+# 換裝素材原始檔（生圖來源，留本地不進 repo）
+images/_raw/
+
 # OCR 暫存與輸出（不需進 repo）
 tools/ocr_output/
 tools/manifest_snippet.txt
