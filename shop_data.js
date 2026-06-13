@@ -29,8 +29,9 @@ const shopData = {
         { id: 'hat_tiara',          name: 'Princess Tiara',   price: 600,  img: 'images/hat_tiara.png' },
         { id: 'hat_crown',          name: 'Royal Crown',      price: 1000, img: 'images/hat_crown.png' },
         { id: 'hat_cat_ears',       name: 'Cat Ears',         price: 400,  img: 'images/hat_cat_ears.png',       isNew: true },
-        { id: 'hat_flower_crown',   name: 'Flower Crown',     price: 700,  img: 'images/hat_flower_crown.png',   isNew: true }
-        // TODO 待補圖再加回：hat_bunny_ears、hat_astronaut（缺 images/）
+        { id: 'hat_bunny_ears',     name: 'Bunny Ears',       price: 400,  img: 'images/hat_bunny_ears.png',     isNew: true },
+        { id: 'hat_flower_crown',   name: 'Flower Crown',     price: 700,  img: 'images/hat_flower_crown.png',   isNew: true },
+        { id: 'hat_astronaut',      name: 'Astronaut Helmet', price: 1500, img: 'images/hat_astronaut.png',      isNew: true }
     ],
 
     // --- 鞋子 (Shoes) ---
@@ -44,8 +45,13 @@ const shopData = {
 
     // --- 配件 (Accessories) ---
     accessories: [
-        { id: 'acc_none',           name: 'None',            price: 0,    img: '' }
-        // TODO 待補圖再加回：round_glasses / heart_sun / pearl_necklace / angel_halo / butterfly_mask / fairy_wings（缺 images/）
+        { id: 'acc_none',           name: 'None',            price: 0,    img: '' },
+        { id: 'acc_round_glasses',  name: 'Round Glasses',   price: 300,  img: 'images/acc_round_glasses.png',   isNew: true },
+        { id: 'acc_heart_sun',      name: 'Heart Shades',    price: 500,  img: 'images/acc_heart_sun.png',       isNew: true },
+        { id: 'acc_pearl_necklace', name: 'Pearl Necklace',  price: 800,  img: 'images/acc_pearl_necklace.png',  isNew: true },
+        { id: 'acc_angel_halo',     name: 'Angel Halo',      price: 1500, img: 'images/acc_angel_halo.png',      isNew: true },
+        { id: 'acc_butterfly_mask', name: 'Butterfly Mask',  price: 1800, img: 'images/acc_butterfly_mask.png',  isNew: true },
+        { id: 'acc_fairy_wings',    name: 'Fairy Wings',     price: 2500, img: 'images/acc_fairy_wings.png',     isNew: true }
     ],
 
     // --- 背景場景 (Backgrounds) - DREAM TIER ---
