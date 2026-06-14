@@ -2,6 +2,7 @@
 const spring2026Week16Data = [
     {
         word: 'pointed',
+        zh: '尖的；有尖端的',
         pos: '(adj.)',
         def: 'sharp at one end',
         ex: '1. Don\'t point at someone with pointed scissors.<br>2. Chickens have pointed beaks.',
@@ -9,6 +10,7 @@ const spring2026Week16Data = [
     },
     {
         word: 'soft',
+        zh: '柔軟的；軟的',
         pos: '(adj.)',
         def: 'not hard',
         ex: '1. I like to sleep on the soft pillow.<br>2. These are soft teddy bears.',
@@ -16,6 +18,7 @@ const spring2026Week16Data = [
     },
     {
         word: 'sharp',
+        zh: '鋒利的；尖銳的',
         pos: '(adj.)',
         def: 'thin or pointed',
         ex: '1. You must be very careful with this sharp knife.<br>2. Your pencil is not sharp enough.',
@@ -23,6 +26,7 @@ const spring2026Week16Data = [
     },
     {
         word: 'beak',
+        zh: '（鳥）嘴；喙',
         pos: '(n.)',
         def: 'the mouth of a bird',
         ex: '1. Ducks\' beaks are soft and flat.<br>2. The chick has a worm in its beak.',
@@ -30,6 +34,7 @@ const spring2026Week16Data = [
     },
     {
         word: 'waterproof',
+        zh: '防水的',
         pos: '(adj.)',
         def: 'something that doesn\'t let water go through',
         ex: '1. Cindy is wearing a waterproof jacket.<br>2. My camera is waterproof, so I can take pictures in the water.',
@@ -37,6 +42,7 @@ const spring2026Week16Data = [
     },
     {
         word: 'duckling',
+        zh: '小鴨；鴨寶寶',
         pos: '(n.)',
         def: 'a baby duck',
         ex: '1. The ducklings are following the mother duck.<br>2. The farmer is feeding the ducklings.',
@@ -44,6 +50,7 @@ const spring2026Week16Data = [
     },
     {
         word: 'fluffy',
+        zh: '蓬鬆的；毛茸茸的',
         pos: '(adj.)',
         def: 'light and soft',
         ex: '1. Fluffy white clouds were floating across the sky.<br>2. I have a fluffy little kitten.',
@@ -51,6 +58,7 @@ const spring2026Week16Data = [
     },
     {
         word: 'together',
+        zh: '一起；共同',
         pos: '(adv.)',
         def: 'with other people or things',
         ex: '1. The ducks and the hen go to the pond together.<br>2. The boys do everything together.',
@@ -58,6 +66,7 @@ const spring2026Week16Data = [
     },
     {
         word: 'mixture',
+        zh: '混合物',
         pos: '(n.)',
         def: 'a set of two or more different things mixed together',
         ex: '1. A fruit salad is a mixture of different fruits.<br>2. Put the mixture into a baking pan.',
@@ -65,6 +74,7 @@ const spring2026Week16Data = [
     },
     {
         word: 'dissolve',
+        zh: '溶解；（使）溶化',
         pos: '(v.)',
         def: 'to completely mix into a liquid',
         ex: '1. Mom dissolved some sugar in cold water.<br>2. Salt dissolves in hot water quickly.',

@@ -177,6 +177,33 @@
             opacity: 0.4;
             cursor: not-allowed;
         }
+        /* 中文釋義 toggle */
+        .zh-toggle {
+            display: block;
+            margin: 0 auto 12px;
+            padding: 7px 16px;
+            border-radius: 20px;
+            border: 2px solid var(--accent-color);
+            background: white;
+            color: #c98a00;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.15s;
+        }
+        .zh-toggle.active {
+            background: var(--accent-color);
+            color: #fff;
+        }
+        .zh-def {
+            margin-top: 8px;
+            padding: 8px 10px;
+            background: #fff8e1;
+            border-left: 4px solid var(--accent-color);
+            border-radius: 6px;
+            color: #6d4c00;
+            font-weight: bold;
+        }
 
         /* --- 主要內容區塊 --- */
         .section {
@@ -320,6 +347,7 @@
 
     <!-- 1. Home / List View -->
     <div id="section-home" class="section active">
+        <button id="zh-toggle" class="zh-toggle" onclick="toggleZh()" style="display:none;">🇹🇼 顯示中文釋義</button>
         <div id="word-list-container"></div>
     </div>
 
@@ -724,7 +752,15 @@
             if (defaultValue) selector.value = defaultValue;
         }
 
+        let showZh = false;  // 中文釋義 toggle（切週時歸零）
+
+        function toggleZh() {
+            showZh = !showZh;
+            renderList();
+        }
+
         function changeWeek() {
+            showZh = false;  // 換週預設關閉中文釋義
             const selector = document.getElementById('week-selector');
             const selection = resolveSelection(selector.value);
 
@@ -792,9 +828,20 @@
         function renderList() {
             const container = document.getElementById('word-list-container');
             container.innerHTML = '';
+
+            // 中文釋義 toggle 按鈕：本週有任一字含 zh 才顯示
+            const hasZh = vocabData.some(w => w.zh);
+            const zhBtn = document.getElementById('zh-toggle');
+            zhBtn.style.display = hasZh ? 'block' : 'none';
+            zhBtn.classList.toggle('active', showZh);
+            zhBtn.textContent = showZh ? '🇹🇼 隱藏中文釋義' : '🇹🇼 顯示中文釋義';
+
             vocabData.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'word-item';
+                const zhBlock = item.zh
+                    ? `<div class="zh-def" style="display:${showZh ? 'block' : 'none'}">🇹🇼 ${item.zh}</div>`
+                    : '';
                 div.innerHTML = `
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <div>
@@ -805,6 +852,7 @@
                     </div>
                     <div style="margin-top:10px; font-weight:bold;">${item.def}</div>
                     <div style="margin-top:5px; color:#555; font-style:italic;">${item.ex}</div>
+                    ${zhBlock}
                 `;
                 container.appendChild(div);
             });
