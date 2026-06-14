@@ -2,6 +2,7 @@
 const spring2026Week14Data = [
     {
         word: 'expect',
+        zh: '預期；期待',
         pos: '(v.)',
         def: 'to think that something will happen',
         ex: '1. I didn\'t expect to pass my final exams.<br>2. Linda expects to get a car on her birthday.',
@@ -9,6 +10,7 @@ const spring2026Week14Data = [
     },
     {
         word: 'crack',
+        zh: '使裂開；龜裂',
         pos: '(v.)',
         def: 'to break a little bit',
         ex: '1. The plate cracked when I dropped it.<br>2. Victor carefully cracked a nut and then gave it to me.',
@@ -16,6 +18,7 @@ const spring2026Week14Data = [
     },
     {
         word: 'close',
+        zh: '接近地；靠近',
         pos: '(adv.)',
         def: 'near',
         ex: '1. We live close to the church.<br>2. Don\'t go close to an angry dog!',
@@ -23,6 +26,7 @@ const spring2026Week14Data = [
     },
     {
         word: 'edge',
+        zh: '邊緣',
         pos: '(n.)',
         def: 'the place where something ends',
         ex: '1. Leo\'s eraser falls off the edge of his desk.<br>2. At night, the chick sleeps under the edge of the boy\'s quilt.',
@@ -30,6 +34,7 @@ const spring2026Week14Data = [
     },
     {
         word: 'quilt',
+        zh: '棉被；被子',
         pos: '(n.)',
         def: 'a kind of thick blanket',
         ex: '1. The quilt is not thick enough to protect him from the cold.<br>2. There\'s a quilt on the child\'s bed.',
@@ -37,6 +42,7 @@ const spring2026Week14Data = [
     },
     {
         word: 'enough',
+        zh: '足夠',
         pos: '(adv.)',
         def: 'as many or as much as somebody needs or wants',
         ex: '1. I have enough money to buy this robot.<br>2. There are not enough chairs for everyone.',
@@ -44,6 +50,7 @@ const spring2026Week14Data = [
     },
     {
         word: 'build',
+        zh: '建造；蓋',
         pos: '(v.)',
         def: 'to make something',
         ex: '1. The first pig will build a house with straw.<br>2. We are going to build a shopping mall in this area.',
@@ -51,6 +58,7 @@ const spring2026Week14Data = [
     },
     {
         word: 'nest',
+        zh: '鳥巢',
         pos: '(n.)',
         def: 'a bird\'s home',
         ex: '1. There is a nest in the tree.<br>2. I see some baby birds in the nest.',
@@ -58,6 +66,7 @@ const spring2026Week14Data = [
     },
     {
         word: 'liquid',
+        zh: '液體',
         pos: '(n.)',
         def: 'a state of matter that flows and takes the shape of its container; it can only change shape',
         ex: '1. Oil, milk and water are all liquids.<br>2. Liquids do not have a shape of their own.',
@@ -65,6 +74,7 @@ const spring2026Week14Data = [
     },
     {
         word: 'gas',
+        zh: '氣體',
         pos: '(n.)',
         def: 'a state of matter that does not have its own shape; it can change shape and size',
         ex: '1. Gas spreads evenly in a space.<br>2. A gas is a form of matter.',

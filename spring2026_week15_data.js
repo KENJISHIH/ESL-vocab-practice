@@ -2,6 +2,7 @@
 const spring2026Week15Data = [
     {
         word: 'after',
+        zh: '在…之後',
         pos: '(conj.)',
         def: 'behind in place or position; later in time',
         ex: '1. It started to rain after 10 o\'clock.<br>2. Please brush your teeth after you eat.',
@@ -9,6 +10,7 @@ const spring2026Week15Data = [
     },
     {
         word: 'carefully',
+        zh: '小心地；仔細地',
         pos: '(adv.)',
         def: 'taking care or paying attention',
         ex: '1. The students carefully crossed the road.<br>2. Please check your answers carefully.',
@@ -16,6 +18,7 @@ const spring2026Week15Data = [
     },
     {
         word: 'left',
+        zh: '留下；剩下（leave 的過去式）',
         pos: '(v.)',
         def: 'to allow to remain untaken, unused or unchanged (present tense → leave)',
         ex: '1. There were some chairs left over when some people had sat down.<br>2. David finished his lunch; only the carrot was left.',
@@ -23,6 +26,7 @@ const spring2026Week15Data = [
     },
     {
         word: 'splash',
+        zh: '濺；潑（水）',
         pos: '(v.)',
         def: 'to fly in drops and make somebody/something wet',
         ex: '1. Dolphins splash the water with some tricks.<br>2. The girls were splashing each other with water.',
@@ -30,6 +34,7 @@ const spring2026Week15Data = [
     },
     {
         word: 'chicken',
+        zh: '雞',
         pos: '(n.)',
         def: 'a bird that we eat or get eggs from',
         ex: '1. We are having fried chicken for dinner.<br>2. There are many chickens in the farm.',
@@ -37,6 +42,7 @@ const spring2026Week15Data = [
     },
     {
         word: 'flap',
+        zh: '拍動；揮動',
         pos: '(v.)',
         def: 'to move something up and down or from side to side',
         ex: '1. The bird flaps its wings and flies away.<br>2. I flapped the flies away but soon they flew back .',
@@ -44,6 +50,7 @@ const spring2026Week15Data = [
     },
     {
         word: 'sight',
+        zh: '視力；景象',
         pos: '(n.)',
         def: 'what you can see',
         ex: '1. The child\'s mother can\'t find him. He is out of sight.<br>2. The ducks swam out of sight.',
@@ -51,6 +58,7 @@ const spring2026Week15Data = [
     },
     {
         word: 'gather',
+        zh: '聚集；收集',
         pos: '(v.)',
         def: 'to get together in a group',
         ex: '1. Families gather together for New Year\'s Eve.<br>2. Students gather around the teacher\'s desk.',
@@ -58,6 +66,7 @@ const spring2026Week15Data = [
     },
     {
         word: 'burn',
+        zh: '燃燒；燒',
         pos: '(v.)',
         def: 'to be on fire',
         ex: '1. The house is burning – call the fire fighters!<br>2. When paper burns, it turns into ash.',
@@ -65,6 +74,7 @@ const spring2026Week15Data = [
     },
     {
         word: 'ash',
+        zh: '灰；灰燼',
         pos: '(n.)',
         def: 'the gray or black powder which is left after something is burned',
         ex: '1. They found the ring in the ashes of the fire.<br>2. Those branches were burned into ashes.',
