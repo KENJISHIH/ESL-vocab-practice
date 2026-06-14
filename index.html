@@ -381,6 +381,7 @@
             <div id="quiz-question" style="font-size:1.2em; font-weight:bold; margin:20px 0;">Question</div>
             <div id="quiz-options"></div>
             <div id="quiz-feedback" class="feedback-msg" style="height:20px;"></div>
+            <button id="quiz-audio-btn" onclick="speak(currentQuizWord)" style="display:none; margin-top:12px; padding:8px 18px; border-radius:20px; border:2px solid var(--primary-color); background:white; color:var(--primary-color); font-weight:bold; cursor:pointer;">🔈 聽答案發音</button>
             <button onclick="generateQuiz()" class="option-btn" style="background:var(--primary-color); color:white; border:none; margin-top:20px;">Next Question</button>
         </div>
     </div>
@@ -753,6 +754,7 @@
         }
 
         let showZh = false;  // 中文釋義 toggle（切週時歸零）
+        let currentQuizWord = '';  // 目前題目的正解單字（給「聽答案發音」用）
 
         function toggleZh() {
             showZh = !showZh;
@@ -880,6 +882,7 @@
             const question = document.getElementById('quiz-question');
             feedback.innerText = '';
             optionsContainer.innerHTML = '';
+            document.getElementById('quiz-audio-btn').style.display = 'none';  // 新題先藏發音鈕
 
             // 至少要有 2 個字才有得問；< 4 個字時把選項數降到 vocabData.length
             if (vocabData.length < 2) {
@@ -889,6 +892,7 @@
 
             const correctIndex = Math.floor(Math.random() * vocabData.length);
             const correctItem = vocabData[correctIndex];
+            currentQuizWord = correctItem.word;  // 存正解的字供「聽答案發音」用
 
             const maxDistractors = Math.min(3, vocabData.length - 1);
             let distractors = [];
@@ -914,6 +918,9 @@
             const feedback = document.getElementById(feedbackId);
             const buttons = btn.parentElement.querySelectorAll('.option-btn');
             buttons.forEach(b => b.disabled = true);
+
+            // 答完顯示「聽答案發音」鈕（答對答錯都能聽正解）
+            document.getElementById('quiz-audio-btn').style.display = 'inline-block';
 
             if (isCorrect) {
                 btn.classList.add('correct');
