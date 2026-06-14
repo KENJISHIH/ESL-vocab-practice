@@ -930,6 +930,8 @@
                 addCoins(20); 
             } else {
                 btn.classList.add('wrong');
+                // 把正解那格標綠，看著＋聽著一起訂正
+                buttons.forEach(b => { if (b.innerText === currentQuizWord) b.classList.add('correct'); });
                 feedback.innerText = "Try again next time!";
                 feedback.style.color = "red";
                 speak("Try again");
