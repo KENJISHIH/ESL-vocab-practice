@@ -40,6 +40,7 @@ const VOCAB_MANIFEST = [
 const EXAM_RANGES = [
     { semester: '2026-spring', id: 'midterm', label: '📝 期中考範圍 (W1-W9)',  weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9] },
     { semester: '2026-spring', id: 'final',   label: '🎯 期末考範圍 (W12-W21)', weeks: [12, 13, 14, 15, 16, 17, 19, 20, 21] },
+    { semester: '2026-spring', id: 'review1316', label: '📘 複習 (W13-W16)', weeks: [13, 14, 15, 16] },
 ];
 
 // 顯式 registry：頂層 const 不會自動掛上 window，要列名稱抓進來
