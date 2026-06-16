@@ -2,6 +2,7 @@
 const spring2026Week17Data = [
     {
         word: 'greedy',
+        zh: '貪心的；貪婪的',
         pos: '(adj.)',
         def: 'wanting too much',
         ex: '1. Don\'t be so greedy! Leave some cake for the others.<br>2. The greedy man wants more money.',
@@ -9,6 +10,7 @@ const spring2026Week17Data = [
     },
     {
         word: 'cub',
+        zh: '（熊、獅、狐等的）幼獸',
         pos: '(n.)',
         def: 'a baby fox, bear, lion, tiger or wolf',
         ex: '1. The two tiger cubs are looking for their parents in the forest.<br>2. The fox cubs live in the cave.',
@@ -16,6 +18,7 @@ const spring2026Week17Data = [
     },
     {
         word: 'brook',
+        zh: '小溪',
         pos: '(n.)',
         def: 'a small stream',
         ex: '1. Some elephants stand by the brook drinking water.<br>2. Fish swim in the brook.',
@@ -23,6 +26,7 @@ const spring2026Week17Data = [
     },
     {
         word: 'peek',
+        zh: '偷看；快速看一眼',
         pos: '(v.)',
         def: 'look quickly',
         ex: '1. Close your eyes; don\'t peek. I\'ve got a surprise for you.<br>2. Kitty peeks through the keyhole.',
@@ -30,6 +34,7 @@ const spring2026Week17Data = [
     },
     {
         word: 'drank',
+        zh: '喝（drink 的過去式）',
         pos: '(v.)',
         def: 'past simple of drink (present tense→ drink)',
         ex: '1. We drank a lot of water after running.<br>2. The deer put its head down to the water and drank.',
@@ -37,6 +42,7 @@ const spring2026Week17Data = [
     },
     {
         word: 'stomach',
+        zh: '胃；肚子',
         pos: '(n.)',
         def: 'a part of your body where your food goes',
         ex: '1. The bears sat down on the grass and looked at their stomachs.<br>2. There is a mouse in this cat\'s stomach.',
@@ -44,6 +50,7 @@ const spring2026Week17Data = [
     },
     {
         word: 'laugh',
+        zh: '笑；大笑',
         pos: '(v.)',
         def: 'to show happiness by making a sound',
         ex: '1. The clown\'s trick made us laugh.<br>2. The joke was funny, so we couldn\'t help laughing.',
@@ -51,6 +58,7 @@ const spring2026Week17Data = [
     },
     {
         word: 'burst',
+        zh: '爆破；突然裂開',
         pos: '(v.)',
         def: 'to break open suddenly',
         ex: '1. That balloon will burst if you blow it up any more.<br>2. I ate too much. My tummy is going to burst.',
@@ -58,6 +66,7 @@ const spring2026Week17Data = [
     },
     {
         word: 'freeze',
+        zh: '結冰；凍結',
         pos: '(v.)',
         def: 'to change from a liquid to a solid',
         ex: '1. Water freezes to ice at a temperature of 0°C.<br>2. When the lake freezes, we can go skating on it.',
@@ -65,6 +74,7 @@ const spring2026Week17Data = [
     },
     {
         word: 'evaporate',
+        zh: '蒸發',
         pos: '(v.)',
         def: 'to change from a liquid to a gas',
         ex: '1. Some water evaporated and the pond got smaller.<br>2. Plants keep cool during summer by evaporating water from their leaves.',

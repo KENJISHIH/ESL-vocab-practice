@@ -2,6 +2,7 @@
 const spring2026Week19Data = [
     {
         word: 'ache',
+        zh: '疼痛；隱隱作痛',
         pos: '(n.)',
         def: 'a pain that lasts for a long time',
         ex: '1. The boy has a terrible stomach ache.<br>2. My tooth aches. I need to go to the dentist.',
@@ -9,6 +10,7 @@ const spring2026Week19Data = [
     },
     {
         word: 'continue',
+        zh: '繼續',
         pos: '(v.)',
         def: 'to keep going',
         ex: '1. Let\'s continue the story.<br>2. He continued working late into the night.',
@@ -16,6 +18,7 @@ const spring2026Week19Data = [
     },
     {
         word: 'journey',
+        zh: '旅程；旅行',
         pos: '(n.)',
         def: 'the act of traveling from one place to another',
         ex: '1. We had a good journey last summer.<br>2. We will have to break the journey.',
@@ -23,6 +26,7 @@ const spring2026Week19Data = [
     },
     {
         word: 'divide',
+        zh: '分開；劃分',
         pos: '(v.)',
         def: 'to split into parts or groups',
         ex: '1. They want to divide the round cheese.<br>2. The teacher divides the class into three groups.',
@@ -30,6 +34,7 @@ const spring2026Week19Data = [
     },
     {
         word: 'growl',
+        zh: '低吼；咆哮',
         pos: '(v.)',
         def: 'a low angry sound',
         ex: '1. Two bears argued, and they growled, and they began to fight.<br>2. The dog growled at the girl on the street.',
@@ -37,6 +42,7 @@ const spring2026Week19Data = [
     },
     {
         word: 'sly',
+        zh: '狡猾的；偷偷摸摸的',
         pos: '(adj.)',
         def: 'deceiving people or doing things in secret',
         ex: '1. He\'s a sly old man.<br>2. The sly cat follows the mouse.',
@@ -44,6 +50,7 @@ const spring2026Week19Data = [
     },
     {
         word: 'equal',
+        zh: '相等的；同等的',
         pos: '(adj.)',
         def: 'the same in amount, number or size',
         ex: '1. They are equal in weight.<br>2. Divide it into two equal parts.',
@@ -51,6 +58,7 @@ const spring2026Week19Data = [
     },
     {
         word: 'appetite',
+        zh: '食慾；胃口',
         pos: '(n.)',
         def: 'wanting to eat',
         ex: '1. Two greedy bears have good appetite.<br>2. The sad news took away his appetite.',
@@ -58,6 +66,7 @@ const spring2026Week19Data = [
     },
     {
         word: 'magnet',
+        zh: '磁鐵',
         pos: '(n.)',
         def: 'a thing that can pull, or attract, some objects with metal in them',
         ex: '1. A magnet can attract metal paper clips.<br>2. Every magnet has two poles.',
@@ -65,6 +74,7 @@ const spring2026Week19Data = [
     },
     {
         word: 'repel',
+        zh: '排斥；推開',
         pos: '(v.)',
         def: 'to push away',
         ex: '1. When the two same poles of magnets face each other, they repel.<br>2. The same poles on magnets will repel each other.',

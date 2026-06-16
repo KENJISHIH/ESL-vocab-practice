@@ -2,6 +2,7 @@
 const spring2026Week21Data = [
     {
         word: 'went',
+        zh: '去（go 的過去式）',
         pos: '(v.)',
         def: 'past simple of go',
         ex: '1. We went to school early this morning.<br>2. My mom went home late yesterday.',
@@ -9,6 +10,7 @@ const spring2026Week21Data = [
     },
     {
         word: 'came',
+        zh: '來（come 的過去式）',
         pos: '(v.)',
         def: 'past simple of come',
         ex: '1. The train slowly came to the station.<br>2. I came here to help you.',
@@ -16,6 +18,7 @@ const spring2026Week21Data = [
     },
     {
         word: 'ran',
+        zh: '跑（run 的過去式）',
         pos: '(n.)',
         def: 'past simple of run',
         ex: '1. They ran over the grass.<br>2. He ran out the door.',
@@ -23,6 +26,7 @@ const spring2026Week21Data = [
     },
     {
         word: 'slink',
+        zh: '潛行；悄悄溜走',
         pos: '(v.)',
         def: 'to walk away from somewhere quietly so that you are not noticed',
         ex: '1. I tried to slink out of the room so that nobody would see me go.<br>2. He usually slinks off at about 3:30.',
@@ -30,6 +34,7 @@ const spring2026Week21Data = [
     },
     {
         word: 'creek',
+        zh: '小灣；小溪',
         pos: '(n.)',
         def: 'a narrow area of water that flows into the land from the sea, a lake, etc.',
         ex: '1. That night they set up camp near the creek.<br>2. There are often wild ducks swimming in the creek.',
@@ -37,6 +42,7 @@ const spring2026Week21Data = [
     },
     {
         word: 'muddy',
+        zh: '泥濘的；沾滿泥的',
         pos: '(adj.)',
         def: 'covered by or containing mud',
         ex: '1. Don\'t bring those muddy boots inside!<br>2. Take your shoes off outside if they are muddy.',
@@ -44,6 +50,7 @@ const spring2026Week21Data = [
     },
     {
         word: 'was',
+        zh: '是（is／am 的過去式）',
         pos: '(v.)',
         def: 'past simple of is and am',
         ex: '1. I was a teacher three years ago.<br>2. She was sick, so she was at home yesterday.',
@@ -51,6 +58,7 @@ const spring2026Week21Data = [
     },
     {
         word: 'guess',
+        zh: '猜；猜測',
         pos: '(v.)',
         def: 'when you believe something is true or likely but are not certain',
         ex: '1. I guess I should start to prepare my final exam.<br>2. I\'m never going to guess the answer if you don\'t give me a clue.',
@@ -58,6 +66,7 @@ const spring2026Week21Data = [
     },
     {
         word: 'vibrate',
+        zh: '振動；顫動',
         pos: '(v.)',
         def: 'to move back and forth',
         ex: '1. When an object stops vibrating, the sound stops too.<br>2. Whose phone is vibrating?',
@@ -65,6 +74,7 @@ const spring2026Week21Data = [
     },
     {
         word: 'pitch',
+        zh: '音高',
         pos: '(n.)',
         def: 'how high or low it is',
         ex: '1. Fast vibrations make sounds with a high pitch.<br>2. Slow vibrations make sounds with a low pitch.',
