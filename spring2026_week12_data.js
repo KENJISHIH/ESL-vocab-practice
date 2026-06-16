@@ -2,6 +2,7 @@
 const spring2026Week12Data = [
     {
         word: 'brush',
+        zh: '刷子；畫筆',
         pos: '(n.)',
         def: 'a tool to paint with or make hair neat',
         ex: '1. I paint the house with a brush.<br>2. When she gets up, she gives her hair a quick brush.',
@@ -9,6 +10,7 @@ const spring2026Week12Data = [
     },
     {
         word: 'crate',
+        zh: '板條箱；箱子',
         pos: '(n.)',
         def: 'a box made of wood, plastic, or metal',
         ex: '1. We moved the big milk crate into the car.<br>2. Lisa puts bottles in the crate.',
@@ -16,6 +18,7 @@ const spring2026Week12Data = [
     },
     {
         word: 'live',
+        zh: '住；居住',
         pos: '(v.)',
         def: 'to stay in a home',
         ex: '1. She lives about ten miles from my house.<br>2. A new family will soon live here.',
@@ -23,6 +26,7 @@ const spring2026Week12Data = [
     },
     {
         word: 'pretty',
+        zh: '漂亮的；好看的',
         pos: '(adj.)',
         def: 'nice to look at',
         ex: '1. The house looks pretty and new.<br>2. My mother wants to buy that pretty dress.',
@@ -30,6 +34,7 @@ const spring2026Week12Data = [
     },
     {
         word: 'unload',
+        zh: '卸下；卸貨',
         pos: '(v.)',
         def: 'to take out or to take off something',
         ex: '1. The crew unloaded the boxes from the truck.<br>2. Tina unloaded her bags from the car.',
@@ -37,6 +42,7 @@ const spring2026Week12Data = [
     },
     {
         word: 'while',
+        zh: '當…的時候；同時',
         pos: '(conj.)',
         def: 'at the same time',
         ex: '1. While she read the book, I cleaned up the kitchen.<br>2. The phone rang while we were having dinner.',
@@ -44,6 +50,7 @@ const spring2026Week12Data = [
     },
     {
         word: 'buy',
+        zh: '購買；買',
         pos: '(v.)',
         def: 'to pay money for something',
         ex: '1. Peter will buy a house at the end of the year.<br>2. I don\'t have enough money to buy that toy.',
@@ -51,6 +58,7 @@ const spring2026Week12Data = [
     },
     {
         word: 'end',
+        zh: '結尾；末端',
         pos: '(n.)',
         def: 'the last part',
         ex: '1. Do you know the end of the story?<br>2. I started to work at the end of October.',
@@ -58,6 +66,7 @@ const spring2026Week12Data = [
     },
     {
         word: 'property',
+        zh: '（物質的）性質；特性',
         pos: '(n.)',
         def: 'how something looks, feels, smells, tastes, or sounds',
         ex: '1. Colors, sizes and shapes are properties.<br>2. Every kind of matter has its own properties.',
@@ -65,6 +74,7 @@ const spring2026Week12Data = [
     },
     {
         word: 'matter',
+        zh: '物質',
         pos: '(n.)',
         def: 'what all things are made of',
         ex: '1. Solids, liquids, and gases are three forms of matter.<br>2. The water, raft, girl and boy are all made of matter.',
