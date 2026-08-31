@@ -363,6 +363,42 @@
         .nav-icon { font-size: 1.5em; display: block; margin-bottom: 3px; }
         .nav-text { font-size: 0.8em; }
 
+        /* --- 家長設定視窗 --- */
+        .modal-backdrop {
+            position: fixed; inset: 0; z-index: 300;
+            background: rgba(0,0,0,0.45);
+            display: none; align-items: center; justify-content: center;
+            padding: 16px; box-sizing: border-box;
+        }
+        .modal-backdrop.show { display: flex; }
+        .modal-box {
+            background: white; border-radius: 20px; padding: 20px 22px;
+            width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        .modal-box h3 { margin: 0 0 4px; }
+        .pp-hint { font-size: 0.82em; color: #888; line-height: 1.5; margin: 0 0 14px; }
+        .pp-sec { margin-top: 16px; padding-top: 14px; border-top: 1px solid #eee; }
+        .pp-sec-title { font-weight: bold; margin-bottom: 8px; }
+        .pp-row { display: flex; gap: 8px; align-items: center; }
+        .pp-row input[type=number] {
+            flex: 1; padding: 9px 12px; border: 2px solid #ddd;
+            border-radius: 12px; font-size: 1em; min-width: 0;
+        }
+        .pp-btn {
+            padding: 9px 14px; border-radius: 12px; border: 2px solid var(--primary-color);
+            background: white; color: var(--primary-color);
+            font-weight: bold; cursor: pointer; white-space: nowrap;
+        }
+        .pp-btn.solid { background: var(--primary-color); color: white; }
+        .pp-btn.wide { display: block; width: 100%; margin-top: 8px; }
+        .pp-backup {
+            width: 100%; box-sizing: border-box; margin-top: 6px;
+            font-family: ui-monospace, Menlo, monospace; font-size: 0.72em;
+            border: 2px solid #ddd; border-radius: 12px; padding: 8px;
+        }
+        .pp-msg { margin-top: 10px; font-size: 0.85em; font-weight: bold; min-height: 18px; }
+
         /* --- 提示條 --- */
         .toast {
             position: fixed;
@@ -506,6 +542,33 @@
         <h3 style="margin-left:10px; margin-top:20px; color:#ff80ab;">🐾 Dream Pets</h3>
         <p style="margin-left:10px; font-size:0.8em; color:#999;">Your magical companion!</p>
         <div class="shop-grid" id="shop-pets"></div>
+    </div>
+
+    <!-- 家長設定（點右上角金幣進入，需密碼） -->
+    <div id="parent-modal" class="modal-backdrop" onclick="if (event.target === this) closeParentPanel()">
+        <div class="modal-box">
+            <h3>👨‍👩‍👧 家長設定</h3>
+            <p class="pp-hint">金幣與已買的東西存在這台裝置的瀏覽器裡，換瀏覽器或清除資料就會不見。
+                建議設定完先按「複製備份」存到備忘錄。</p>
+
+            <div class="pp-sec-title">💰 金幣</div>
+            <div class="pp-row">
+                <input id="pp-coins" type="number" min="0" step="100">
+                <button class="pp-btn solid" onclick="ppSetCoins()">設定</button>
+            </div>
+            <button class="pp-btn wide" onclick="ppAddCoins(1000)">+1000</button>
+            <button class="pp-btn wide" onclick="ppUnlockAll()">🎁 解鎖所有商品（不扣金幣）</button>
+
+            <div class="pp-sec">
+                <div class="pp-sec-title">💾 備份／還原</div>
+                <textarea id="pp-backup" class="pp-backup" rows="4" spellcheck="false"></textarea>
+                <button class="pp-btn wide" onclick="ppCopyBackup()">複製備份</button>
+                <button class="pp-btn wide" onclick="ppRestore()">用上面的內容還原</button>
+            </div>
+
+            <div id="pp-msg" class="pp-msg"></div>
+            <button class="pp-btn wide solid" onclick="closeParentPanel()">關閉</button>
+        </div>
     </div>
 
     <!-- 完成每日目標的提示條 -->
@@ -1483,41 +1546,105 @@
             audio.play().catch(fallback);
         }
 
-// --- 開發者模式 (測試用) ---
+        // --- 家長設定（點右上角金幣進入）---
+        // 存檔只在這台裝置的 localStorage，換瀏覽器或被清掉就沒了，
+        // 所以這裡除了改金幣，也提供備份／還原。
+
         function devMode() {
-            // 1. 跳出輸入視窗
-            const password = prompt("請輸入開發者密碼：");
+            const password = prompt("請輸入家長密碼：");
+            if (password === null) return;              // 按取消
+            if (password !== 'kenji') { alert("❌ 密碼錯誤。"); return; }
 
-            // 2. 檢查密碼 (大小寫必須完全一樣)
-            if (password === 'kenji') {
-                
-                // 3. 密碼正確 -> 執行獎勵
-                userProfile.coins += 5000;
+            document.getElementById('pp-coins').value = userProfile.coins;
+            document.getElementById('pp-backup').value = JSON.stringify(userProfile);
+            ppSay('');
+            document.getElementById('parent-modal').classList.add('show');
+        }
 
-                // (選用) 如果想要順便解鎖所有商品，把下面這段註解拿掉
-                /*
-                ['outfits','hats','shoes','accessories','backgrounds','pets'].forEach(cat => {
-                    (shopData[cat] || []).forEach(i => {
-                        if(!userProfile.ownedItems.includes(i.id)) userProfile.ownedItems.push(i.id);
-                    });
+        function closeParentPanel() {
+            document.getElementById('parent-modal').classList.remove('show');
+        }
+
+        function ppSay(msg, ok = true) {
+            const el = document.getElementById('pp-msg');
+            el.textContent = msg;
+            el.style.color = ok ? 'var(--success)' : 'var(--danger)';
+        }
+
+        function coinPop() {
+            const d = document.getElementById('coin-display');
+            d.classList.remove('coin-anim');
+            void d.offsetWidth;
+            d.classList.add('coin-anim');
+        }
+
+        function ppSetCoins() {
+            const n = Math.max(0, Math.floor(Number(document.getElementById('pp-coins').value)));
+            if (!Number.isFinite(n)) { ppSay('請輸入數字', false); return; }
+            userProfile.coins = n;
+            saveProfile();
+            coinPop();
+            document.getElementById('pp-backup').value = JSON.stringify(userProfile);
+            ppSay(`✅ 金幣已設為 ${n}`);
+        }
+
+        function ppAddCoins(n) {
+            userProfile.coins += n;
+            saveProfile();
+            coinPop();
+            document.getElementById('pp-coins').value = userProfile.coins;
+            document.getElementById('pp-backup').value = JSON.stringify(userProfile);
+            ppSay(`✅ 加了 ${n}，目前 ${userProfile.coins}`);
+        }
+
+        function ppUnlockAll() {
+            let added = 0;
+            ['outfits', 'hats', 'shoes', 'accessories', 'backgrounds', 'pets'].forEach(cat => {
+                (shopData[cat] || []).forEach(i => {
+                    if (!userProfile.ownedItems.includes(i.id)) { userProfile.ownedItems.push(i.id); added++; }
                 });
-                */
+            });
+            saveProfile();
+            document.getElementById('pp-backup').value = JSON.stringify(userProfile);
+            ppSay(added ? `✅ 解鎖了 ${added} 樣東西` : '本來就全部都有了');
+        }
 
-                saveProfile(); // 存檔
-                
-                // 讓金幣動畫跑一下
-                const display = document.getElementById('coin-display');
-                display.classList.remove('coin-anim');
-                void display.offsetWidth; 
-                display.classList.add('coin-anim');
-
-                alert("✅ 驗證成功！獲得 5000 金幣！");
-
-            } else if (password !== null) {
-                // 4. 密碼錯誤 (如果使用者按取消，password 會是 null，就不跳錯誤)
-                alert("❌ 密碼錯誤，無法啟用。");
+        function ppCopyBackup() {
+            const ta = document.getElementById('pp-backup');
+            const done = () => ppSay('✅ 已複製，貼到備忘錄存起來');
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(ta.value).then(done).catch(() => {
+                    ta.select(); ppSay('請長按上面的文字手動複製', false);
+                });
+            } else {
+                ta.select(); ppSay('請長按上面的文字手動複製', false);
             }
-        }            
+        }
+
+        function ppRestore() {
+            const text = document.getElementById('pp-backup').value.trim();
+            if (!text) { ppSay('請先把備份內容貼進上面的框', false); return; }
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                ppSay('❌ 內容看起來不是有效的備份', false);
+                return;
+            }
+            if (typeof data !== 'object' || data === null || !('coins' in data)) {
+                ppSay('❌ 備份內容缺少必要欄位', false);
+                return;
+            }
+            if (!confirm('確定要用這份備份覆蓋目前的存檔嗎？')) return;
+            userProfile = data;
+            migrateProfile();                 // 補齊舊備份缺的新欄位
+            saveProfile();
+            document.getElementById('pp-coins').value = userProfile.coins;
+            coinPop();
+            renderList();
+            renderDailyCard();
+            ppSay(`✅ 已還原，金幣 ${userProfile.coins}`);
+        }
 
         // --- Init ---
 
