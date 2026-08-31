@@ -36,6 +36,12 @@ const VOCAB_MANIFEST = [
     // ─── 2026 Fall ───
     { semester: '2026-fall', semesterLabel: '2026 Fall', week: 1, dataVar: 'fall2026Week1Data', scriptSrc: 'fall2026_week01_data.js' },
     { semester: '2026-fall', semesterLabel: '2026 Fall', week: 2, dataVar: 'fall2026Week2Data', scriptSrc: 'fall2026_week02_data.js' },
+    { semester: '2026-fall', semesterLabel: '2026 Fall', week: 3, dataVar: 'fall2026Week3Data', scriptSrc: 'fall2026_week03_data.js' },
+    { semester: '2026-fall', semesterLabel: '2026 Fall', week: 4, dataVar: 'fall2026Week4Data', scriptSrc: 'fall2026_week04_data.js' },
+    { semester: '2026-fall', semesterLabel: '2026 Fall', week: 5, dataVar: 'fall2026Week5Data', scriptSrc: 'fall2026_week05_data.js' },
+    { semester: '2026-fall', semesterLabel: '2026 Fall', week: 6, dataVar: 'fall2026Week6Data', scriptSrc: 'fall2026_week06_data.js' },
+    { semester: '2026-fall', semesterLabel: '2026 Fall', week: 7, dataVar: 'fall2026Week7Data', scriptSrc: 'fall2026_week07_data.js' },
+    { semester: '2026-fall', semesterLabel: '2026 Fall', week: 8, dataVar: 'fall2026Week8Data', scriptSrc: 'fall2026_week08_data.js' },
 ];
 // VOCAB_MANIFEST:END
 
@@ -81,6 +87,12 @@ const VOCAB_DATA = {
     // 2026 Fall
     fall2026Week1Data,
     fall2026Week2Data,
+    fall2026Week3Data,
+    fall2026Week4Data,
+    fall2026Week5Data,
+    fall2026Week6Data,
+    fall2026Week7Data,
+    fall2026Week8Data,
 };
 // VOCAB_DATA:END
 
