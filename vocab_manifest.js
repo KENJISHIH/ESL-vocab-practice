@@ -35,6 +35,7 @@ const VOCAB_MANIFEST = [
     { semester: '2026-spring', semesterLabel: '2026 Spring', week: 21, dataVar: 'spring2026Week21Data', scriptSrc: 'spring2026_week21_data.js' },
     // ─── 2026 Fall ───
     { semester: '2026-fall', semesterLabel: '2026 Fall', week: 1, dataVar: 'fall2026Week1Data', scriptSrc: 'fall2026_week01_data.js' },
+    { semester: '2026-fall', semesterLabel: '2026 Fall', week: 2, dataVar: 'fall2026Week2Data', scriptSrc: 'fall2026_week02_data.js' },
 ];
 // VOCAB_MANIFEST:END
 
@@ -79,6 +80,7 @@ const VOCAB_DATA = {
     spring2026Week21Data,
     // 2026 Fall
     fall2026Week1Data,
+    fall2026Week2Data,
 };
 // VOCAB_DATA:END
 

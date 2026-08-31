@@ -127,11 +127,16 @@ def render_photo(src: Path, out_path: Path) -> None:
         tmp_jpg.unlink()
 
 
-def call_gemini(img_paths: list[Path]) -> str:
+def call_gemini(img_paths: list[Path]) -> tuple[str, dict]:
+    """呼叫 Gemini CLI，回傳 (模型輸出, 用量統計)。
+
+    用 `-o json` 而不是 `-o text`，因為 json 模式才會附上 token 統計，
+    才知道一次 OCR 實際花了多少。CLI 的 json 格式若有變動，會安全退回當純文字處理。
+    """
     refs = " ".join(f"@{p}" for p in img_paths)
     prompt = f"{refs} {PROMPT}"
     result = subprocess.run(
-        ["gemini", "-p", prompt, "-o", "text"],
+        ["gemini", "-p", prompt, "-o", "json"],
         capture_output=True,
         text=True,
         timeout=PAGE_TIMEOUT,
@@ -139,9 +144,27 @@ def call_gemini(img_paths: list[Path]) -> str:
     )
     if result.returncode != 0:
         raise RuntimeError(f"gemini exit {result.returncode}: {result.stderr.strip()}")
-    out = result.stdout
-    out = "\n".join(l for l in out.splitlines() if not l.startswith("Loaded cached"))
-    return out.strip()
+
+    raw = "\n".join(l for l in result.stdout.splitlines()
+                    if not l.startswith("Loaded cached")).strip()
+    try:
+        payload = json.loads(raw)
+        return str(payload.get("response", "")).strip(), payload.get("stats", {}) or {}
+    except (json.JSONDecodeError, AttributeError):
+        return raw, {}          # json 格式跟預期不同就當純文字，不影響 OCR 本身
+
+
+def sum_tokens(stats: dict) -> dict[str, dict]:
+    """從 CLI 的 stats 裡挖出每個模型的 token 數（格式變動時盡量不炸）。"""
+    out: dict[str, dict] = {}
+    models = (stats or {}).get("models") or {}
+    if not isinstance(models, dict):
+        return out
+    for name, info in models.items():
+        tok = (info or {}).get("tokens") or {}
+        if isinstance(tok, dict):
+            out[name] = {k: v for k, v in tok.items() if isinstance(v, (int, float))}
+    return out
 
 
 class SkipPage(Exception):
@@ -193,6 +216,7 @@ def process_sources(
     session = uuid.uuid4().hex[:8]
     all_weeks: list[dict[str, Any]] = []
     skipped: list[tuple[str, str]] = []
+    usage: dict[str, dict] = {}     # 每個模型的累計 token 用量
 
     for idx, (label, makers) in enumerate(sources, 1):
         img_paths = [TMP_DIR / f"{session}_{idx:03d}_{j}.png" for j in range(len(makers))]
@@ -200,7 +224,13 @@ def process_sources(
             for make_png, p in zip(makers, img_paths):
                 make_png(p)
             print(f"[OCR] ({idx}/{len(sources)}) {label}：呼叫 Gemini …")
-            obj = parse_response(call_gemini(img_paths))
+            text, stats = call_gemini(img_paths)
+            for model, tok in sum_tokens(stats).items():
+                usage.setdefault(model, {})
+                for k, v in tok.items():
+                    usage[model][k] = usage[model].get(k, 0) + v
+                usage[model]["_calls"] = usage[model].get("_calls", 0) + 1
+            obj = parse_response(text)
             week = int(obj["week"])
             entries = obj["words"]
             if len(entries) != 10:
@@ -242,6 +272,20 @@ def process_sources(
         for p, r in skipped:
             print(f"    - {p}: {r}")
     print(f"  收進的週次：{sorted({w['week'] for w in all_weeks})}")
+
+    if usage:
+        print("\n[用量] 這次實際打掉的 token：")
+        for model, tok in usage.items():
+            calls = tok.pop("_calls", 0)
+            total = tok.get("total") or sum(v for k, v in tok.items() if k != "total")
+            detail = "、".join(f"{k} {int(v):,}" for k, v in sorted(tok.items()) if k != "total")
+            print(f"  {model}：{calls} 次呼叫，合計 {int(total):,} tokens")
+            if detail:
+                print(f"    ({detail})")
+        print("  實際金額請上 https://aistudio.google.com/ 對帳（CLI 查不到）")
+    else:
+        print("\n[用量] 這次沒拿到 token 統計（CLI 的 json 格式可能變了）")
+
     return all_weeks
 
 
