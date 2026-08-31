@@ -649,7 +649,7 @@
         // 記一次作答結果；回傳這次是否為「今天第一次答對這個字」（決定給不給金幣）
         function recordAnswer(word, isCorrect) {
             const key = wordKey(word);
-            const today = localISODate(new Date());
+            const today = studyDateISO();   // 學習日（中午前算前一天），跟 getTodayPlan 同一把尺
             const p = userProfile.progress.words[key] || { right: 0, wrong: 0, lastSeen: null };
             if (isCorrect) p.right++; else p.wrong++;
             p.lastSeen = today;
@@ -677,7 +677,7 @@
         // 連續完成幾個上課日（週末跳過，不算中斷；今天還沒完成也不算斷）
         function computeStreak() {
             const done = new Set(userProfile.progress.daysDone);
-            const d = new Date();
+            const d = studyDate();   // 從學習日往回算，跟 daysDone 記的是同一把尺
             if (!done.has(localISODate(d))) d.setDate(d.getDate() - 1);
             let streak = 0;
             for (let i = 0; i < 400; i++) {
@@ -706,7 +706,7 @@
         // 今天是否已經答對過這個字
         function answeredCorrectToday(word) {
             const t = userProfile.progress.today;
-            return t.date === localISODate(new Date()) && t.words.includes(wordKey(word));
+            return t.date === studyDateISO() && t.words.includes(wordKey(word));
         }
 
         // 不擋畫面的提示條（完成每日目標用，比 alert 溫和）

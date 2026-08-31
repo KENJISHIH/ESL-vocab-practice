@@ -92,6 +92,10 @@ const DAILY_PLAN = {
     startDate: '2026-08-31',
     wordsPerDay: 2,
     daysPerWeek: 5,   // Day1=週一 … Day5=週五；週末不推進，當成該週的複習日
+    // 幾點才換成新的一天（0–23）。老師下午才上 ESL 課教新字，所以中午以前還停在
+    // 前一天那兩個字（早上正好複習昨天教的），過了這個鐘點才換成今天新教的。
+    // 設 0 就是午夜換日。ESL 課的時間有變就改這個數字。
+    dayStartsAtHour: 12,
     // 放假的平日（國定假日、颱風假…）。純標示用：那天改成複習整週、不催她背新字。
     // 週次是照日曆週算的，所以填不填都「不會」影響 W?/Day? 的對齊，可以安心留空。
     // 2026 Fall 學期內落在平日的國定假日（皆為星期五）：
@@ -106,6 +110,19 @@ const DAILY_PLAN = {
 function localISODate(d) {
     const p = n => String(n).padStart(2, '0');
     return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
+// 「學習日」＝往前推 dayStartsAtHour 小時之後的那一天。
+// 老師下午才教新字，所以中午以前算前一天：早上打開看到的是昨天教的兩個字（正好複習），
+// 過了中午才換成今天新教的。整個 App 的「今天」一律走這個，不要直接用 new Date()。
+function studyDate(now) {
+    const d = new Date(now || new Date());
+    d.setHours(d.getHours() - (DAILY_PLAN.dayStartsAtHour || 0));
+    return d;
+}
+
+function studyDateISO(now) {
+    return localISODate(studyDate(now));
 }
 
 // 算出今天屬於第幾週、星期幾（回傳 null 代表學期還沒開始）
@@ -133,18 +150,19 @@ function weekAndDay(startISO, today) {
 // 算出今天該背哪兩個字
 // 回傳 status: 'not-started' 學期未開始 / 'no-data' 該週單字還沒匯入 / 'ok'
 function getTodayPlan(now) {
-    const today = now || new Date();
-    const todayISO = localISODate(today);
-    const dow = today.getDay();
+    // 一律用「學習日」而不是牆上的日期：中午前算前一天
+    const eff = studyDate(now);
+    const effISO = localISODate(eff);
+    const dow = eff.getDay();
     const isWeekend = (dow === 0 || dow === 6);
-    const isHoliday = (DAILY_PLAN.skipDates || []).includes(todayISO);
+    const isHoliday = (DAILY_PLAN.skipDates || []).includes(effISO);
     const isRestDay = isWeekend || isHoliday;   // 不加新字、改複習的日子
 
-    const wd = weekAndDay(DAILY_PLAN.startDate, today);
+    const wd = weekAndDay(DAILY_PLAN.startDate, eff);
     if (!wd) return { status: 'not-started', isWeekend, isHoliday, isRestDay };
 
     const { weekNo, dayInWeek } = wd;
-    const base = { weekNo, dayInWeek, isWeekend, isHoliday, isRestDay, dateISO: todayISO };
+    const base = { weekNo, dayInWeek, isWeekend, isHoliday, isRestDay, dateISO: effISO };
 
     const entry = VOCAB_MANIFEST.find(e => e.semester === DAILY_PLAN.semester && e.week === weekNo);
     const all = entry ? VOCAB_DATA[entry.dataVar] : null;

@@ -55,6 +55,25 @@ check('2027-01-11', 20, 1, 'Review 週');
 check('2027-01-18', 21, 1, '期末考週');
 check('2027-01-25', 22, 1, '★ 最後一週');
 
+console.log('\n=== 中午換日（老師下午才教新字）===');
+function checkAt(iso, hhmm, expWeek, expDay, note = '') {
+    const d = new Date(`${iso}T${hhmm}:00`);
+    const p = ctx.getTodayPlan(d);
+    const got = `W${p.weekNo} Day${p.dayInWeek}`;
+    const exp = `W${expWeek} Day${expDay}`;
+    const ok = got === exp;
+    ok ? pass++ : fail++;
+    console.log(`${ok ? '✅' : '❌'} ${iso} ${hhmm} → ${got.padEnd(10)}${ok ? '' : ` 應為 ${exp}`}  ${note}`);
+}
+checkAt('2026-09-01', '07:30', 1, 1, '上學前 → 還是昨天教的字');
+checkAt('2026-09-01', '11:59', 1, 1, '中午前一分鐘');
+checkAt('2026-09-01', '12:00', 1, 2, '★ 中午整點換成今天新教的');
+checkAt('2026-09-01', '19:00', 1, 2, '晚上寫作業');
+checkAt('2026-09-02', '08:00', 1, 2, '隔天早上 → 仍是昨天的字');
+checkAt('2026-09-02', '13:00', 1, 3, '隔天下午 → 換 Day3');
+checkAt('2026-09-07', '09:00', 1, 5, '週一早上 → 還在上週複習');
+checkAt('2026-09-07', '15:00', 2, 1, '★ 週一下午 → 才進 W2 Day1');
+
 console.log('\n=== 邊界 ===');
 const before = plan('2026-08-30');
 console.log(`${before.status === 'not-started' ? '✅' : '❌'} 2026-08-30(日) → status=${before.status}（學期未開始）`);
