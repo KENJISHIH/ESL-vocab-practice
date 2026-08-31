@@ -3,8 +3,10 @@
 這份文件是把新學期／新一週的單字接進站的完整作業程序。**照著跑不會漏發音、不會漏中文釋義、不會忘記改每日進度。**
 
 > ⚠️ 兩個最容易踩的雷，先講在前面：
-> 1. **重跑 `json_to_js.py` 會覆蓋整個 `*_data.js`，手工加上去的 `zh` 中文釋義會全部消失。** 詳見 [§6](#6-中文釋義-zh手工欄位重跑會被洗掉)。
-> 2. **產完 JS 資料檔不等於做完**——還要產音檔（[§5](#5-音檔系統)）、還要改 `DAILY_PLAN`（[§4](#4-每日進度計畫-daily_plan)）。
+> 1. **產完 JS 資料檔不等於做完**——還要產音檔（[§5](#5-音檔系統)）、補中文釋義（[§6](#6-中文釋義-zh)）、改 `DAILY_PLAN`（[§4](#4-每日進度計畫-daily_plan)）。用 `tools/check_coverage.py` 確認，不要用回想的。
+> 2. **一週跨多頁的單字本要用 `--group N`**，否則第二頁抓不到週次，而且兩頁會被當兩週互相覆蓋。2026 Fall 是一週兩頁 → `--group 2`。
+>
+> （舊版這裡警告過「重跑 `json_to_js.py` 會洗掉 `zh`」——2026-09-01 已修，現在重跑會把既有的 `zh` 讀回來。）
 
 ## 動工前後都跑這兩支，不要靠記性
 
@@ -70,28 +72,53 @@ uv tool install 'rembg[cpu]'
 
 以「2026 Fall」為例。九個步驟，**每一步都要做完**。
 
-### 1-1. PDF → JSON（Gemini OCR）
+### 1-1. 來源 → JSON（Gemini OCR）
+
+來源可以是掃描 PDF，**也可以是手機翻拍的照片**（2026 Fall 的單字本就是拍的）：
 
 ```bash
+# 掃描 PDF
 python3 tools/pdf_to_vocab.py "<PDF 完整路徑>" --semester 2026-fall
+
+# 手機照片：一週跨兩頁，所以 --group 2（見下方說明）
+python3 tools/pdf_to_vocab.py "<資料夾>"/IMG_30[7-9]*.HEIC --semester 2026-fall --group 2
 ```
 
 | 參數 | 用途 |
 |---|---|
 | `--semester` | 學期代號，格式固定 `<year>-<spring\|fall>` |
-| `--start-page` | 從 PDF 第幾頁開始（1-based，預設 1；失敗單頁重跑用） |
-| `--pages N` | 只處理 N 頁（試水溫或重跑用） |
+| `--group N` | **幾頁算一週**（預設 1）。一週跨兩頁就填 2 |
+| `--start-page` | PDF 專用：從第幾頁開始（1-based，預設 1；失敗單頁重跑用） |
+| `--pages N` | PDF 專用：只處理 N 頁（試水溫或重跑用） |
 | `--out-dir` | 預設 `tools/ocr_output/`，不用改 |
 
-自動處理的部分：
+#### 🔴 一週跨多頁一定要用 `--group`
+
+2026 Fall 的單字表**一週兩頁**：第一頁有「2026 Fall Semester Week N」標題和前 6 個字，
+第二頁接第 7 個字與 Science 段的 8–10。**第二頁沒有 Week 標題**，單獨送去辨識會失敗
+（抓不到週次），而且兩頁會被當成兩週互相覆蓋。
+
+`--group 2` 會把連續兩頁併成一次 Gemini 呼叫，讓它看得到標題也拼得出完整的 10 個字，
+順帶把 API 呼叫數減半。**照片必須依序排好**（IMG_3070、IMG_3071 = W1，依此類推），
+shell 展開 glob 本來就是檔名順序，通常不用特別處理。
+
+換學期前先翻一下單字本：一週幾頁？頁碼有沒有跳號？決定 `--group` 要填幾。
+
+#### 照片來源的處理
+
+- HEIC 用 macOS 內建 `sips` 轉，不用另外裝 pillow-heif
+- 會套用 EXIF 方向資訊（照片轉正）、長邊縮到 2000px（省 token，實測辨識率不受影響）
+- **保留彩色**：小孩會用螢光筆畫重點，prompt 已交代忽略手寫與螢光標記
+
+#### 自動處理的部分
 
 - **週次由 Gemini 從頁首 "Week N" 讀出**，不需要人工對應「第幾頁 = 第幾週」
 - 非單字頁（跨週概覽、spelling 總表、Review & Final Exam、封面、空白頁）會回 `SKIP` 自動跳過
-- `category` 欄位（`Reading` / `Science`）**由 Gemini 逐字判斷**，依表格裡的分段標題認定——不是「前 8 字 Reading、後 2 字 Science」這種寫死規則，各週字數分配可能不同
+- `category` 欄位（`Reading` / `Science`）**由 Gemini 逐字判斷**，依表格裡的分段標題認定——不是「前 8 字 Reading、後 2 字 Science」這種寫死規則。2026 Spring 是 8+2、2026 Fall 是 7+3
 - 同一週次重複出現會覆寫並印警告
 - 每筆不是 10 個字時會印 `⚠️` 但不中斷
 
-每頁約 10 秒。輸出：`tools/ocr_output/<semester>_weekNN.json` 加一份彙整的 `<semester>_all.json`，最後印出收進的週次清單。
+每組約 10–20 秒。輸出：`tools/ocr_output/<semester>_weekNN.json` 加一份彙整的 `<semester>_all.json`，最後印出收進的週次清單。
 
 ### 1-2. 抽查 OCR 結果
 
@@ -124,41 +151,33 @@ python3 tools/json_to_js.py \
 
 > 🚨 **這一步是破壞性的**：`json_to_js.py` 只會寫出 `word` / `pos` / `def` / `ex` / `category` 五個欄位。已經存在的檔案會被整個覆蓋，**手工加的 `zh` 中文釋義會被洗掉**。所以正確順序是：先跑完這步，**再**補 `zh`（[§6](#6-中文釋義-zh手工欄位重跑會被洗掉)）。
 
-### 1-4. 接進前端：**五個地方**要改
+### 1-4. 接進前端
 
-#### (a) `index.html` 的 `<script>` 載入清單
+#### (a)(b)(c) 跑一支腳本就好
 
-每週一行，照週次順序，**一定要排在 `vocab_manifest.js` 之前**（manifest 裡的 `VOCAB_DATA` 直接引用這些 `const`，載入順序反了會 ReferenceError）：
+`index.html` 的 `<script>` 清單、`VOCAB_MANIFEST`、`VOCAB_DATA` 這三處以前要手工同步，
+現在交給腳本掃檔案系統重新產生：
 
-```html
-    <script src="fall2026_week01_data.js"></script>
-    <script src="fall2026_week02_data.js"></script>
-    ...
-    <script src="vocab_manifest.js"></script>   <!-- 永遠在最後 -->
+```bash
+python3 tools/sync_manifest.py           # 實際寫入
+python3 tools/sync_manifest.py --check   # 只比對，有落差 exit 1
 ```
 
-#### (b) `vocab_manifest.js` 的 `VOCAB_MANIFEST`
+它會列出各學期收了幾週，確認數字對得上再往下走。
 
-把 `tools/manifest_snippet.txt` 的內容貼進去，新學期接在現有 entries 之後（保持登記順序，下拉選單的 optgroup 順序就是這個順序）。
+背後處理掉的幾件事（知道就好，不用自己顧）：
 
-#### (c) `vocab_manifest.js` 的 `VOCAB_DATA`
+- `<script>` 一定排在 `vocab_manifest.js` 之前——`VOCAB_DATA` 在 parse 當下就要參照到那些 `const`，順序反了會 `ReferenceError`
+- `VOCAB_DATA` 的變數名是**從檔案內容讀出來的**，不是用檔名猜的（檔名補零 `week01`、變數名不補零 `Week1Data`，靠猜會錯）
+- 漏列 `VOCAB_DATA` 的症狀是切到那一週才跳 `Data missing for this week!`，很難發現——所以才要自動產
 
-頂層 `const` 不會自動掛上 `window`，必須顯式列名：
+> 腳本靠 `index.html` 與 `vocab_manifest.js` 裡的區塊標記（`DATA_SCRIPTS:START/END`、
+> `VOCAB_MANIFEST:START/END`、`VOCAB_DATA:START/END`）定位。**不要刪掉那些標記**，
+> 也不要在標記之間手改，下次跑會被覆蓋。
 
-```js
-const VOCAB_DATA = {
-    // 2025 Fall
-    week12Data, ..., week19Data,
-    // 2026 Spring
-    spring2026Week1Data, ..., spring2026Week21Data,
-    // ↓ 新學期列在這
-    fall2026Week1Data, fall2026Week2Data, ...
-};
-```
+以下 (d)(e) 兩處仍需手動，因為那是人的判斷，掃檔案掃不出來。
 
-漏列 → 選了那一週會出現 `Data missing for this week!`。
-
-#### (d) `vocab_manifest.js` 的 `EXAM_RANGES`（舊版 README 漏掉這個）
+#### (d) `vocab_manifest.js` 的 `EXAM_RANGES`
 
 考試範圍快選。每筆 `{ semester, id, label, weeks }`，`buildWeekSelector()` 會自動長出選項：
 
@@ -392,20 +411,30 @@ python3 tools/export_tts.py --force  # 連已存在的 m4a 也重轉
 
 ---
 
-## 6. 中文釋義 `zh`（手工欄位，重跑會被洗掉）
+## 6. 中文釋義 `zh`
 
-`zh` 是給孩子看的中文意思，**OCR 不會產、`json_to_js.py` 也不會保留**，完全靠手工加在 `*_data.js` 裡：
+`zh` 是給孩子看的中文意思，**OCR 不會產**，要另外補。兩個地方都可以放：
+
+| 放在哪 | 適用 | 特性 |
+|---|---|---|
+| `tools/ocr_output/<semester>_weekNN.json` 的 `zh` 欄位 | 剛 OCR 完、還沒轉檔 | 轉檔時直接帶進 JS，是「來源真相」 |
+| `*_data.js` 的 `zh` 欄位 | 事後補、或只改一兩個字 | 重跑 `json_to_js.py` 會自動讀回來保住 |
+
+欄位放在 `word` 後面：
 
 ```js
     {
         word: 'went',
-        zh: '去（go 的過去式）',      // ← 手工加，放在 word 後面
+        zh: '去（go 的過去式）',      // ← 放在 word 後面
         pos: '(v.)',
         def: 'past simple of go',
         ex: '1. We went to school early this morning.<br>2. My mom went home late yesterday.',
         category: 'Reading',
     },
 ```
+
+寫中文釋義時**依英文定義消歧義**：同一個英文字有多個中文意思時，只寫這裡教的那個。
+例如 `dairy` 的定義是 "food made with milk…"，就寫「乳製品（牛奶做的食物）」，不要寫「酪農場」。
 
 前端行為：
 
@@ -414,19 +443,27 @@ python3 tools/export_tts.py --force  # 連已存在的 m4a 也重轉
 - `zh` 與 `ex` 一樣不做 HTML 轉義（是自己寫的資料、含刻意的 `<br>`），所以**不要在 `zh` 裡貼來路不明的內容**
 - **Spell 出題的提示區**會把 `zh` 接在英文定義下面一起顯示（Quiz 不顯示 `zh`），所以缺 `zh` 的週次拼字時只有英文提示
 
-### 🚨 最大的地雷
+### 重跑轉檔已經不會洗掉 `zh` 了（2026-09-01 修正）
 
-**只要對同一個學期再跑一次 `json_to_js.py`，該學期所有 `*_data.js` 會被整檔重寫，手工加的 `zh` 全部消失。** 腳本不會警告、不會備份、diff 也只會顯示一堆行被刪掉。
+以前只要對同一個學期再跑一次 `json_to_js.py`，該學期所有 `*_data.js` 會被整檔重寫、
+手工加的 `zh` 全部消失，而且不警告不備份。**現在 `existing_zh()` 會先把舊檔的
+`word → zh` 讀回來**，JSON 有 `zh` 就優先用、沒有就沿用舊檔，轉檔完會印「沿用舊檔 N 筆」。
 
-防呆做法（擇一）：
+`tools/test_zh_preserve.py` 是這件事的回歸測試（拿真實有 `zh` 的週次模擬重跑）：
 
-- **順序上永遠是「先 `json_to_js.py`，後補 `zh`」**，補完就不要再跑轉檔腳本
-- 學期中只補單一週時，先把 `tools/ocr_output/` 裡其他週的 JSON 移走，只留要轉的那一週
-- 真的要重轉，先 `git diff` 檢查，或直接 `git checkout -- <被誤洗的檔案>` 救回來（只要 `zh` 已經 commit 過就救得回）
+```bash
+python3 tools/test_zh_preserve.py
+```
 
-### 目前補了 `zh` 的週次
+改過 `json_to_js.py` 就跑一次。真的誤洗了也還救得回：`git checkout -- <檔名>`。
 
-2026 Spring 的 **W12–W17、W19–W21**（期末考範圍 9 週共 90 字）。W1–W9 與 2025 Fall 尚未補。
+### 目前的 `zh` 覆蓋率
+
+用 `python3 tools/check_coverage.py` 查最準。截至 2026-09-01：
+
+- **2026 Fall**：W1 已補（10/10）
+- **2026 Spring**：W12–W17、W19–W21 已補（90 字）；**W1–W9 尚未補**
+- **2025 Fall**：尚未補
 
 ---
 
@@ -501,16 +538,18 @@ esl-vocab-practice/
 │   └── _raw/                   ← 生圖原始檔（gitignored）
 │
 └── tools/
-    ├── pdf_to_vocab.py         ← ① PDF → JSON（Gemini CLI OCR，自動抓週次、自動跳非單字頁）
-    ├── json_to_js.py           ← ② JSON → *_data.js（⚠️ 會覆蓋整檔，洗掉手工的 zh）
+    ├── pdf_to_vocab.py         ← ① PDF／照片 → JSON（Gemini OCR，--group N 處理跨頁週次）
+    ├── json_to_js.py           ← ② JSON → *_data.js（重跑會保住既有的 zh）
+    ├── sync_manifest.py        ← ③ 自動接線：script 標籤 + VOCAB_MANIFEST + VOCAB_DATA
     ├── batch_tts.py            ← ③ 產發音（直打 Gemini TTS API；撞每日配額乾淨中止、exit 2）
     ├── export_tts.py           ← ④ peek-dict 快取 WAV → afconvert → audio/*.m4a
     ├── gen_phrase_tts.py       ← UI 短語發音（Correct / Try again 這類非單字）
     ├── gen_item.py             ← Avatar 素材生圖（google-genai）
     ├── place_item.py           ← Avatar 素材對齊到 char_base（需要時自動 rembg 去背）
     ├── make_icon.py            ← 合成 PWA / iOS icon 與 favicon
-    ├── check_coverage.py       ← ⑤ 完整性檢查：字數／中文／音檔（缺就 exit 1）
+    ├── check_coverage.py       ← ⑥ 完整性檢查：字數／中文／音檔（缺就 exit 1）
     ├── test_dailyplan.js       ← DAILY_PLAN 週次運算的斷言測試（node 跑）
+    ├── test_zh_preserve.py     ← 驗證重跑 json_to_js.py 不會洗掉 zh
     ├── backfill_category.py    ← 一次性：為 2025 Fall 舊資料補 category（已跑過，不用再跑）
     ├── ocr_output/             ← OCR 暫存（gitignored）
     └── manifest_snippet.txt    ← manifest 片段，每次轉檔會覆蓋（gitignored）
