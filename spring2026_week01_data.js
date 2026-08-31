@@ -9,7 +9,7 @@ const spring2026Week1Data = [
     },
     {
         word: 'about',
-        pos: '(prep)',
+        pos: '(prep.)',
         def: 'on the subject of',
         ex: '1. The students learn about animals in science class.<br>2. My mother often tells me about her best friend.',
         category: 'Reading',

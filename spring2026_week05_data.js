@@ -23,7 +23,7 @@ const spring2026Week5Data = [
     },
     {
         word: 'lots of',
-        pos: '(pronoun)',
+        pos: '(pron.)',
         def: 'a large amount or number',
         ex: '1. Grace got lots of presents from her friends.<br>2. There is lots of water in the bottle.',
         category: 'Reading',

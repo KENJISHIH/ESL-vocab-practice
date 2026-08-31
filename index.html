@@ -108,7 +108,6 @@
         .layer-bottom { z-index: 3; }  /* 褲子/裙子蓋在素體腿上 */
         .layer-shirt  { z-index: 4; }  /* 衣服在腰上方 */
         .layer-shoes  { z-index: 5; }  /* 鞋子蓋在腳上 */
-        .layer-hair   { z-index: 6; }  /* 頭髮蓋在衣服上 (長髮) */
         .layer-hat    { z-index: 7; }  /* 帽子蓋在頭髮上 */
         .layer-acc    { z-index: 8; }  /* 配件 (眼鏡/光環/翅膀) 最上層 */
 
@@ -205,6 +204,51 @@
             font-weight: bold;
         }
 
+        /* --- 今日進度卡 --- */
+        .daily-card {
+            background: linear-gradient(135deg, #e0f7fa 0%, #fff9e6 100%);
+            border: 3px solid var(--primary-color);
+            border-radius: 20px;
+            padding: 16px 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(38,198,218,0.15);
+        }
+        .daily-card.done {
+            background: linear-gradient(135deg, #dcedc8 0%, #fff9e6 100%);
+            border-color: var(--success);
+        }
+        .daily-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .daily-title { font-size: 1.15em; font-weight: 800; color: var(--text-color); }
+        .daily-streak {
+            background: #fff3e0;
+            color: #e65100;
+            border-radius: 15px;
+            padding: 3px 12px;
+            font-weight: bold;
+            font-size: 0.85em;
+            white-space: nowrap;
+        }
+        .daily-words { display: flex; gap: 10px; flex-wrap: wrap; }
+        .daily-word {
+            flex: 1;
+            min-width: 120px;
+            background: white;
+            border-radius: 14px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid #eee;
+        }
+        .daily-word.ok { border-color: var(--success); background: #f1f8e9; }
+        .daily-word-text { font-weight: bold; color: var(--primary-color); font-size: 1.05em; }
+        .daily-note { margin-top: 10px; font-size: 0.85em; color: #6d4c41; line-height: 1.5; }
+
         /* --- 主要內容區塊 --- */
         .section {
             display: none;
@@ -291,6 +335,22 @@
         }
         .spelling-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
+        /* 拼字提示與空格 */
+        .spelling-hint {
+            background: #f1f8e9;
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+            line-height: 1.5;
+            text-align: left;
+        }
+        .blank-active {
+            color: var(--danger);
+            border-bottom: 3px solid var(--danger);
+        }
+        .blank-filled { color: var(--success); }
+
         /* --- 底部導航列 --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
@@ -302,6 +362,27 @@
         .nav-item.active { color: var(--primary-color); font-weight: bold; }
         .nav-icon { font-size: 1.5em; display: block; margin-bottom: 3px; }
         .nav-text { font-size: 0.8em; }
+
+        /* --- 提示條 --- */
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 90px;
+            transform: translate(-50%, 20px);
+            background: var(--success);
+            color: white;
+            font-weight: bold;
+            padding: 12px 22px;
+            border-radius: 25px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+            max-width: 90vw;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s, transform 0.25s;
+            z-index: 200;
+        }
+        .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
         /* 金幣動畫 */
         @keyframes coinPop {
@@ -322,7 +403,7 @@
                 <!-- 由 buildWeekSelector() 依 vocab_manifest.js 自動產生 -->
             </select>
         </div>
-        <div class="coin-display" id="coin-display" onclick="devMode()" style="cursor: pointer;"></div>
+        <div class="coin-display" id="coin-display" onclick="devMode()" style="cursor: pointer;">
             <span class="coin-icon">💰</span>
             <span id="coin-count">0</span>
         </div>
@@ -347,6 +428,7 @@
 
     <!-- 1. Home / List View -->
     <div id="section-home" class="section active">
+        <div id="daily-card" class="daily-card" style="display:none;"></div>
         <button id="zh-toggle" class="zh-toggle" onclick="toggleZh()" style="display:none;">顯示中文釋義</button>
         <div id="word-list-container"></div>
     </div>
@@ -391,6 +473,8 @@
         <div class="quiz-container">
             <h3>Spelling Practice</h3>
             <div style="color:#666; margin-bottom:10px;">Earn <span style="color:orange; font-weight:bold;">10 Coins</span>!</div>
+            <div id="spelling-hint" class="spelling-hint"></div>
+            <button onclick="if (currentSpell) speak(currentSpell.word)" style="display:block; margin:0 auto 12px; padding:6px 16px; border-radius:20px; border:2px solid var(--primary-color); background:white; color:var(--primary-color); font-weight:bold; cursor:pointer;">🔈 再聽一次</button>
             <div id="spelling-display" class="spelling-word">_ _ _ _</div>
             <div id="spelling-options" class="spelling-options"></div>
             <div id="spelling-feedback" class="feedback-msg" style="height:20px; margin-top:10px;"></div>
@@ -423,6 +507,9 @@
         <p style="margin-left:10px; font-size:0.8em; color:#999;">Your magical companion!</p>
         <div class="shop-grid" id="shop-pets"></div>
     </div>
+
+    <!-- 完成每日目標的提示條 -->
+    <div id="toast" class="toast"></div>
 
     <!-- 底部導航 -->
     <div class="bottom-nav">
@@ -487,6 +574,14 @@
         let currentCardIndex = 0;
         let currentCategoryFilter = 'all';  // 'all' | 'Reading' | 'Science'
         
+        // 學習進度預設值
+        //   words     每個字的對錯次數，key = 單字小寫
+        //   daysDone  已完成當日目標的日期（YYYY-MM-DD）
+        //   today     當天已經答對過的字，跨日自動重置（用來擋重複刷金幣）
+        function defaultProgress() {
+            return { words: {}, daysDone: [], today: { date: null, words: [] } };
+        }
+
         // 預設的使用者資料
         let userProfile = {
             coins: 0,
@@ -501,7 +596,8 @@
                 acc: 'acc_none',
                 bg: 'bg_default',
                 pet: 'pet_none'
-            }
+            },
+            progress: defaultProgress()
         };
 
         // 舊版存檔升級：補齊新欄位 + 移除已 deprecated 的 shirt/bottom slot
@@ -522,6 +618,111 @@
                 if (!userProfile.equipped[slot]) userProfile.equipped[slot] = defId;
                 if (!userProfile.ownedItems.includes(defId)) userProfile.ownedItems.push(defId);
             }
+            // 進度欄位（2026-08-31 起新增，舊存檔沒有）
+            const p = userProfile.progress || {};
+            userProfile.progress = {
+                words: p.words || {},
+                daysDone: p.daysDone || [],
+                today: p.today || { date: null, words: [] }
+            };
+        }
+
+        // --- 1b. 學習進度 ---
+
+        const wordKey = w => String(w).trim().toLowerCase();
+
+        // 熟練度：答對 3 次以上且對多於錯 → 熟；答錯過但還沒熟 → 要複習
+        function wordStatus(word) {
+            const p = userProfile.progress.words[wordKey(word)];
+            if (!p || (p.right === 0 && p.wrong === 0)) return 'new';
+            if (p.right >= 3 && p.right > p.wrong) return 'mastered';
+            if (p.wrong > 0) return 'review';
+            return 'learning';
+        }
+
+        // 記一次作答結果；回傳這次是否為「今天第一次答對這個字」（決定給不給金幣）
+        function recordAnswer(word, isCorrect) {
+            const key = wordKey(word);
+            const today = localISODate(new Date());
+            const p = userProfile.progress.words[key] || { right: 0, wrong: 0, lastSeen: null };
+            if (isCorrect) p.right++; else p.wrong++;
+            p.lastSeen = today;
+            userProfile.progress.words[key] = p;
+
+            let firstCorrectToday = false;
+            const t = userProfile.progress.today;
+            if (t.date !== today) { t.date = today; t.words = []; }
+            if (isCorrect && !t.words.includes(key)) {
+                t.words.push(key);
+                firstCorrectToday = true;
+            }
+            saveProfile();
+            return firstCorrectToday;
+        }
+
+        // 今天的字是否都已經答對過
+        function isDayComplete(plan) {
+            if (!plan || plan.status !== 'ok' || !plan.words.length) return false;
+            const t = userProfile.progress.today;
+            if (t.date !== plan.dateISO) return false;
+            return plan.words.every(w => t.words.includes(wordKey(w.word)));
+        }
+
+        // 連續完成幾個上課日（週末跳過，不算中斷；今天還沒完成也不算斷）
+        function computeStreak() {
+            const done = new Set(userProfile.progress.daysDone);
+            const d = new Date();
+            if (!done.has(localISODate(d))) d.setDate(d.getDate() - 1);
+            let streak = 0;
+            for (let i = 0; i < 400; i++) {
+                const dow = d.getDay();
+                if (dow >= 1 && dow <= 5) {
+                    if (done.has(localISODate(d))) streak++;
+                    else break;
+                }
+                d.setDate(d.getDate() - 1);
+            }
+            return streak;
+        }
+
+        // 完成當日目標時記錄日期並發一次獎金
+        const DAILY_BONUS = 50;
+        function checkDailyGoal() {
+            const plan = getTodayPlan();
+            if (!isDayComplete(plan)) return;
+            if (userProfile.progress.daysDone.includes(plan.dateISO)) return;  // 今天已經領過
+            userProfile.progress.daysDone.push(plan.dateISO);
+            addCoins(DAILY_BONUS);
+            renderDailyCard();
+            showToast(`🎉 今天的兩個字都答對了！連續 ${computeStreak()} 天，+${DAILY_BONUS} 金幣`);
+        }
+
+        // 今天是否已經答對過這個字
+        function answeredCorrectToday(word) {
+            const t = userProfile.progress.today;
+            return t.date === localISODate(new Date()) && t.words.includes(wordKey(word));
+        }
+
+        // 不擋畫面的提示條（完成每日目標用，比 alert 溫和）
+        let toastTimer = null;
+        function showToast(msg) {
+            const el = document.getElementById('toast');
+            if (!el) return;
+            el.textContent = msg;
+            el.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => el.classList.remove('show'), 4000);
+        }
+
+        // 需要複習的字（答錯過、還沒練熟），錯最多的排前面
+        function getReviewWords() {
+            return allWordsFlat()
+                .filter(w => wordStatus(w.word) === 'review')
+                .sort((a, b) => {
+                    const pa = userProfile.progress.words[wordKey(a.word)];
+                    const pb = userProfile.progress.words[wordKey(b.word)];
+                    return (pb.wrong - pb.right) - (pa.wrong - pa.right);
+                });
         }
 
         // 讀取存檔
@@ -545,11 +746,9 @@
             updateUI();
         }
 
-        // 開發階段 cache-bust：頁面載入時固定一個 token，圖片改檔後重整即生效
-        // (不用 Date.now() 每次都不同，避免每次 updateUI 都重抓圖)
-        const IMG_VERSION = window.performance && performance.timing
-            ? performance.timing.navigationStart
-            : Date.now();
+        // 圖片快取版本：換過 images/ 裡的圖才手動改這個值，平時讓瀏覽器正常快取
+        // (以前取 navigationStart，每次重整都變 → 每開一次頁就重抓約 5MB 圖)
+        const IMG_VERSION = '2026-08-31';
 
         // 輔助：把單一圖層 set 起來，沒有圖就隱藏
         function setLayer(elId, src) {
@@ -710,6 +909,26 @@
             // 預設選最新一個 semester 的最新一週
             let defaultValue = null;
 
+            // 每日練習：今天的兩個字 + 錯過的字，放最上面當主要入口
+            const plan = getTodayPlan();
+            const dailyGroup = document.createElement('optgroup');
+            dailyGroup.label = '每日練習';
+
+            const todayOpt = document.createElement('option');
+            todayOpt.value = 'today';
+            todayOpt.textContent = plan.status === 'ok'
+                ? `⭐ 今天 (W${plan.weekNo} Day${plan.dayInWeek})`
+                : '⭐ 今天';
+            dailyGroup.appendChild(todayOpt);
+
+            const reviewOpt = document.createElement('option');
+            reviewOpt.value = 'wrong';
+            reviewOpt.textContent = '🔁 複習錯過的字';
+            dailyGroup.appendChild(reviewOpt);
+
+            selector.appendChild(dailyGroup);
+            if (plan.status === 'ok') defaultValue = 'today';
+
             semesters.forEach(s => {
                 const group = document.createElement('optgroup');
                 group.label = s.label;
@@ -744,8 +963,8 @@
 
                 selector.appendChild(group);
 
-                // 最後一個 semester 的最後一週為預設
-                if (weeks.length > 0) {
+                // 沒有今日計畫時，退回「最後一個 semester 的最後一週」當預設
+                if (defaultValue !== 'today' && weeks.length > 0) {
                     defaultValue = `${s.semester}:${weeks[weeks.length - 1].week}`;
                 }
             });
@@ -753,8 +972,11 @@
             if (defaultValue) selector.value = defaultValue;
         }
 
-        let showZh = false;  // 中文釋義 toggle（切週時歸零）
-        let currentQuizWord = '';  // 目前題目的正解單字（給「聽答案發音」用）
+        let showZh = false;          // 中文釋義 toggle（切週時歸零）
+        let currentQuizWord = '';    // 目前題目的正解單字（給「聽答案發音」用）
+        let currentQuizAnswerText = '';  // 正解那顆按鈕上的文字（答錯時標綠用）
+        let currentMode = '';        // 目前選單值：'today' / 'wrong' / 'semester:week' …
+        let distractorPool = [];     // Quiz 誘答選項的取樣池（今天模式下比 vocabData 大）
 
         function toggleZh() {
             showZh = !showZh;
@@ -763,21 +985,36 @@
 
         function changeWeek() {
             showZh = false;  // 換週預設關閉中文釋義
-            const selector = document.getElementById('week-selector');
-            const selection = resolveSelection(selector.value);
+            const value = document.getElementById('week-selector').value;
+            currentMode = value;
 
-            if (!selection) {
-                alert("Data missing for this week! Please check if JS files are loaded.");
-                return;
-            }
-
-            if (selection.kind === 'all' || selection.kind === 'range') {
-                // ALL 與考試範圍：跨週合併後洗牌一次當原始資料快照
-                rawWordsForWeek = selection.words.slice().sort(() => Math.random() - 0.5);
+            if (value === 'today') {
+                const plan = getTodayPlan();
+                if (plan.status !== 'ok') {
+                    rawWordsForWeek = [];
+                    distractorPool = [];
+                } else {
+                    // 上課日練今天的新字，週末與放假日改複習本週到目前為止累積的字
+                    rawWordsForWeek = plan.isRestDay ? plan.soFar : plan.words;
+                    // 今天只有兩個字，Quiz 的誘答選項改從整週抽，才不會變成二選一
+                    distractorPool = plan.weekWords;
+                }
+            } else if (value === 'wrong') {
+                rawWordsForWeek = getReviewWords();
+                distractorPool = allWordsFlat();
             } else {
-                rawWordsForWeek = selection.words;
+                const selection = resolveSelection(value);
+                if (!selection) {
+                    alert("Data missing for this week! Please check if JS files are loaded.");
+                    return;
+                }
+                rawWordsForWeek = (selection.kind === 'all' || selection.kind === 'range')
+                    ? selection.words.slice().sort(() => Math.random() - 0.5)   // 跨週合併後洗牌一次
+                    : selection.words;
+                distractorPool = rawWordsForWeek;
             }
 
+            renderDailyCard();
             applyCategoryFilter();
         }
 
@@ -826,6 +1063,86 @@
             if (activeSection.id === 'section-spelling') generateSpellingQuiz();
         }
 
+        // 今日進度卡（只在「今天」「複習錯過的字」兩種模式顯示）
+        function renderDailyCard() {
+            const card = document.getElementById('daily-card');
+            if (!card) return;
+
+            if (currentMode === 'wrong') {
+                const n = rawWordsForWeek.length;
+                card.className = 'daily-card' + (n === 0 ? ' done' : '');
+                card.style.display = 'block';
+                card.innerHTML = n === 0
+                    ? `<div class="daily-title">🎉 目前沒有要複習的字</div>
+                       <div class="daily-note">答錯過而且還沒練熟的字會自動收進這裡。</div>`
+                    : `<div class="daily-title">🔁 複習錯過的字</div>
+                       <div class="daily-note">還有 <b>${n}</b> 個字答錯過但還沒練熟，錯最多的排在前面。<br>
+                       同一個字答對 3 次（而且對比錯多）就會自動從這裡畢業。</div>`;
+                return;
+            }
+
+            if (currentMode !== 'today') { card.style.display = 'none'; return; }
+
+            const plan = getTodayPlan();
+            card.style.display = 'block';
+
+            if (plan.status === 'not-started') {
+                card.className = 'daily-card';
+                card.innerHTML = `<div class="daily-title">📅 學期還沒開始</div>
+                    <div class="daily-note">第一天是 ${DAILY_PLAN.startDate}，在那之前可以先用下拉選單複習舊的單字。</div>`;
+                return;
+            }
+            if (plan.status === 'no-data') {
+                card.className = 'daily-card';
+                card.innerHTML = `<div class="daily-title">📦 W${plan.weekNo} 的單字還沒匯入</div>
+                    <div class="daily-note">今天是 W${plan.weekNo} Day${plan.dayInWeek}，但這一週的單字還沒放進來。<br>
+                    先用下拉選單挑其他週練習。</div>`;
+                return;
+            }
+
+            const done = isDayComplete(plan);
+            const streak = computeStreak();
+            const t = userProfile.progress.today;
+            const okToday = (t.date === plan.dateISO) ? t.words : [];
+
+            const wordsHtml = rawWordsForWeek.map(w => {
+                const ok = okToday.includes(wordKey(w.word));
+                return `<div class="daily-word ${ok ? 'ok' : ''}">
+                    <span>${ok ? '✅' : '⬜'}</span>
+                    <span class="daily-word-text">${escapeHtml(w.word)}</span>
+                </div>`;
+            }).join('');
+
+            const heading = plan.isHoliday
+                ? `🎌 放假複習 · W${plan.weekNo}`
+                : plan.isWeekend
+                    ? `🌤️ 週末複習 · W${plan.weekNo}`
+                    : `⭐ 今天的兩個字 · W${plan.weekNo} Day${plan.dayInWeek}`;
+
+            const note = done
+                ? '今天的字都答對了，太棒了！還想練的話可以去 🔁 複習錯過的字。'
+                : plan.isRestDay
+                    ? '今天不加新字，把這禮拜學過的再過一遍就好。'
+                    : '去 <b>Quiz</b> 或 <b>Spell</b> 把這兩個字各答對一次，就完成今天的進度。';
+
+            card.className = 'daily-card' + (done ? ' done' : '');
+            card.innerHTML = `
+                <div class="daily-head">
+                    <span class="daily-title">${heading}</span>
+                    ${streak > 0 ? `<span class="daily-streak">🔥 連續 ${streak} 天</span>` : ''}
+                </div>
+                <div class="daily-words">${wordsHtml}</div>
+                <div class="daily-note">${note}</div>
+            `;
+        }
+
+        // 單字/釋義都是自己的資料，但插進 innerHTML 前還是先轉義，避免撇號或角括號弄壞畫面
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => (
+                { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+            ));
+        }
+
         // List
         function renderList() {
             const container = document.getElementById('word-list-container');
@@ -838,42 +1155,68 @@
             zhBtn.classList.toggle('active', showZh);
             zhBtn.textContent = showZh ? '隱藏中文釋義' : '顯示中文釋義';
 
+            // 熟練度小標記，讓她一眼看到哪些字還沒練熟
+            const badge = { mastered: '✅', review: '🔁', learning: '📖', new: '' };
+
             vocabData.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'word-item';
                 const zhBlock = item.zh
                     ? `<div class="zh-def" style="display:${showZh ? 'block' : 'none'}">${item.zh}</div>`
                     : '';
+                // ex 與 zh 是自己寫的資料、含刻意的 <br>，維持原樣；word/pos/def 轉義
                 div.innerHTML = `
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <div>
-                            <span class="word-title">${item.word}</span>
-                            <span style="color:#888; margin-left:10px;">${item.pos}</span>
+                            <span class="word-title">${escapeHtml(item.word)}</span>
+                            <span style="color:#888; margin-left:10px;">${escapeHtml(item.pos)}</span>
+                            <span style="margin-left:6px;">${badge[wordStatus(item.word)]}</span>
                         </div>
-                        <button onclick="speak('${item.word}')" style="background:none; border:1px solid #ddd; border-radius:15px; cursor:pointer;">🔈</button>
+                        <button class="speak-btn" style="background:none; border:1px solid #ddd; border-radius:15px; cursor:pointer;">🔈</button>
                     </div>
-                    <div style="margin-top:10px; font-weight:bold;">${item.def}</div>
+                    <div style="margin-top:10px; font-weight:bold;">${escapeHtml(item.def)}</div>
                     <div style="margin-top:5px; color:#555; font-style:italic;">${item.ex}</div>
                     ${zhBlock}
                 `;
+                // 用事件監聽而不是 inline onclick，含撇號的單字才不會弄壞字串
+                div.querySelector('.speak-btn').addEventListener('click', () => speak(item.word));
                 container.appendChild(div);
             });
         }
 
         // Flashcards
         function updateFlashcard() {
-            if (vocabData.length === 0) return;
+            const flashcard = document.getElementById('flashcard');
+            // 沒字時要清空，否則會留著上一個範圍的字卡
+            if (vocabData.length === 0) {
+                document.getElementById('fc-word').innerText = '—';
+                document.getElementById('fc-pos').innerText = '';
+                document.getElementById('fc-def').innerText = '這個範圍沒有字';
+                document.getElementById('fc-ex').innerHTML = '';
+                flashcard.classList.remove('flipped');
+                return;
+            }
             const item = vocabData[currentCardIndex];
             document.getElementById('fc-word').innerText = item.word;
             document.getElementById('fc-pos').innerText = item.pos;
             document.getElementById('fc-def').innerText = item.def;
             document.getElementById('fc-ex').innerHTML = item.ex;
-            document.getElementById('flashcard').classList.remove('flipped');
+            flashcard.classList.remove('flipped');
         }
         function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
-        function nextCard() { currentCardIndex = (currentCardIndex + 1) % vocabData.length; updateFlashcard(); }
-        function prevCard() { currentCardIndex = (currentCardIndex - 1 + vocabData.length) % vocabData.length; updateFlashcard(); }
-        function speakCurrentCard() { speak(vocabData[currentCardIndex].word); }
+        function nextCard() {
+            if (!vocabData.length) return;
+            currentCardIndex = (currentCardIndex + 1) % vocabData.length;
+            updateFlashcard();
+        }
+        function prevCard() {
+            if (!vocabData.length) return;
+            currentCardIndex = (currentCardIndex - 1 + vocabData.length) % vocabData.length;
+            updateFlashcard();
+        }
+        function speakCurrentCard() {
+            if (vocabData.length) speak(vocabData[currentCardIndex].word);
+        }
 
         // Quiz
         function generateQuiz() {
@@ -884,36 +1227,45 @@
             optionsContainer.innerHTML = '';
             document.getElementById('quiz-audio-btn').style.display = 'none';  // 新題先藏發音鈕
 
-            // 至少要有 2 個字才有得問；< 4 個字時把選項數降到 vocabData.length
-            if (vocabData.length < 2) {
-                question.innerText = '本週這個類別字太少，無法出題 🥲';
+            // 誘答池：「今天」模式的 vocabData 只有兩個字，改從整週抽才不會變成二選一
+            const pool = (distractorPool && distractorPool.length > vocabData.length)
+                ? distractorPool : vocabData;
+
+            if (vocabData.length < 1 || pool.length < 2) {
+                question.innerText = '這個範圍的字太少，無法出題 🥲';
                 return;
             }
 
-            const correctIndex = Math.floor(Math.random() * vocabData.length);
-            const correctItem = vocabData[correctIndex];
+            // 優先考今天還沒答對的字
+            const notYet = vocabData.filter(w => !answeredCorrectToday(w.word));
+            const askFrom = notYet.length ? notYet : vocabData;
+            const correctItem = askFrom[Math.floor(Math.random() * askFrom.length)];
             currentQuizWord = correctItem.word;  // 存正解的字供「聽答案發音」用
 
-            const maxDistractors = Math.min(3, vocabData.length - 1);
-            let distractors = [];
-            while (distractors.length < maxDistractors) {
-                let idx = Math.floor(Math.random() * vocabData.length);
-                if (idx !== correctIndex && !distractors.includes(idx)) distractors.push(idx);
-            }
+            const others = pool
+                .filter(w => wordKey(w.word) !== wordKey(correctItem.word))
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 3);
+            const options = [correctItem, ...others].sort(() => Math.random() - 0.5);
 
-            const optionsIndices = [correctIndex, ...distractors].sort(() => Math.random() - 0.5);
+            // 兩種問法各半：看定義選單字 / 看單字選定義，避免只練單一方向
+            const askByDef = Math.random() < 0.5;
+            question.innerText = askByDef
+                ? `"${correctItem.def}"`
+                : `${correctItem.word}  ${correctItem.pos}`;
+            currentQuizAnswerText = askByDef ? correctItem.word : correctItem.def;
 
-            question.innerText = `"${correctItem.def}"`;
-            optionsIndices.forEach(idx => {
-                const item = vocabData[idx];
+            options.forEach(item => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
-                btn.innerText = item.word;
-                btn.onclick = () => checkQuizAnswer(btn, idx === correctIndex, 'quiz-feedback');
+                btn.innerText = askByDef ? item.word : item.def;
+                const isCorrect = wordKey(item.word) === wordKey(correctItem.word);
+                btn.onclick = () => checkQuizAnswer(btn, isCorrect, 'quiz-feedback');
                 optionsContainer.appendChild(btn);
             });
         }
 
+        const QUIZ_COINS = 20;
         function checkQuizAnswer(btn, isCorrect, feedbackId) {
             const feedback = document.getElementById(feedbackId);
             const buttons = btn.parentElement.querySelectorAll('.option-btn');
@@ -922,88 +1274,166 @@
             // 答完顯示「聽答案發音」鈕（答對答錯都能聽正解）
             document.getElementById('quiz-audio-btn').style.display = 'inline-block';
 
+            // 金幣只在「今天第一次答對這個字」時給，避免同一個字重複刷
+            const firstToday = recordAnswer(currentQuizWord, isCorrect);
+
             if (isCorrect) {
                 btn.classList.add('correct');
-                feedback.innerText = "Correct! +20 Coins 💰";
+                if (firstToday) {
+                    feedback.innerText = `Correct! +${QUIZ_COINS} Coins 💰`;
+                    addCoins(QUIZ_COINS);
+                } else {
+                    feedback.innerText = 'Correct! （這個字今天已經拿過金幣了）';
+                }
                 feedback.style.color = "green";
                 speak("Correct");  // 對應 audio/correct.m4a（Achernar）
-                addCoins(20); 
+                checkDailyGoal();
             } else {
                 btn.classList.add('wrong');
                 // 把正解那格標綠，看著＋聽著一起訂正
-                buttons.forEach(b => { if (b.innerText === currentQuizWord) b.classList.add('correct'); });
+                buttons.forEach(b => { if (b.innerText === currentQuizAnswerText) b.classList.add('correct'); });
                 feedback.innerText = "Try again next time!";
                 feedback.style.color = "red";
                 speak("Try again");
             }
+            renderList();       // 熟練度標記即時更新
+            renderDailyCard();
         }
 
         // Spelling
+        let currentSpell = null;   // { item, word, blanks:[字母索引], cursor }
+
+        // 字越長挖越多格，短字仍只挖一格
+        function blanksForLength(n) {
+            if (n <= 4) return 1;
+            if (n <= 7) return 2;
+            return 3;
+        }
+
         function generateSpellingQuiz() {
             const feedback = document.getElementById('spelling-feedback');
+            const hintEl = document.getElementById('spelling-hint');
             feedback.innerText = '';
+
             if (vocabData.length === 0) {
                 document.getElementById('spelling-display').innerText = '_ _ _';
-                feedback.innerText = '本週這個類別字太少，無法出題 🥲';
+                feedback.innerText = '這個範圍沒有字，無法出題 🥲';
                 document.getElementById('spelling-options').innerHTML = '';
+                hintEl.innerHTML = '';
+                currentSpell = null;
                 return;
             }
-            const randomItem = vocabData[Math.floor(Math.random() * vocabData.length)];
-            const word = randomItem.word;
-            
-            let validIndices = [];
-            for (let i = 0; i < word.length; i++) {
-                if (/[a-z]/i.test(word[i])) validIndices.push(i);
-            }
-            
-            const hideIndex = validIndices[Math.floor(Math.random() * validIndices.length)];
-            const correctChar = word[hideIndex].toLowerCase();
-            
-            let displayString = "";
-            for (let i = 0; i < word.length; i++) {
-                if (i === hideIndex) displayString += "_ ";
-                else displayString += word[i] + " ";
-            }
-            document.getElementById('spelling-display').innerText = displayString;
 
+            // 優先練今天還沒答對的字
+            const notYet = vocabData.filter(w => !answeredCorrectToday(w.word));
+            const askFrom = notYet.length ? notYet : vocabData;
+            const item = askFrom[Math.floor(Math.random() * askFrom.length)];
+            const word = item.word;
+
+            // 只挖英文字母，空白與符號保持原樣（如 "find out"）
+            const letterIdx = [];
+            for (let i = 0; i < word.length; i++) {
+                if (/[a-z]/i.test(word[i])) letterIdx.push(i);
+            }
+            const howMany = Math.min(blanksForLength(letterIdx.length), letterIdx.length);
+            const blanks = letterIdx.slice()
+                .sort(() => Math.random() - 0.5)
+                .slice(0, howMany)
+                .sort((a, b) => a - b);
+
+            currentSpell = { item, word, blanks, cursor: 0 };
+
+            // 給提示：定義（有中文就一起給）＋先唸一次，讓她知道在拼哪個字
+            hintEl.innerHTML = `<div style="font-weight:bold;">${escapeHtml(item.def)}</div>`
+                + (item.zh ? `<div style="color:#c98a00; margin-top:4px;">${item.zh}</div>` : '');
+            speak(word);
+
+            renderSpellingDisplay();
+            renderSpellingOptions();
+        }
+
+        function renderSpellingDisplay() {
+            const { word, blanks, cursor } = currentSpell;
+            let html = '';
+            for (let i = 0; i < word.length; i++) {
+                const bi = blanks.indexOf(i);
+                if (bi === -1) html += escapeHtml(word[i]) + ' ';
+                else if (bi < cursor) html += `<span class="blank-filled">${escapeHtml(word[i])}</span> `;
+                else if (bi === cursor) html += `<span class="blank-active">_</span> `;
+                else html += '_ ';
+            }
+            document.getElementById('spelling-display').innerHTML = html;
+        }
+
+        function renderSpellingOptions() {
+            const { word, blanks, cursor } = currentSpell;
+            const correctChar = word[blanks[cursor]].toLowerCase();
             const alphabet = "abcdefghijklmnopqrstuvwxyz";
-            let options = [correctChar];
+            const options = [correctChar];
             while (options.length < 4) {
-                const randomChar = alphabet[Math.floor(Math.random() * alphabet.length)];
-                if (!options.includes(randomChar)) options.push(randomChar);
+                const c = alphabet[Math.floor(Math.random() * alphabet.length)];
+                if (!options.includes(c)) options.push(c);
             }
             options.sort(() => Math.random() - 0.5);
-            
+
             const container = document.getElementById('spelling-options');
             container.innerHTML = '';
-            
             options.forEach(char => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.style.fontWeight = 'bold';
                 btn.innerText = char;
-                btn.onclick = () => checkSpellingAnswer(btn, char === correctChar, word);
+                btn.onclick = () => checkSpellingAnswer(btn, char === correctChar);
                 container.appendChild(btn);
             });
         }
 
-        function checkSpellingAnswer(btn, isCorrect, fullWord) {
+        const SPELL_COINS = 10;
+        function checkSpellingAnswer(btn, isCorrect) {
             const feedback = document.getElementById('spelling-feedback');
             const buttons = document.querySelectorAll('#spelling-options .option-btn');
-            buttons.forEach(b => b.disabled = true);
+            const { word, blanks } = currentSpell;
 
-            if (isCorrect) {
-                btn.classList.add('correct');
-                feedback.innerText = `Correct! +10 Coins 💰`;
-                feedback.style.color = "green";
-                document.getElementById('spelling-display').innerText = fullWord.split('').join(' ');
-                addCoins(10); 
-            } else {
+            if (!isCorrect) {
+                buttons.forEach(b => b.disabled = true);
                 btn.classList.add('wrong');
-                feedback.innerText = `The word was "${fullWord}".`;
+                currentSpell.cursor = blanks.length;   // 一次揭曉整個字
+                renderSpellingDisplay();
+                feedback.innerText = `The word was "${word}".`;
                 feedback.style.color = "red";
+                recordAnswer(word, false);
+                speak(word);
+                renderList();
+                renderDailyCard();
+                return;
             }
-            speak(fullWord);
+
+            btn.classList.add('correct');
+            currentSpell.cursor++;
+            renderSpellingDisplay();
+
+            // 還有空格沒填完，換下一批字母選項
+            if (currentSpell.cursor < blanks.length) {
+                feedback.innerText = '👍 再一個！';
+                feedback.style.color = "green";
+                renderSpellingOptions();
+                return;
+            }
+
+            // 整個字拼完才算答對
+            buttons.forEach(b => b.disabled = true);
+            const firstToday = recordAnswer(word, true);
+            if (firstToday) {
+                feedback.innerText = `Correct! +${SPELL_COINS} Coins 💰`;
+                addCoins(SPELL_COINS);
+            } else {
+                feedback.innerText = 'Correct! （這個字今天已經拿過金幣了）';
+            }
+            feedback.style.color = "green";
+            speak(word);
+            checkDailyGoal();
+            renderList();
+            renderDailyCard();
         }
 
         function showSection(id, navEl) {
@@ -1082,6 +1512,11 @@
             buildWeekSelector();
             loadProfile();
             changeWeek();
+
+            // 註冊 service worker：加到主畫面後沒網路也能開
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            }
         }
 
     </script>

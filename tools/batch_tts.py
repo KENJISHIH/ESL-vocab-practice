@@ -37,6 +37,21 @@ ENDPOINT = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:gen
 PACE_SEC = 8  # 請求間隔；preview TTS 模型 RPM 很低，3 秒實測會被 429 轟炸
 
 
+class QuotaExhausted(Exception):
+    """撞到每日請求上限（RPD）—— 再跑下去只是空燒，整批中止。"""
+
+
+def is_daily_quota(body: str) -> bool:
+    """從 429 回應內容判斷是「每日上限」還是「每分鐘節流」。
+
+    Gemini 429 的 error.details 會帶 QuotaFailure，violation 的 quotaId /
+    quotaMetric 形如 GenerateRequestsPerDayPerProjectPerModel（每日）或
+    ...PerMinute...（短期節流）。只有前者要中止整批。
+    """
+    low = body.lower()
+    return any(k in low for k in ("perday", "per_day", "per day", "daily limit"))
+
+
 def api_key() -> str:
     for line in (Path.home() / ".gemini/.env").read_text().splitlines():
         if line.startswith("GEMINI_API_KEY="):
@@ -89,9 +104,14 @@ def synthesize(word: str, key: str) -> bytes:
                 continue
             raise RuntimeError("重試後回應仍無音訊")
         except urllib.error.HTTPError as e:
-            if e.code == 429 and attempt < 4:
-                time.sleep(30 * (attempt + 1))  # 限流退避（30/60/90/120s）
-                continue
+            if e.code == 429:
+                if is_daily_quota(e.read().decode("utf-8", "replace")):
+                    raise QuotaExhausted("回應標示每日請求上限（RPD）已用完")
+                if attempt < 4:
+                    time.sleep(30 * (attempt + 1))  # 限流退避（30/60/90/120s）
+                    continue
+                # 保守判定：RPM 節流撐不過 30+60+90+120 秒的等待，還被擋就是配額沒了
+                raise QuotaExhausted("429 重試 5 次仍被擋（等超過 300 秒），視同配額用完")
             if e.code == 500 and attempt < 4:
                 time.sleep(3)  # Google 端暫時性錯誤（同 app 的重試邏輯）
                 continue
@@ -118,11 +138,21 @@ def main() -> None:
 
     key = api_key()
     failed = []
+    ok = 0
+    quota_hit = False
     for i, word in enumerate(todo, 1):
         try:
             pcm = synthesize(word, key)
             store_in_cache(word, wrap_wav(pcm))
+            ok += 1
             print(f"[{i}/{len(todo)}] ✅ {word}", flush=True)
+        except QuotaExhausted as e:
+            quota_hit = True
+            print(f"\n⛔ 今日配額已用完（{word}: {e}）", flush=True)
+            print(f"   本次已產生 {ok} 字，還剩 {len(todo) - i + 1} 字沒補", flush=True)
+            print("   配額於太平洋時間午夜重置（約台北隔天 15:00 之後），"
+                  "明天再跑一次就會接著補", flush=True)
+            break
         except Exception as e:
             failed.append(word)
             print(f"[{i}/{len(todo)}] ❌ {word}: {e}", flush=True)
@@ -132,6 +162,8 @@ def main() -> None:
         print(f"\n失敗 {len(failed)}: {', '.join(failed)}（重跑本腳本會自動只補這些）")
     print("\n--- 轉檔 ---")
     subprocess.run([sys.executable, str(Path(__file__).parent / "export_tts.py")], check=True)
+    if quota_hit:
+        sys.exit(2)  # 給 補單字音檔.command 判斷用：因配額中止（音檔仍要 commit）
 
 
 if __name__ == "__main__":

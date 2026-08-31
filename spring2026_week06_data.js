@@ -2,7 +2,7 @@
 const spring2026Week6Data = [
     {
         word: 'himself',
-        pos: '(pronoun)',
+        pos: '(pron.)',
         def: 'used for a particular man, boy, or male animal',
         ex: '1. Tom was going to buy a bookcase, but in the end he made one himself.<br>2. Little Timmy made that snowman all by himself.',
         category: 'Reading',

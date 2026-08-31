@@ -57,6 +57,94 @@ const VOCAB_DATA = {
     spring2026Week19Data, spring2026Week20Data, spring2026Week21Data,
 };
 
+// ─── 每日進度計畫 ────────────────────────────────────────
+// 老師規定每天背 2 個字，照該週單字表的順序切：
+//   Day1 = 第 1-2 個字、Day2 = 第 3-4 個字 … Day5 = 第 9-10 個字
+// 錨點：2026-08-31（一）＝ 2026 Fall W1 Day1
+// 換學期只要改 semester 與 startDate（startDate 必須是該學期 W1 的星期一）
+const DAILY_PLAN = {
+    semester: '2026-fall',
+    startDate: '2026-08-31',
+    wordsPerDay: 2,
+    daysPerWeek: 5,   // Day1=週一 … Day5=週五；週末不推進，當成該週的複習日
+    // 放假的平日（國定假日、颱風假…）。純標示用：那天改成複習整週、不催她背新字。
+    // 週次是照日曆週算的，所以填不填都「不會」影響 W?/Day? 的對齊，可以安心留空。
+    // 2026 Fall 學期內落在平日的國定假日（皆為星期五）：
+    skipDates: [
+        '2026-09-25',   // 中秋節
+        '2026-10-09',   // 國慶連假補假
+        '2027-01-01',   // 元旦
+    ],
+};
+
+// 本地時區的 YYYY-MM-DD（不能用 toISOString，那是 UTC 會差一天）
+function localISODate(d) {
+    const p = n => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
+// 算出今天屬於第幾週、星期幾（回傳 null 代表學期還沒開始）
+//
+// ⚠️ 一定要用「日曆週」算，不能用「累計上課日 ÷ 5」：
+// 老師的 W1/W2/W3 是照日曆週編號的，放假不會讓週次順延（例如 2026-09-25 中秋節
+// 放假，下週一還是 W5 Day1，不會變成 W4 Day5）。用累計上課日的話，只要遇到一天
+// 國定假日，之後整學期的週次就全部偏掉，而且畫面上看不出來。
+function weekAndDay(startISO, today) {
+    const start = new Date(startISO + 'T00:00:00');   // 必須是 W1 的星期一
+    const cur = new Date(localISODate(today) + 'T00:00:00');
+    if (cur < start) return null;
+
+    // 回推到 cur 所屬那一週的星期一（週日算成該週最後一天）
+    const dow = cur.getDay();                      // 0=日 1=一 … 6=六
+    const monday = new Date(cur);
+    monday.setDate(monday.getDate() - (dow === 0 ? 6 : dow - 1));
+
+    const weekNo = Math.round((monday - start) / (7 * 86400000)) + 1;
+    // 平日 Day1–Day5；週末不推進，停在 Day5
+    const dayInWeek = (dow >= 1 && dow <= 5) ? dow : DAILY_PLAN.daysPerWeek;
+    return { weekNo, dayInWeek };
+}
+
+// 算出今天該背哪兩個字
+// 回傳 status: 'not-started' 學期未開始 / 'no-data' 該週單字還沒匯入 / 'ok'
+function getTodayPlan(now) {
+    const today = now || new Date();
+    const todayISO = localISODate(today);
+    const dow = today.getDay();
+    const isWeekend = (dow === 0 || dow === 6);
+    const isHoliday = (DAILY_PLAN.skipDates || []).includes(todayISO);
+    const isRestDay = isWeekend || isHoliday;   // 不加新字、改複習的日子
+
+    const wd = weekAndDay(DAILY_PLAN.startDate, today);
+    if (!wd) return { status: 'not-started', isWeekend, isHoliday, isRestDay };
+
+    const { weekNo, dayInWeek } = wd;
+    const base = { weekNo, dayInWeek, isWeekend, isHoliday, isRestDay, dateISO: todayISO };
+
+    const entry = VOCAB_MANIFEST.find(e => e.semester === DAILY_PLAN.semester && e.week === weekNo);
+    const all = entry ? VOCAB_DATA[entry.dataVar] : null;
+    if (!Array.isArray(all)) return { ...base, status: 'no-data' };
+
+    const from = (dayInWeek - 1) * DAILY_PLAN.wordsPerDay;
+    return {
+        ...base,
+        status: 'ok',
+        words: all.slice(from, from + DAILY_PLAN.wordsPerDay),   // 今天的新字
+        soFar: all.slice(0, from + DAILY_PLAN.wordsPerDay),      // 本週到今天累積（週末複習用）
+        weekWords: all,                                          // 整週，給 Quiz 當誘答選項池
+    };
+}
+
+// 全站所有單字攤平（給「複習錯過的字」用）
+function allWordsFlat() {
+    let out = [];
+    VOCAB_MANIFEST.forEach(e => {
+        const arr = VOCAB_DATA[e.dataVar];
+        if (Array.isArray(arr)) out = out.concat(arr);
+    });
+    return out;
+}
+
 // 取出每個 semester 的標籤（保持登記順序）
 function getSemesters() {
     const seen = new Set();

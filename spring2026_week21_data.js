@@ -19,7 +19,7 @@ const spring2026Week21Data = [
     {
         word: 'ran',
         zh: '跑（run 的過去式）',
-        pos: '(n.)',
+        pos: '(v.)',
         def: 'past simple of run',
         ex: '1. They ran over the grass.<br>2. He ran out the door.',
         category: 'Reading',

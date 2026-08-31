@@ -35,7 +35,7 @@ const spring2026Week13Data = [
     {
         word: 'myself',
         zh: '我自己',
-        pos: '(pronoun)',
+        pos: '(pron.)',
         def: 'strong form of I',
         ex: '1. I made the dinner all by myself.<br>2. I\'m afraid I can\'t help you; I\'m a stranger here myself.',
         category: 'Reading',
@@ -59,7 +59,7 @@ const spring2026Week13Data = [
     {
         word: 'still',
         zh: '仍然；還',
-        pos: '(adj. / adv.)',
+        pos: '(adj./adv.)',
         def: 'happening now',
         ex: '1. Makoto still had lots of boxes to unpack.<br>2. Mrs. Lee is 70 years old, and she\'s still very healthy.',
         category: 'Reading',

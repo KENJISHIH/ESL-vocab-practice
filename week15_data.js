@@ -16,7 +16,7 @@ const week15Data = [
     },
     {
         word: "near",
-        pos: "(adv./ adj.)",
+        pos: "(adv./adj.)",
         def: "close to; not far away",
         ex: "1. David lives near the school.<br>2. He sat in a chair near the door.",
         category: "Reading"

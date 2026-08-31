@@ -44,7 +44,7 @@ const spring2026Week8Data = [
     },
     {
         word: 'around',
-        pos: '(adv. / prep.)',
+        pos: '(adv./prep.)',
         def: 'surrounding a center ; to many places',
         ex: '1. David will show you around the school.<br>2. Children dance around the tree.',
         category: 'Reading',
