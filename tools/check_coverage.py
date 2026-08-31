@@ -122,7 +122,8 @@ def main() -> None:
     if len(problems) > 20:
         print(f"   …另外 {len(problems) - 20} 項")
     print("\n補法：")
-    print("   缺中文 → 手工加 zh 欄位（放在 word 後面），別再跑 json_to_js.py 否則會被洗掉")
+    print("   缺中文 → 加 zh 欄位（OCR JSON 或 *_data.js 都行，放在 word 後面）；")
+    print("            json_to_js.py 重跑時會把既有的 zh 讀回來，不會洗掉")
     print("   缺音檔 → python3 tools/batch_tts.py <該週_data.js>，或雙擊 補單字音檔.command")
     print("   字數不足 → 回頭核對 OCR 結果，每週要剛好 10 個字")
     sys.exit(1)

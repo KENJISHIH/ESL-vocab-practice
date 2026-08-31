@@ -535,7 +535,10 @@
         </div>
     </div>
 
-    <!-- 載入單字資料庫 (2025 Fall) -->
+    <!-- 單字資料檔：由 tools/sync_manifest.py 產生，不要手改。
+         必須排在 vocab_manifest.js 之前（VOCAB_DATA 在 parse 當下就要參照到這些 const）。 -->
+    <!-- DATA_SCRIPTS:START -->
+    <!-- 2025 Fall -->
     <script src="week12_data.js"></script>
     <script src="week13_data.js"></script>
     <script src="week14_data.js"></script>
@@ -544,7 +547,7 @@
     <script src="week17_data.js"></script>
     <script src="week18_data.js"></script>
     <script src="week19_data.js"></script>
-    <!-- 載入單字資料庫 (2026 Spring) -->
+    <!-- 2026 Spring -->
     <script src="spring2026_week01_data.js"></script>
     <script src="spring2026_week02_data.js"></script>
     <script src="spring2026_week03_data.js"></script>
@@ -563,6 +566,9 @@
     <script src="spring2026_week19_data.js"></script>
     <script src="spring2026_week20_data.js"></script>
     <script src="spring2026_week21_data.js"></script>
+    <!-- 2026 Fall -->
+    <script src="fall2026_week01_data.js"></script>
+<!-- DATA_SCRIPTS:END -->
     <!-- 載入週次清單 (manifest) 與商店資料庫 -->
     <script src="vocab_manifest.js"></script>
     <script src="shop_data.js"></script>
