@@ -1219,6 +1219,44 @@
             ));
         }
 
+        // 例句固定是「1. 句子<br>2. 句子」；切成句子並剝掉開頭編號，
+        // 不剝的話瀏覽器 TTS 會把「1.」念成 one dot
+        function splitExamples(ex) {
+            return String(ex)
+                .split(/<br\s*\/?>/i)
+                .map(s => s.replace(/^\s*\d+\s*\.\s*/, '').trim())
+                .filter(Boolean);
+        }
+
+        // 例句音檔路徑：句子 slug，規則必須與 tools/gen_example_tts.py 的 slugify() 一致
+        function exAudioPath(sentence) {
+            const slug = sentence.toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .slice(0, 80)
+                .replace(/-+$/, '');
+            return `audio/ex/${slug}.m4a`;
+        }
+
+        // 逐句一行，尾端一顆播放鍵。音檔沒生成的句子，speak() 會自動退到瀏覽器 TTS
+        function renderExamples(ex) {
+            return splitExamples(ex).map((s, i) => `
+                <div style="display:flex; align-items:flex-start; gap:6px; margin-top:4px;">
+                    <span style="flex:1;">${i + 1}. ${escapeHtml(s)}</span>
+                    <button type="button" class="ex-speak-btn" data-ex="${escapeHtml(s)}"
+                        style="flex:none; background:none; border:1px solid #ddd; border-radius:12px; cursor:pointer;">🔈</button>
+                </div>`).join('');
+        }
+
+        function bindExampleSpeakers(root) {
+            root.querySelectorAll('.ex-speak-btn').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    e.stopPropagation();        // 卡片模式：按播放不要順手翻面
+                    speak(btn.dataset.ex, exAudioPath(btn.dataset.ex));
+                });
+            });
+        }
+
         // List
         function renderList() {
             const container = document.getElementById('word-list-container');
@@ -1251,11 +1289,12 @@
                         <button class="speak-btn" style="background:none; border:1px solid #ddd; border-radius:15px; cursor:pointer;">🔈</button>
                     </div>
                     <div style="margin-top:10px; font-weight:bold;">${escapeHtml(item.def)}</div>
-                    <div style="margin-top:5px; color:#555; font-style:italic;">${item.ex}</div>
+                    <div style="margin-top:5px; color:#555; font-style:italic;">${renderExamples(item.ex)}</div>
                     ${zhBlock}
                 `;
                 // 用事件監聽而不是 inline onclick，含撇號的單字才不會弄壞字串
                 div.querySelector('.speak-btn').addEventListener('click', () => speak(item.word));
+                bindExampleSpeakers(div);
                 container.appendChild(div);
             });
         }
@@ -1276,7 +1315,9 @@
             document.getElementById('fc-word').innerText = item.word;
             document.getElementById('fc-pos').innerText = item.pos;
             document.getElementById('fc-def').innerText = item.def;
-            document.getElementById('fc-ex').innerHTML = item.ex;
+            const exEl = document.getElementById('fc-ex');
+            exEl.innerHTML = renderExamples(item.ex);
+            bindExampleSpeakers(exEl);
             flashcard.classList.remove('flipped');
         }
         function flipCard() { document.getElementById('flashcard').classList.toggle('flipped'); }
@@ -1525,9 +1566,10 @@
             if(id === 'spelling') generateSpellingQuiz();
         }
 
-        // 預錄音檔（一查究竟 Achernar 音色）優先，沒有的字 fallback 瀏覽器 TTS
+        // 預錄音檔優先（單字＝一查究竟 Achernar，例句＝Edge TTS Jenny，見 tools/），
+        // 沒有音檔的才 fallback 瀏覽器 TTS
         let currentAudio = null;
-        function speak(text) {
+        function speak(text, audioSrc) {
             window.speechSynthesis.cancel();
             if (currentAudio) { currentAudio.pause(); currentAudio = null; }
 
@@ -1540,7 +1582,7 @@
                 window.speechSynthesis.speak(utterance);
             };
 
-            const audio = new Audio(`audio/${text.trim().toLowerCase()}.m4a`);
+            const audio = new Audio(audioSrc || `audio/${text.trim().toLowerCase()}.m4a`);
             audio.onerror = fallback;
             currentAudio = audio;
             audio.play().catch(fallback);
