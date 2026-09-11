@@ -19,7 +19,7 @@ const fall2026Week1Data = [
     {
         word: 'go shopping',
         zh: '去買東西；去逛街購物',
-        pos: '(ph.) (v.)',
+        pos: '(phr. v.)',
         def: 'to go looking for things to buy',
         ex: '1. Mom likes to go shopping at the supermarket.<br>2. I went shopping for some new clothes last Saturday.',
         category: 'Reading',

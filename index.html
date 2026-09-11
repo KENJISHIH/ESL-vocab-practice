@@ -500,6 +500,12 @@
             <div id="quiz-options"></div>
             <div id="quiz-feedback" class="feedback-msg" style="height:20px;"></div>
             <button id="quiz-audio-btn" onclick="speak(currentQuizWord)" style="display:none; margin-top:12px; padding:8px 18px; border-radius:20px; border:2px solid var(--primary-color); background:white; color:var(--primary-color); font-weight:bold; cursor:pointer;">🔈 聽答案發音</button>
+            <div id="quiz-pos-step" style="display:none; margin-top:20px; padding-top:16px; border-top:2px dashed #eee;">
+                <div style="font-size:1.05em; font-weight:bold;">再一題：<span id="quiz-pos-word"></span> 的詞性怎麼寫？</div>
+                <div style="color:#888; font-size:0.85em; margin:4px 0 12px;">看清楚點點的位置</div>
+                <div id="quiz-pos-options"></div>
+                <div id="quiz-pos-feedback" class="feedback-msg" style="height:20px;"></div>
+            </div>
             <button onclick="generateQuiz()" class="option-btn" style="background:var(--primary-color); color:white; border:none; margin-top:20px;">Next Question</button>
         </div>
     </div>
@@ -1051,6 +1057,7 @@
         let showZh = false;          // 中文釋義 toggle（切週時歸零）
         let currentQuizWord = '';    // 目前題目的正解單字（給「聽答案發音」用）
         let currentQuizAnswerText = '';  // 正解那顆按鈕上的文字（答錯時標綠用）
+        let currentQuizItem = null;      // 目前題目的整筆資料（詞性追問要讀 pos）
         let currentMode = '';        // 目前選單值：'today' / 'wrong' / 'semester:week' …
         let distractorPool = [];     // Quiz 誘答選項的取樣池（今天模式下比 vocabData 大）
 
@@ -1343,6 +1350,7 @@
             feedback.innerText = '';
             optionsContainer.innerHTML = '';
             document.getElementById('quiz-audio-btn').style.display = 'none';  // 新題先藏發音鈕
+            document.getElementById('quiz-pos-step').style.display = 'none';   // 詞性追問等答完才出現
 
             // 誘答池：「今天」模式的 vocabData 只有兩個字，改從整週抽才不會變成二選一
             const pool = (distractorPool && distractorPool.length > vocabData.length)
@@ -1358,6 +1366,7 @@
             const askFrom = notYet.length ? notYet : vocabData;
             const correctItem = askFrom[Math.floor(Math.random() * askFrom.length)];
             currentQuizWord = correctItem.word;  // 存正解的字供「聽答案發音」用
+            currentQuizItem = correctItem;       // 供答完後的詞性追問用
 
             const others = pool
                 .filter(w => wordKey(w.word) !== wordKey(correctItem.word))
@@ -1367,9 +1376,10 @@
 
             // 兩種問法各半：看定義選單字 / 看單字選定義，避免只練單一方向
             const askByDef = Math.random() < 0.5;
+            // 題目不帶 pos：答完的詞性追問就是在考這個，先寫出來等於送分
             question.innerText = askByDef
                 ? `"${correctItem.def}"`
-                : `${correctItem.word}  ${correctItem.pos}`;
+                : correctItem.word;
             currentQuizAnswerText = askByDef ? correctItem.word : correctItem.def;
 
             options.forEach(item => {
@@ -1415,6 +1425,78 @@
             }
             renderList();       // 熟練度標記即時更新
             renderDailyCard();
+            showPosStep();      // 接著追問詞性怎麼寫
+        }
+
+        // 詞性追問
+        // 2026 Fall Week 1 拼字考扣的兩分全在詞性「怎麼寫」：go shopping 寫成 ph.r.、
+        // breathe 的 v 漏掉點。她知道詞性，錯在縮寫格式，所以誘答一律放近似的錯誤寫法。
+        const POS_COINS = 10;
+        const POS_DISTRACTORS = {
+            'n.':      ['n', 'nn.', 'v.'],
+            'v.':      ['v', 'vb.', 'n.'],
+            'adj.':    ['adj', 'ad.', 'adv.'],
+            'adv.':    ['adv', 'ad.', 'adj.'],
+            'pron.':   ['pron', 'pro.', 'prep.'],
+            'prep.':   ['prep', 'pre.', 'pron.'],
+            'conj.':   ['conj', 'con.', 'cong.'],
+            'phr. v.': ['ph.r.', 'ph. v.', 'phr.'],
+        };
+        const posLabel = pos => String(pos || '').replace(/[()]/g, '').trim();
+
+        function showPosStep() {
+            const step = document.getElementById('quiz-pos-step');
+            const optionsEl = document.getElementById('quiz-pos-options');
+            const label = posLabel(currentQuizItem && currentQuizItem.pos);
+            const distractors = POS_DISTRACTORS[label];
+            if (!distractors) { step.style.display = 'none'; return; }  // 兩用詞（adj./adv.）沒對照表就跳過
+
+            document.getElementById('quiz-pos-word').innerText = currentQuizItem.word;
+            document.getElementById('quiz-pos-feedback').innerText = '';
+            optionsEl.innerHTML = '';
+            [label, ...distractors].sort(() => Math.random() - 0.5).forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkPosAnswer(btn, opt === label, label);
+                optionsEl.appendChild(btn);
+            });
+            step.style.display = 'block';
+        }
+
+        // 詞性金幣同樣一天一個字只給一次，避免重複刷
+        function recordPosAnswer(word) {
+            const t = userProfile.progress.today;
+            const today = studyDateISO();
+            if (t.date !== today) { t.date = today; t.words = []; t.posWords = []; }
+            if (!t.posWords) t.posWords = [];   // 舊存檔沒這個欄位
+            const key = wordKey(word);
+            if (t.posWords.includes(key)) return false;
+            t.posWords.push(key);
+            saveProfile();
+            return true;
+        }
+
+        function checkPosAnswer(btn, isCorrect, correctLabel) {
+            const feedback = document.getElementById('quiz-pos-feedback');
+            const buttons = btn.parentElement.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+                if (recordPosAnswer(currentQuizWord)) {
+                    feedback.innerText = `寫法正確！+${POS_COINS} Coins 💰`;
+                    addCoins(POS_COINS);
+                } else {
+                    feedback.innerText = '寫法正確！（這個字今天已經拿過金幣了）';
+                }
+                feedback.style.color = 'green';
+            } else {
+                btn.classList.add('wrong');
+                buttons.forEach(b => { if (b.innerText === correctLabel) b.classList.add('correct'); });
+                feedback.innerText = `要寫成 ${correctLabel}`;
+                feedback.style.color = 'red';
+            }
         }
 
         // Spelling

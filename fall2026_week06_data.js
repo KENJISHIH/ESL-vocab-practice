@@ -11,7 +11,7 @@ const fall2026Week6Data = [
     {
         word: 'take a shower',
         zh: '洗澡（淋浴）',
-        pos: '(ph.) (v.)',
+        pos: '(phr. v.)',
         def: 'to clean your body with running water',
         ex: '1. My dad likes to sing when he takes a shower.<br>2. You are so smelly! Go take a shower!',
         category: 'Reading',
