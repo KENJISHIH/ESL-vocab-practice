@@ -4,6 +4,10 @@
 
 ## 2026-09-25
 
+- **紅圈與挖空題補上 Week 1–3**：2026 Fall Week 1–4 全部都有了，
+  「✏️ Spelling Check 1 (W1-W3)」複習範圍也會出挖空題
+  - Week 3 老師是畫底線、Week 1 的 Science 是用螢光筆標，意思一樣，網站統一畫成紅圈
+- 幕後：`tools/json_to_js.py` 重跑 OCR 轉檔不會再洗掉紅圈資料（`tools/test_keys_preserve.py` 守著）
 - **釋義上出現老師的紅圈**（先試 2026 Fall Week 4）：課本上老師用紅筆圈的關鍵字（例如 special 的
   **not usual**），列表、卡片、拼字提示都會用紅框圈起來，一眼看到要背哪幾個字
   - 老師有時畫圈、有時畫底線，網站統一用紅圈；老師沒圈的字（Week 4 的三個 Science 單字）照舊顯示

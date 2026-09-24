@@ -58,7 +58,21 @@ def existing_zh(path: Path) -> dict[str, str]:
     return out
 
 
-def render_week_js(week_obj: dict, var_name: str, keep_zh: dict[str, str]) -> str:
+def existing_keys(path: Path) -> dict[str, str]:
+    """從既有的 *_data.js 撈出 word → keys 陣列原文（老師紅圈的關鍵字，手工抄的，OCR 不會產）。"""
+    if not path.exists():
+        return {}
+    out: dict[str, str] = {}
+    for entry in re.findall(r"\{[^{}]*\}", path.read_text(encoding="utf-8"), re.S):
+        w = re.search(r"\bword\s*:\s*'((?:[^'\\]|\\.)*)'", entry)
+        k = re.search(r"\bkeys\s*:\s*(\[[^\]]*\])", entry)
+        if w and k:
+            out[w.group(1).replace("\\'", "'")] = k.group(1)
+    return out
+
+
+def render_week_js(week_obj: dict, var_name: str, keep_zh: dict[str, str],
+                   keep_keys: dict[str, str] | None = None) -> str:
     lines = [f"// {week_obj['semester']} Week {week_obj['week']}"]
     lines.append(f"const {var_name} = [")
     for w in week_obj["words"]:
@@ -75,6 +89,8 @@ def render_week_js(week_obj: dict, var_name: str, keep_zh: dict[str, str]) -> st
             lines.append(f"        zh: '{js_escape(zh)}',")
         lines.append(f"        pos: '{pos}',")
         lines.append(f"        def: '{def_}',")
+        if (keep_keys or {}).get(w["word"].strip()):
+            lines.append(f"        keys: {keep_keys[w['word'].strip()]},")
         lines.append(f"        ex: '{ex}',")
         if cat:
             lines.append(f"        category: '{cat}',")
@@ -109,7 +125,8 @@ def main() -> int:
         var_name = f"{prefix}Week{week_n}Data"
         out_path = out_dir / f"{prefix}_week{week_n:02d}_data.js"
         keep_zh = existing_zh(out_path)          # 保住手工加的中文釋義
-        out_path.write_text(render_week_js(week_obj, var_name, keep_zh), encoding="utf-8")
+        keep_keys = existing_keys(out_path)      # 保住手工抄的老師紅圈關鍵字
+        out_path.write_text(render_week_js(week_obj, var_name, keep_zh, keep_keys), encoding="utf-8")
         kept = sum(1 for w in week_obj["words"]
                    if not w.get("zh") and keep_zh.get(w["word"].strip()))
         note = f"（沿用舊檔 {kept} 筆中文釋義）" if kept else ""
