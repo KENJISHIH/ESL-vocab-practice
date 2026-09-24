@@ -2,7 +2,7 @@
 // 策略分兩種：
 //   程式與單字資料 → network-first（有網路時永遠拿到最新版，沒網路才用快取）
 //   音檔與圖片     → cache-first（檔案大又幾乎不變，抓過一次就不再重抓）
-const CACHE = 'esl-vocab-v2';
+const CACHE = 'esl-vocab-v3';
 
 // 檔名符合這些副檔名的走 cache-first
 const CACHE_FIRST = /\.(m4a|png|ico|jpg|jpeg|svg)$/i;
@@ -42,8 +42,10 @@ self.addEventListener('fetch', e => {
         return;
     }
 
+    // no-cache：每次都跟伺服器確認（沒變只回 304）。不加的話會吃到瀏覽器 HTTP 快取，
+    // GitHub Pages 給 max-age=600，push 完 10 分鐘內她拿到的仍是舊版（2026-09-25 踩過）
     e.respondWith(
-        fetch(req)
+        fetch(req, { cache: 'no-cache' })
             .then(res => cachePut(req, res))
             .catch(() => caches.match(req))
     );
