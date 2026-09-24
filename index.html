@@ -329,6 +329,13 @@
         .option-btn.correct { background: #dcedc8; border-color: #8bc34a; color: #33691e; }
         .option-btn.wrong { background: #ffcdd2; border-color: #e57373; color: #b71c1c; }
 
+        /* 老師紅筆圈的釋義關鍵字（資料的 keys 欄位）；clone 讓跨行的圈兩段都有框 */
+        .key-mark {
+            border: 2px solid #d32f2f; border-radius: 999px; padding: 0 5px;
+            -webkit-box-decoration-break: clone; box-decoration-break: clone;
+        }
+        .key-blank { display: inline-block; min-width: 4em; border-bottom: 2px solid #d32f2f; }
+
         .spelling-word {
             font-family: 'Courier New', monospace; font-size: 2em; letter-spacing: 5px;
             background: #f1f8e9; padding: 15px; border-radius: 10px; display: inline-block; margin-bottom: 15px;
@@ -1226,6 +1233,31 @@
             ));
         }
 
+        // 關鍵字要整字比對：不然 room 會去圈到 bedroom 裡面
+        const keyRegex = k => new RegExp(`\\b${k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+
+        // 釋義轉 HTML，把老師圈的 keys 包成紅圈；給 blankKey 時那一段改成挖空線（Quiz 挖空題用）
+        // 找不到的 key 直接略過：寧可少圈，不要圈錯位置
+        function renderDef(item, blankKey) {
+            const def = String(item.def);
+            const hits = [];
+            (item.keys || []).forEach(k => {
+                const m = keyRegex(k).exec(def);
+                if (m) hits.push({ start: m.index, end: m.index + k.length, key: k });
+            });
+            hits.sort((a, b) => a.start - b.start);
+            let html = '', pos = 0;
+            hits.forEach(h => {
+                if (h.start < pos) return;   // 重疊就跳過
+                html += escapeHtml(def.slice(pos, h.start));
+                html += h.key === blankKey
+                    ? '<span class="key-blank">&nbsp;</span>'
+                    : `<span class="key-mark">${escapeHtml(def.slice(h.start, h.end))}</span>`;
+                pos = h.end;
+            });
+            return html + escapeHtml(def.slice(pos));
+        }
+
         // 例句固定是「1. 句子<br>2. 句子」；切成句子並剝掉開頭編號，
         // 不剝的話瀏覽器 TTS 會把「1.」念成 one dot
         function splitExamples(ex) {
@@ -1295,7 +1327,7 @@
                         </div>
                         <button class="speak-btn" style="background:none; border:1px solid #ddd; border-radius:15px; cursor:pointer;">🔈</button>
                     </div>
-                    <div style="margin-top:10px; font-weight:bold;">${escapeHtml(item.def)}</div>
+                    <div style="margin-top:10px; font-weight:bold; line-height:1.7;">${renderDef(item)}</div>
                     <div style="margin-top:5px; color:#555; font-style:italic;">${renderExamples(item.ex)}</div>
                     ${zhBlock}
                 `;
@@ -1321,7 +1353,7 @@
             const item = vocabData[currentCardIndex];
             document.getElementById('fc-word').innerText = item.word;
             document.getElementById('fc-pos').innerText = item.pos;
-            document.getElementById('fc-def').innerText = item.def;
+            document.getElementById('fc-def').innerHTML = renderDef(item);
             const exEl = document.getElementById('fc-ex');
             exEl.innerHTML = renderExamples(item.ex);
             bindExampleSpeakers(exEl);
@@ -1372,6 +1404,31 @@
                 .filter(w => wordKey(w.word) !== wordKey(correctItem.word))
                 .sort(() => Math.random() - 0.5)
                 .slice(0, 3);
+            // 挖空題：把老師圈的關鍵字挖掉，選回來。整句都被圈的（protect = to keep safe）
+            // 挖掉就只剩單字，跟「看單字選定義」重複，所以不出
+            const blankable = (correctItem.keys || []).filter(k =>
+                k.toLowerCase() !== String(correctItem.def).trim().toLowerCase()
+                && keyRegex(k).test(correctItem.def));
+            const keyDistractors = [...new Set(pool
+                .filter(w => wordKey(w.word) !== wordKey(correctItem.word))
+                .flatMap(w => w.keys || []))]
+                .filter(k => !(correctItem.keys || []).includes(k));
+            if (blankable.length && keyDistractors.length >= 3 && Math.random() < 1 / 3) {
+                const key = blankable[Math.floor(Math.random() * blankable.length)];
+                question.innerHTML = `${escapeHtml(correctItem.word)}<div style="font-weight:normal; margin-top:10px; line-height:1.8;">${renderDef(correctItem, key)}</div>`;
+                currentQuizAnswerText = key;
+                const keyOptions = [key, ...keyDistractors.sort(() => Math.random() - 0.5).slice(0, 3)]
+                    .sort(() => Math.random() - 0.5);
+                keyOptions.forEach(k => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.innerText = k;
+                    btn.onclick = () => checkQuizAnswer(btn, k === key, 'quiz-feedback');
+                    optionsContainer.appendChild(btn);
+                });
+                return;
+            }
+
             const options = [correctItem, ...others].sort(() => Math.random() - 0.5);
 
             // 兩種問法各半：看定義選單字 / 看單字選定義，避免只練單一方向
@@ -1543,7 +1600,7 @@
             currentSpell = { item, word, blanks, cursor: 0 };
 
             // 給提示：定義（有中文就一起給）＋先唸一次，讓她知道在拼哪個字
-            hintEl.innerHTML = `<div style="font-weight:bold;">${escapeHtml(item.def)}</div>`
+            hintEl.innerHTML = `<div style="font-weight:bold; line-height:1.7;">${renderDef(item)}</div>`
                 + (item.zh ? `<div style="color:#c98a00; margin-top:4px;">${item.zh}</div>` : '');
             speak(word);
 

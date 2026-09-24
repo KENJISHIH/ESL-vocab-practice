@@ -1,10 +1,13 @@
 // 2026-fall Week 4
+// keys：老師在釋義上用紅筆圈起來的關鍵字（照課本照片 IMG_4764/4765 手工抄）。
+//   Science 三個字老師沒圈，就不放 keys；stretchy 老師另外圈了「be」，當挖空題答案沒意義，沒收。
 const fall2026Week4Data = [
     {
         word: 'protect',
         zh: '保護',
         pos: '(v.)',
         def: 'to keep safe',
+        keys: ['to keep safe'],
         ex: '1. I protect myself against the sun with a beach umbrella.<br>2. Parents always protect their children from danger.',
         category: 'Reading',
     },
@@ -13,6 +16,7 @@ const fall2026Week4Data = [
         zh: '特別的；不一樣的',
         pos: '(adj.)',
         def: 'of a particular kind; not usual',
+        keys: ['not usual'],
         ex: '1. Today is a special day. It’s Fiona’s birthday.<br>2. Everybody is special in their own way.',
         category: 'Reading',
     },
@@ -21,6 +25,7 @@ const fall2026Week4Data = [
         zh: '有彈性的；可以拉長的',
         pos: '(adj.)',
         def: 'easily be made longer or wider without tearing or breaking',
+        keys: ['easily', 'longer or wider', 'without tearing or breaking'],
         ex: '1. The rubber band is stretchy.<br>2. You can use the stretchy clay to make different shapes.',
         category: 'Reading',
     },
@@ -29,6 +34,7 @@ const fall2026Week4Data = [
         zh: '天花板',
         pos: '(n.)',
         def: 'the top of a room',
+        keys: ['top', 'room'],
         ex: '1. The lights and fans in this room are on the ceiling.<br>2. Look! There are cracks in the walls and ceiling.',
         category: 'Reading',
     },
@@ -37,6 +43,7 @@ const fall2026Week4Data = [
         zh: '想；思考（過去式 thought）',
         pos: '(v.)',
         def: 'to use the mind to form ideas and opinions (thought)',
+        keys: ['mind', 'form ideas'],
         ex: '1. I can’t think of an answer. Could you help me?<br>2. Miss Brown thought long and hard before coming to a decision.',
         category: 'Reading',
     },
@@ -45,6 +52,7 @@ const fall2026Week4Data = [
         zh: '可怕的；嚇人的',
         pos: '(adj.)',
         def: 'frightening; make you feel scared',
+        keys: ['frightening'],
         ex: '1. This story is really scary. I am afraid to sleep alone.<br>2. This is a scary picture. I don’t like it.',
         category: 'Reading',
     },
@@ -53,6 +61,7 @@ const fall2026Week4Data = [
         zh: '沒有；不帶著',
         pos: '(prep.)',
         def: 'not having',
+        keys: ['not having'],
         ex: '1. The man entered the room without knocking on the door.<br>2. I drink my coffee without sugar.',
         category: 'Reading',
     },
