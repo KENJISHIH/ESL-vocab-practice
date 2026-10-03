@@ -2,6 +2,15 @@
 
 本專案的功能更新紀錄，最新在最上面。日期為實際上線（push）日。
 
+## 2026-10-03
+
+- **新增「📗 Grammar 文法」選單：Unit 3 不規則複數**（Grammar Space Beginner 2 Unit 03）
+  - 10 個要背的字：men、feet、teeth、geese、mice、children、oxen，加上單複數長一樣的 fish、sheep、deer
+  - 題目寫成「one child → two ___」，Study／Cards／Quiz／Spell 都能直接練；單字與例句都有發音
+  - 例句是自己編的，不是課本原文
+  - 文法區只有一個 Unit 時不顯示「ALL」選項，也不會變成打開網站時的預設
+- 幕後：`tools/sync_manifest.py`／`tools/check_coverage.py` 認得 `grammar_week*_data.js`（檔名的 week 就是 Unit 編號）
+
 ## 2026-09-25
 
 - **紅圈與挖空題補上 Week 1–3**：2026 Fall Week 1–4 全部都有了，

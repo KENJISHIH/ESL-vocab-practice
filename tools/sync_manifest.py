@@ -30,6 +30,8 @@ SEMESTERS = [
     ("spring2026_week", "2026-spring", "2026 Spring"),
     ("fall2026_week",   "2026-fall",   "2026 Fall"),
     ("spring2027_week", "2027-spring", "2027 Spring"),
+    # 文法課的不規則字（不是單字本）：week03 ＝ Unit 03，選單顯示成 Unit
+    ("grammar_week",    "grammar",     "📗 Grammar 文法"),
 ]
 
 MARKERS = {

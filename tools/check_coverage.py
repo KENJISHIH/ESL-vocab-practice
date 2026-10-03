@@ -27,6 +27,7 @@ SEMESTER_OF_PREFIX = {
     "spring2026_week": "2026-spring",
     "fall2026_week": "2026-fall",
     "spring2027_week": "2027-spring",
+    "grammar_week": "grammar",
 }
 
 

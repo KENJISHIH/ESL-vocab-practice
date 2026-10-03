@@ -651,6 +651,8 @@
     <script src="fall2026_week06_data.js"></script>
     <script src="fall2026_week07_data.js"></script>
     <script src="fall2026_week08_data.js"></script>
+    <!-- 📗 Grammar 文法 -->
+    <script src="grammar_week03_data.js"></script>
 <!-- DATA_SCRIPTS:END -->
     <!-- 載入週次清單 (manifest) 與商店資料庫 -->
     <script src="vocab_manifest.js"></script>
@@ -1026,7 +1028,8 @@
                 weeks.forEach(e => {
                     const opt = document.createElement('option');
                     opt.value = `${e.semester}:${e.week}`;
-                    opt.textContent = `Week ${e.week}`;
+                    // 文法區的「週次」其實是課本 Unit 編號
+                    opt.textContent = e.semester === 'grammar' ? `Unit ${e.week}` : `Week ${e.week}`;
                     group.appendChild(opt);
                 });
 
@@ -1042,18 +1045,20 @@
                         });
                 }
 
-                // 該 semester 的 ALL 選項
-                const allOpt = document.createElement('option');
-                allOpt.value = `all:${s.semester}`;
-                const minW = Math.min(...weeks.map(w => w.week));
-                const maxW = Math.max(...weeks.map(w => w.week));
-                allOpt.textContent = `🔥 ALL (W${minW}-W${maxW})`;
-                group.appendChild(allOpt);
+                // 該 semester 的 ALL 選項（文法區只有一個 Unit 時多一個 ALL 沒意義）
+                if (!(s.semester === 'grammar' && weeks.length < 2)) {
+                    const allOpt = document.createElement('option');
+                    allOpt.value = `all:${s.semester}`;
+                    const minW = Math.min(...weeks.map(w => w.week));
+                    const maxW = Math.max(...weeks.map(w => w.week));
+                    allOpt.textContent = `🔥 ALL (W${minW}-W${maxW})`;
+                    group.appendChild(allOpt);
+                }
 
                 selector.appendChild(group);
 
                 // 沒有今日計畫時，退回「最後一個 semester 的最後一週」當預設
-                if (defaultValue !== 'today' && weeks.length > 0) {
+                if (defaultValue !== 'today' && weeks.length > 0 && s.semester !== 'grammar') {
                     defaultValue = `${s.semester}:${weeks[weeks.length - 1].week}`;
                 }
             });
