@@ -57,6 +57,11 @@ const EXAM_RANGES = [
     { semester: '2026-fall', id: 'spelling2', label: '✏️ Spelling Check 2 (W4-W6)', weeks: [4, 5, 6] },
 ];
 
+// 考卷錯字：載入時自動種進「🔁 複習錯過的字」（每個 id 每台瀏覽器只種一次，id 改了才會再種）
+const WRONG_SEEDS = [
+    { id: 'fall2026-spelling1', words: ['scratch', 'doughnut'] },  // 9/24 Spelling Check 1，86 分
+];
+
 // VOCAB_DATA:START
 // 顯式 registry：頂層 const 不會自動掛上 window，要列名稱抓進來
 const VOCAB_DATA = {

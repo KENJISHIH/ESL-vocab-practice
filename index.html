@@ -714,8 +714,20 @@
             userProfile.progress = {
                 words: p.words || {},
                 daysDone: p.daysDone || [],
-                today: p.today || { date: null, words: [] }
+                today: p.today || { date: null, words: [] },
+                seeded: p.seeded || []
             };
+            // 老師批改考卷找出的錯字：每個 id 只種一次，種進「複習錯過的字」
+            (typeof WRONG_SEEDS !== 'undefined' ? WRONG_SEEDS : []).forEach(seed => {
+                if (userProfile.progress.seeded.includes(seed.id)) return;
+                userProfile.progress.seeded.push(seed.id);
+                seed.words.forEach(w => {
+                    const k = wordKey(w);
+                    const cur = userProfile.progress.words[k] || { right: 0, wrong: 0, lastSeen: null };
+                    if (cur.wrong === 0) cur.wrong = 1;
+                    userProfile.progress.words[k] = cur;
+                });
+            });
         }
 
         // --- 1b. 學習進度 ---
@@ -821,8 +833,9 @@
             const saved = localStorage.getItem('esl_user_profile');
             if (saved) {
                 userProfile = JSON.parse(saved);
-                migrateProfile();
             }
+            migrateProfile();
+            localStorage.setItem('esl_user_profile', JSON.stringify(userProfile));   // 讓種進去的錯字立刻落地
             // 確保 shopData 已經載入，再更新 UI
             if (typeof shopData !== 'undefined') {
                 updateUI();
