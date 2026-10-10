@@ -370,6 +370,44 @@
         .nav-icon { font-size: 1.5em; display: block; margin-bottom: 3px; }
         .nav-text { font-size: 0.8em; }
 
+        /* --- 聽寫考試 Dictation --- */
+        .dict-intro { color: #666; line-height: 1.7; margin: 8px 0 18px; font-size: 0.95em; text-align: left; }
+        .dict-start {
+            width: 100%; padding: 18px; font-size: 1.3em; font-weight: bold; border: none; border-radius: 20px;
+            background: var(--primary-color); color: white; cursor: pointer;
+            box-shadow: 0 6px 16px rgba(38,198,218,0.35);
+        }
+        .dict-start:disabled { background: #ccc; box-shadow: none; }
+        .dict-counter { font-size: 1.3em; font-weight: bold; color: var(--primary-color); margin-bottom: 10px; }
+        .dict-bar-track { height: 12px; background: #eee; border-radius: 6px; overflow: hidden; }
+        .dict-bar { height: 100%; width: 100%; background: var(--accent-color); transition: width 0.1s linear; }
+        .dict-status { color: #888; font-size: 0.9em; margin: 10px 0; min-height: 1.2em; }
+        .dict-input {
+            width: 100%; box-sizing: border-box; padding: 14px; font-size: 1.4em; text-align: center;
+            border: 3px solid var(--primary-color); border-radius: 16px; outline: none;
+            font-family: ui-monospace, Menlo, monospace; letter-spacing: 1px;
+        }
+        .dict-input.small { font-size: 1.1em; padding: 8px 10px; text-align: left; border-width: 2px; }
+        .dict-actions { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+        .dict-btn {
+            padding: 12px 20px; border-radius: 20px; border: 2px solid var(--primary-color);
+            background: white; color: var(--primary-color); font-weight: bold; cursor: pointer; font-size: 1em;
+        }
+        .dict-btn.solid { background: var(--primary-color); color: white; }
+        .dict-review { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        .dict-review-row { display: flex; align-items: center; gap: 10px; padding: 4px 8px; border-radius: 12px; }
+        .dict-review-row.now { background: #fff8e1; }
+        .dict-review-no { width: 2em; text-align: right; font-weight: bold; color: #888; }
+        .dict-score { font-size: 2.6em; font-weight: 800; color: var(--primary-color); margin: 6px 0; }
+        .dict-score span { font-size: 0.5em; color: #aaa; font-weight: normal; }
+        .dict-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.95em; }
+        .dict-table th { color: #888; font-weight: normal; font-size: 0.85em; padding: 4px; border-bottom: 1px solid #eee; }
+        .dict-table td { padding: 8px 4px; border-bottom: 1px solid #f3f3f3; text-align: left; }
+        .dict-table tr.ok td { color: #33691e; }
+        .dict-mono { font-family: ui-monospace, Menlo, monospace; letter-spacing: 1px; word-break: break-all; }
+        .dict-wrong-ch { color: var(--danger); font-weight: bold; text-decoration: underline; }
+        .dict-miss-ch { color: var(--success); font-weight: bold; text-decoration: underline; }
+
         /* --- 家長設定視窗 --- */
         .modal-backdrop {
             position: fixed; inset: 0; z-index: 300;
@@ -531,6 +569,16 @@
         </div>
     </div>
 
+    <!-- 4b. Dictation 聽寫考試：只在 EXAM_RANGES 標了 dictation: true 的範圍才顯示入口（底部 🎧）。
+         畫面上不出現單字、釋義、提示底線，純聽寫。抽題與批改的純邏輯在 dictation.js -->
+    <div id="section-dictation" class="section">
+        <div class="quiz-container">
+            <h3>🎧 聽寫考試 Dictation</h3>
+            <div style="color:#666; margin-bottom:10px;">像 Spelling Check 的 Part A：聽、打字、交卷才改分。每字 <span style="color:orange; font-weight:bold;">7 分</span>，答對一字 <span style="color:orange; font-weight:bold;">10 Coins</span></div>
+            <div id="dict-stage"></div>
+        </div>
+    </div>
+
     <!-- 5. Shop -->
     <div id="section-shop" class="section">
         <h2 style="text-align:center; color:var(--text-color)">✨ Avatar Shop</h2>
@@ -605,6 +653,10 @@
             <span class="nav-icon">✏️</span>
             <span class="nav-text">Spell</span>
         </div>
+        <div class="nav-item" id="nav-dictation" style="display:none" onclick="showSection('dictation', this)">
+            <span class="nav-icon">🎧</span>
+            <span class="nav-text">聽寫</span>
+        </div>
         <div class="nav-item" onclick="showSection('shop', this)">
             <span class="nav-icon">👕</span>
             <span class="nav-text">Shop</span>
@@ -657,6 +709,7 @@
     <!-- 載入週次清單 (manifest) 與商店資料庫 -->
     <script src="vocab_manifest.js"></script>
     <script src="shop_data.js"></script>
+    <script src="dictation.js"></script>
 
     <script>
         // --- 1. 全域變數與存檔系統 ---
@@ -1095,6 +1148,7 @@
             showZh = false;  // 換週預設關閉中文釋義
             const value = document.getElementById('week-selector').value;
             currentMode = value;
+            let dictOk = false;   // 只有 EXAM_RANGES 標 dictation: true 的範圍才開聽寫入口
 
             if (value === 'today') {
                 const plan = getTodayPlan();
@@ -1116,12 +1170,14 @@
                     alert("Data missing for this week! Please check if JS files are loaded.");
                     return;
                 }
+                dictOk = !!selection.dictation;
                 rawWordsForWeek = (selection.kind === 'all' || selection.kind === 'range')
                     ? selection.words.slice().sort(() => Math.random() - 0.5)   // 跨週合併後洗牌一次
                     : selection.words;
                 distractorPool = rawWordsForWeek;
             }
 
+            setDictationAvailable(dictOk);
             renderDailyCard();
             applyCategoryFilter();
         }
@@ -1711,6 +1767,8 @@
         }
 
         function showSection(id, navEl) {
+            const dictSec = document.getElementById('section-dictation');
+            if (dictSec && dictSec.classList.contains('active') && id !== 'dictation' && dictState.phase !== 'idle') dictReset();
             document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
             document.getElementById(`section-${id}`).classList.add('active');
             
@@ -1721,6 +1779,7 @@
 
             if(id === 'quiz') generateQuiz();
             if(id === 'spelling') generateSpellingQuiz();
+            if(id === 'dictation') renderDictation();
         }
 
         // 預錄音檔優先（單字＝一查究竟 Achernar，例句＝Edge TTS Jenny，見 tools/），
@@ -1743,6 +1802,311 @@
             audio.onerror = fallback;
             currentAudio = audio;
             audio.play().catch(fallback);
+        }
+
+        // --- 聽寫考試 Dictation（抽題／比對的純邏輯在 dictation.js，這裡只管畫面與播音節奏）---
+        // 照 Spelling Check Part A 的考法：每題唸「Number N → 單字（慢）→ 第一句例句 → 單字」，
+        // 停幾秒讓她自己用鍵盤打完整的字，時間到自動下一題；全部唸完快速重唸一輪讓她檢查，
+        // 按「交卷」才批改。畫面上從頭到尾不出現單字、釋義或提示底線——那會變成看字抄寫。
+
+        let dictationAvailable = false;   // 目前選的範圍有沒有標 dictation: true
+        let dictState = { phase: 'idle', items: [], answers: [], index: 0, token: 0 };
+        let dictAudio = null;             // 考試共用一顆 <audio>：iOS 只放行「使用者手勢裡 play 過」的元素
+
+        // 選單換範圍時由 changeWeek() 呼叫：控制底部「聽寫」入口的顯示，並把考試重置
+        function setDictationAvailable(on) {
+            dictationAvailable = !!on;
+            const nav = document.getElementById('nav-dictation');
+            if (nav) nav.style.display = dictationAvailable ? '' : 'none';
+            dictReset();
+            const sec = document.getElementById('section-dictation');
+            if (!sec || !sec.classList.contains('active')) return;
+            if (dictationAvailable) renderDictation();
+            else showSection('home', document.querySelector('.nav-item'));   // 第一顆就是 Study
+        }
+
+        function dictStopAudio() {
+            window.speechSynthesis.cancel();
+            if (dictAudio) dictAudio.pause();
+        }
+
+        function dictReset() {
+            dictState.token++;          // 讓還在跑的播音／倒數鏈全部作廢
+            dictStopAudio();
+            dictState = { phase: 'idle', items: [], answers: [], index: 0, token: dictState.token };
+        }
+
+        // 會回傳 Promise 的 speak()：音檔播完（或 TTS 唸完）才 resolve，考試才能一段接一段。
+        // 音檔→瀏覽器 TTS 的 fallback 規則與 speak() 相同；audioSrc 傳 false 代表直接用 TTS
+        // （「Number 3」這種本來就沒音檔的，不必先打一次 404）。
+        function speakAsync(text, audioSrc, opts = {}) {
+            return new Promise(resolve => {
+                dictStopAudio();
+                let done = false;
+                const finish = () => { if (done) return; done = true; clearTimeout(guard); resolve(); };
+                // 保險：音檔壞掉、或 TTS 沒回 end 事件時，也不會卡死整場考試
+                const guard = setTimeout(finish, DICTATION.stepMaxMs);
+
+                let fellBack = false;
+                const fallback = () => {
+                    if (fellBack) return;
+                    fellBack = true;
+                    const u = new SpeechSynthesisUtterance(text);
+                    u.lang = 'en-US';
+                    if (opts.rate) u.rate = opts.rate;
+                    u.onend = finish;
+                    u.onerror = finish;
+                    window.speechSynthesis.speak(u);
+                };
+                if (audioSrc === false) { fallback(); return; }
+
+                if (!dictAudio) dictAudio = new Audio();
+                const audio = dictAudio;
+                audio.onended = finish;
+                audio.onerror = fallback;
+                audio.src = audioSrc || `audio/${text.trim().toLowerCase()}.m4a`;
+                audio.playbackRate = opts.rate || 1;
+                audio.play().catch(fallback);
+            });
+        }
+
+        const dictSleep = ms => new Promise(r => setTimeout(r, ms));
+
+        // 唸一題：Number N（可省）→ 單字（慢）→ 第一句例句 → 單字。alive() 回 false 就中途停
+        async function dictReadItem(item, number, alive) {
+            const steps = [];
+            if (number) steps.push([`Number ${number}`, false, {}]);
+            steps.push([item.word, undefined, { rate: DICTATION.wordRate }]);
+            const ex = dictationFirstExample(item.ex);
+            if (ex) steps.push([ex, exAudioPath(ex), {}]);
+            steps.push([item.word, undefined, { rate: DICTATION.wordRate }]);
+            for (const [text, src, opts] of steps) {
+                if (!alive()) return;
+                await speakAsync(text, src, opts);
+                if (!alive()) return;
+                await dictSleep(DICTATION.stepGapMs);
+            }
+        }
+
+        // 倒數：進度條從滿格縮到零；alive() 變 false（跳過／重聽／離開）就提前結束
+        function dictCountdown(ms, alive) {
+            return new Promise(resolve => {
+                const started = Date.now();
+                const tick = setInterval(() => {
+                    const left = Math.max(0, ms - (Date.now() - started));
+                    const bar = document.getElementById('dict-bar');
+                    if (bar) bar.style.width = (left / ms * 100) + '%';
+                    if (!alive() || left <= 0) { clearInterval(tick); resolve(); }
+                }, 100);
+            });
+        }
+
+        function dictSetStatus(msg) {
+            const el = document.getElementById('dict-status');
+            if (el) el.textContent = msg;
+        }
+
+        function renderDictation() {
+            const stage = document.getElementById('dict-stage');
+            if (!stage) return;
+            const s = dictState;
+
+            if (s.phase === 'idle') {
+                const n = Math.min(rawWordsForWeek.length, DICTATION.total);
+                stage.innerHTML = `
+                    <div class="dict-intro">
+                        這次考 <b>${n}</b> 題。每一題會唸：<b>Number N</b> → 單字 → 例句 → 單字，
+                        然後停 <b>${Math.round(DICTATION.pauseMs / 1000)}</b> 秒給你打字，時間到自動下一題。<br>
+                        全部唸完會再快速唸一遍讓你檢查，按「交卷」才會改分數。
+                    </div>
+                    <button class="dict-start" onclick="dictStart()" ${n === 0 ? 'disabled' : ''}>▶️ 開始考試</button>
+                    ${n === 0 ? '<div class="feedback-msg" style="color:#888; margin-top:10px;">這個範圍沒有字，無法出題 🥲</div>' : ''}`;
+                return;
+            }
+
+            if (s.phase === 'running') {
+                // 作答殼只畫這一次，之後每題只改題號與進度條、不重建輸入框（iPad 鍵盤才不會縮回去）
+                stage.innerHTML = `
+                    <div class="dict-counter">第 <span id="dict-no">1</span> 題 / ${s.items.length}</div>
+                    <div class="dict-bar-track"><div id="dict-bar" class="dict-bar"></div></div>
+                    <div id="dict-status" class="dict-status">🔊 仔細聽…</div>
+                    <input id="dict-input" class="dict-input" type="text"
+                        autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"
+                        inputmode="text" enterkeyhint="next" placeholder="打出聽到的字">
+                    <div class="dict-actions">
+                        <button type="button" class="dict-btn" onclick="dictReplay()">🔈 再聽一次</button>
+                        <button type="button" class="dict-btn solid" onclick="dictSkip()">⏭ 下一題</button>
+                    </div>`;
+                document.getElementById('dict-input').addEventListener('keydown', e => {
+                    if (e.key === 'Enter') { e.preventDefault(); dictSkip(); }
+                });
+                return;
+            }
+
+            if (s.phase === 'review') {
+                stage.innerHTML = `
+                    <div class="dict-counter">檢查一下</div>
+                    <div id="dict-status" class="dict-status">🔊 再唸一遍每個字，想改的直接改</div>
+                    <div class="dict-review">
+                        ${s.items.map((_, i) => `
+                        <div class="dict-review-row" id="dict-row-${i}">
+                            <span class="dict-review-no">${i + 1}.</span>
+                            <input class="dict-input small" type="text" data-i="${i}" value="${escapeHtml(s.answers[i] || '')}"
+                                autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" inputmode="text">
+                        </div>`).join('')}
+                    </div>
+                    <div class="dict-actions">
+                        <button type="button" class="dict-btn solid" onclick="dictSubmit()">📝 交卷</button>
+                    </div>`;
+                return;
+            }
+
+            if (s.phase === 'result') {
+                const g = s.grade;
+                // 沒對上的字元標色：她寫的那邊標紅（多打／打錯），正確拼法那邊標綠（漏掉／該是這個）
+                const paint = (parts, cls) => parts
+                    .map(p => p.ok ? escapeHtml(p.ch) : `<span class="${cls}">${escapeHtml(p.ch)}</span>`)
+                    .join('');
+                const rows = g.rows.map((r, i) => `
+                    <tr class="${r.ok ? 'ok' : 'bad'}">
+                        <td>${i + 1}</td>
+                        <td class="dict-mono">${r.ok ? escapeHtml(r.got)
+                            : (r.got ? paint(r.diff.got, 'dict-wrong-ch') : '<span style="color:#aaa">（沒寫）</span>')}</td>
+                        <td class="dict-mono">${r.ok ? escapeHtml(r.want) : paint(r.diff.want, 'dict-miss-ch')}</td>
+                        <td>${r.ok ? '✅' : '❌'}</td>
+                    </tr>`).join('');
+                const wrongN = g.rows.length - g.correct;
+                stage.innerHTML = `
+                    <div class="dict-score">${g.score} <span>/ ${g.maxScore}</span></div>
+                    <div class="dict-status">答對 ${g.correct} 題，答錯 ${wrongN} 題${s.coinsEarned ? `，+${s.coinsEarned} 金幣 💰` : ''}</div>
+                    <table class="dict-table">
+                        <thead><tr><th>#</th><th>你寫的</th><th>正確</th><th></th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>
+                    <div class="dict-actions">
+                        ${wrongN ? '<button type="button" class="dict-btn solid" onclick="dictRetryWrong()">🔁 錯的字再練一次</button>' : ''}
+                        <button type="button" class="dict-btn" onclick="dictReset(); renderDictation()">↩️ 回到開始</button>
+                    </div>`;
+            }
+        }
+
+        // 開始考試。pool 不給就從目前範圍抽 7 Reading + 3 Science；給了（錯字重練）就全考、只洗牌
+        function dictStart(pool) {
+            const items = pool ? dictShuffle(pool) : pickDictationWords(rawWordsForWeek);
+            if (!items.length) return;
+            dictState.token++;
+            dictStopAudio();
+            dictState = { phase: 'running', items, answers: items.map(() => ''), index: 0, token: dictState.token };
+            renderDictation();
+            // 這一下是使用者手勢：順便叫出鍵盤，並讓共用的 <audio> 在手勢裡 play 過一次（iOS 之後才肯自動播）
+            document.getElementById('dict-input')?.focus();
+            if (!dictAudio) dictAudio = new Audio();
+            dictAudio.muted = true;
+            dictAudio.src = `audio/${items[0].word.trim().toLowerCase()}.m4a`;
+            dictAudio.play().then(() => dictAudio.pause()).catch(() => {}).finally(() => { dictAudio.muted = false; });
+            dictQuestion(0);
+        }
+
+        async function dictQuestion(i) {
+            const token = ++dictState.token;
+            const alive = () => dictState.token === token && dictState.phase === 'running';
+            dictState.index = i;
+            document.getElementById('dict-no').textContent = i + 1;
+            document.getElementById('dict-bar').style.width = '100%';
+            dictSetStatus('🔊 仔細聽…');
+            const input = document.getElementById('dict-input');
+            if (input) input.value = dictState.answers[i] || '';
+
+            await dictReadItem(dictState.items[i], i + 1, alive);
+            if (!alive()) return;
+            dictSetStatus('✏️ 打出這個字');
+            await dictCountdown(DICTATION.pauseMs, alive);
+            if (!alive()) return;
+            dictAdvance();
+        }
+
+        // 再聽一次：單字＋例句重唸一輪（不唸 Number），唸完重新給完整的作答時間
+        async function dictReplay() {
+            if (dictState.phase !== 'running') return;
+            const i = dictState.index;
+            const token = ++dictState.token;
+            const alive = () => dictState.token === token && dictState.phase === 'running';
+            dictStopAudio();
+            document.getElementById('dict-bar').style.width = '100%';
+            dictSetStatus('🔊 仔細聽…');
+            await dictReadItem(dictState.items[i], null, alive);
+            if (!alive()) return;
+            dictSetStatus('✏️ 打出這個字');
+            await dictCountdown(DICTATION.pauseMs, alive);
+            if (!alive()) return;
+            dictAdvance();
+        }
+
+        // 跳過／下一題（輸入框按 Enter 也走這裡）
+        function dictSkip() {
+            if (dictState.phase !== 'running') return;
+            dictState.token++;
+            dictStopAudio();
+            dictAdvance();
+        }
+
+        function dictAdvance() {
+            const i = dictState.index;
+            const input = document.getElementById('dict-input');
+            dictState.answers[i] = input ? input.value : '';
+            if (i + 1 < dictState.items.length) dictQuestion(i + 1);
+            else dictReview();
+        }
+
+        // 全部唸完：快速重唸一輪「Number N. 單字」，每題間隔 1.5 秒，讓她回頭檢查；交卷隨時可按
+        async function dictReview() {
+            dictState.phase = 'review';
+            const token = ++dictState.token;
+            const alive = () => dictState.token === token && dictState.phase === 'review';
+            renderDictation();
+            for (let i = 0; i < dictState.items.length; i++) {
+                if (!alive()) return;
+                document.querySelectorAll('.dict-review-row').forEach(r => r.classList.remove('now'));
+                document.getElementById(`dict-row-${i}`)?.classList.add('now');
+                await speakAsync(`Number ${i + 1}`, false);
+                if (!alive()) return;
+                await speakAsync(dictState.items[i].word, undefined, { rate: DICTATION.wordRate });
+                if (!alive()) return;
+                await dictSleep(DICTATION.reviewGapMs);
+            }
+            if (!alive()) return;
+            document.querySelectorAll('.dict-review-row').forEach(r => r.classList.remove('now'));
+            dictSetStatus('唸完了，確認好就按交卷');
+        }
+
+        // 交卷：這時才批改。每個字都走 recordAnswer（錯字自動進「🔁 複習錯過的字」），答對給金幣
+        function dictSubmit() {
+            if (dictState.phase !== 'review') return;
+            dictState.token++;
+            dictStopAudio();
+            document.querySelectorAll('#dict-stage input[data-i]').forEach(inp => {
+                dictState.answers[Number(inp.dataset.i)] = inp.value;
+            });
+            const grade = gradeDictation(dictState.items, dictState.answers);
+            let coins = 0;
+            grade.rows.forEach(r => {
+                const firstToday = recordAnswer(r.item.word, r.ok);   // 每字每天只給一次金幣
+                if (r.ok && firstToday) coins += DICTATION.coins;
+            });
+            if (coins) addCoins(coins);
+            dictState.phase = 'result';
+            dictState.grade = grade;
+            dictState.coinsEarned = coins;
+            renderDictation();
+            checkDailyGoal();
+            renderList();
+            renderDailyCard();
+        }
+
+        // 錯的字再練一次：只考這次錯的字
+        function dictRetryWrong() {
+            const wrong = ((dictState.grade && dictState.grade.rows) || []).filter(r => !r.ok).map(r => r.item);
+            if (wrong.length) dictStart(wrong);
         }
 
         // --- 家長設定（點右上角金幣進入）---

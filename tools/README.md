@@ -15,6 +15,7 @@
 ```bash
 python3 tools/check_coverage.py 2026-fall   # 字數／中文／音檔，全綠才算完成（缺就 exit 1）
 node     tools/test_dailyplan.js            # 每日進度的週次運算，20 項斷言
+node     tools/test_dictation.js            # 聽寫考試的抽題／比對規則，30 項斷言
 ```
 
 `check_coverage.py` 會逐週列出還缺幾筆 `zh`、幾個音檔，並且抓出**字數不是 10 的週次**——每天 2 個字 × 5 天剛好 10 個，少了那一週的 Day5 會沒東西可背。

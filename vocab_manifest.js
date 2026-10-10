@@ -54,10 +54,11 @@ const EXAM_RANGES = [
     { semester: '2026-spring', id: 'final',   label: '🎯 期末考範圍 (W12-W21)', weeks: [12, 13, 14, 15, 16, 17, 19, 20, 21] },
     { semester: '2026-spring', id: 'review1316', label: '📘 複習 (W13-W16)', weeks: [13, 14, 15, 16] },
     { semester: '2026-fall', id: 'spelling1', label: '✏️ Spelling Check 1 (W1-W3)', weeks: [1, 2, 3] },
-    { semester: '2026-fall', id: 'spelling2', label: '✏️ Spelling Check 2 (W4-W6)', weeks: [4, 5, 6] },
+    // dictation: true → 選到這個範圍時才會出現「🎧 聽寫」入口（之後要擴到別週就加這個旗標）
+    { semester: '2026-fall', id: 'spelling2', label: '✏️ Spelling Check 2 (W4-W6)', weeks: [4, 5, 6], dictation: true },
     // 錯字集中營：模擬考 A 組錯的 7 個字（10/10）
     { semester: '2026-fall', id: 'wrong_mockA', label: '❌ 錯字集中營（模擬考A）', weeks: [4, 5, 6],
-      only: ['ceiling', 'stretchy', 'amphibian', 'larva', 'camouflage', 'pajamas', 'ambulance'] },
+      only: ['ceiling', 'stretchy', 'amphibian', 'larva', 'camouflage', 'pajamas', 'ambulance'], dictation: true },
 ];
 
 // 考卷錯字：載入時自動種進「🔁 複習錯過的字」（每個 id 每台瀏覽器只種一次，id 改了才會再種）
@@ -259,7 +260,7 @@ function resolveSelection(value) {
         if (range.only) {
             words = range.only.map(k => words.find(w => w.word.toLowerCase() === k)).filter(Boolean);
         }
-        return { kind: 'range', semester: sem, rangeId, label: range.label, words };
+        return { kind: 'range', semester: sem, rangeId, label: range.label, words, dictation: !!range.dictation };
     }
     const [sem, weekStr] = value.split(':');
     const entry = VOCAB_MANIFEST.find(e => e.semester === sem && e.week === Number(weekStr));
