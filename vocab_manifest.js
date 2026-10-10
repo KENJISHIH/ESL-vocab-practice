@@ -55,6 +55,9 @@ const EXAM_RANGES = [
     { semester: '2026-spring', id: 'review1316', label: '📘 複習 (W13-W16)', weeks: [13, 14, 15, 16] },
     { semester: '2026-fall', id: 'spelling1', label: '✏️ Spelling Check 1 (W1-W3)', weeks: [1, 2, 3] },
     { semester: '2026-fall', id: 'spelling2', label: '✏️ Spelling Check 2 (W4-W6)', weeks: [4, 5, 6] },
+    // 錯字集中營：模擬考 A 組錯的 7 個字（10/10）
+    { semester: '2026-fall', id: 'wrong_mockA', label: '❌ 錯字集中營（模擬考A）', weeks: [4, 5, 6],
+      only: ['ceiling', 'stretchy', 'amphibian', 'larva', 'camouflage', 'pajamas', 'ambulance'] },
 ];
 
 // 考卷錯字：載入時自動種進「🔁 複習錯過的字」（每個 id 每台瀏覽器只種一次，id 改了才會再種）
@@ -252,6 +255,10 @@ function resolveSelection(value) {
             const arr = VOCAB_DATA[entry.dataVar];
             if (Array.isArray(arr)) words = words.concat(arr);
         });
+        // only：只留指定單字（錯字集中營用），照 only 的順序排
+        if (range.only) {
+            words = range.only.map(k => words.find(w => w.word.toLowerCase() === k)).filter(Boolean);
+        }
         return { kind: 'range', semester: sem, rangeId, label: range.label, words };
     }
     const [sem, weekStr] = value.split(':');
