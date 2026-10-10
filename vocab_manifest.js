@@ -54,6 +54,7 @@ const EXAM_RANGES = [
     { semester: '2026-spring', id: 'final',   label: '🎯 期末考範圍 (W12-W21)', weeks: [12, 13, 14, 15, 16, 17, 19, 20, 21] },
     { semester: '2026-spring', id: 'review1316', label: '📘 複習 (W13-W16)', weeks: [13, 14, 15, 16] },
     { semester: '2026-fall', id: 'spelling1', label: '✏️ Spelling Check 1 (W1-W3)', weeks: [1, 2, 3] },
+    { semester: '2026-fall', id: 'spelling2', label: '✏️ Spelling Check 2 (W4-W6)', weeks: [4, 5, 6] },
 ];
 
 // VOCAB_DATA:START
