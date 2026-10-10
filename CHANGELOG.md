@@ -12,6 +12,7 @@
   - 批改不容錯（pajame ≠ pajamas），只忽略大小寫與頭尾／連續空白；每字 7 分、滿分 70，錯的字母標紅
   - 錯字自動進「🔁 複習錯過的字」；答對每字 +10 金幣（每字每天一次）；結果頁可「錯的字再練一次」
   - 選到其他週次或範圍時底部不會出現「聽寫」；之後要開放別週，在 `vocab_manifest.js` 的 `EXAM_RANGES` 加 `dictation: true` 即可
+  - 「Number 1」～「Number 10」也是 Achernar 預錄音檔（`audio/number N.m4a`），跟單字同一個聲音，不再用瀏覽器語音
 - 幕後：抽題／比對／逐字元對齊的純邏輯獨立在 `dictation.js`，`node tools/test_dictation.js` 守著（30 項）
 
 ## 2026-10-03

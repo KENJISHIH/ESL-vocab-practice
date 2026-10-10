@@ -1875,7 +1875,8 @@
         // 唸一題：Number N（可省）→ 單字（慢）→ 第一句例句 → 單字。alive() 回 false 就中途停
         async function dictReadItem(item, number, alive) {
             const steps = [];
-            if (number) steps.push([`Number ${number}`, false, {}]);
+            // 「Number N」有預錄的 audio/number N.m4a（Achernar，tools/gen_phrase_tts.py 產的），沒有才退 TTS
+            if (number) steps.push([`Number ${number}`, undefined, {}]);
             steps.push([item.word, undefined, { rate: DICTATION.wordRate }]);
             const ex = dictationFirstExample(item.ex);
             if (ex) steps.push([ex, exAudioPath(ex), {}]);
@@ -2068,7 +2069,7 @@
                 if (!alive()) return;
                 document.querySelectorAll('.dict-review-row').forEach(r => r.classList.remove('now'));
                 document.getElementById(`dict-row-${i}`)?.classList.add('now');
-                await speakAsync(`Number ${i + 1}`, false);
+                await speakAsync(`Number ${i + 1}`);
                 if (!alive()) return;
                 await speakAsync(dictState.items[i].word, undefined, { rate: DICTATION.wordRate });
                 if (!alive()) return;
