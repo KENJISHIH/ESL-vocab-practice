@@ -1740,7 +1740,10 @@
         // 只動文字節點，不動 HTML 標籤，紅圈關鍵字的框不會壞。
         function maskWordInHint(word) {
             const parts = String(word).trim().split(/\s+/).map(x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-            const re = new RegExp(`\\b${parts.join('\\s+')}[a-z]*\\b`, 'gi');
+            const base = parts.join('\\s+');
+            // 子音＋y 結尾的字（enemy）複數會變 ies（enemies），前綴比對抓不到，另外補一條
+            const yForm = /[^aeiou]y$/i.test(word.trim()) ? `|${base.slice(0, -1)}(?:ies|ied)` : '';
+            const re = new RegExp(`\\b(?:${base}[a-z]*${yForm})\\b`, 'gi');
             const walker = document.createTreeWalker(document.getElementById('spelling-hint'), NodeFilter.SHOW_TEXT);
             const nodes = [];
             while (walker.nextNode()) nodes.push(walker.currentNode);
