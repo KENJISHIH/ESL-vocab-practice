@@ -398,6 +398,7 @@
         .dict-review-row { display: flex; align-items: center; gap: 10px; padding: 4px 8px; border-radius: 12px; }
         .dict-review-row.now { background: #fff8e1; }
         .dict-review-no { width: 2em; text-align: right; font-weight: bold; color: #888; }
+        .dict-row-speak { flex: none; padding: 8px 12px; font-size: 1.1em; }
         .dict-score { font-size: 2.6em; font-weight: 800; color: var(--primary-color); margin: 6px 0; }
         .dict-score span { font-size: 0.5em; color: #aaa; font-weight: normal; }
         .dict-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.95em; }
@@ -1954,6 +1955,7 @@
                             <span class="dict-review-no">${i + 1}.</span>
                             <input class="dict-input small" type="text" data-i="${i}" value="${escapeHtml(s.answers[i] || '')}"
                                 autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" inputmode="text">
+                            <button type="button" class="dict-btn dict-row-speak" onclick="dictReplayRow(${i})" title="再聽一次">🔈</button>
                         </div>`).join('')}
                     </div>
                     <div class="dict-actions">
@@ -2078,6 +2080,21 @@
             if (!alive()) return;
             document.querySelectorAll('.dict-review-row').forEach(r => r.classList.remove('now'));
             dictSetStatus('唸完了，確認好就按交卷');
+        }
+
+        // 檢查頁的 🔈：停掉自動重唸那一輪，只唸這一題；可以一直按，交卷隨時可按
+        async function dictReplayRow(i) {
+            if (dictState.phase !== 'review') return;
+            const token = ++dictState.token;
+            const alive = () => dictState.token === token && dictState.phase === 'review';
+            dictStopAudio();
+            document.querySelectorAll('.dict-review-row').forEach(r => r.classList.remove('now'));
+            document.getElementById(`dict-row-${i}`)?.classList.add('now');
+            dictSetStatus(`🔊 第 ${i + 1} 題`);
+            await dictReadItem(dictState.items[i], null, alive);
+            if (!alive()) return;
+            document.getElementById(`dict-row-${i}`)?.classList.remove('now');
+            dictSetStatus('想改的直接改，確認好就按交卷');
         }
 
         // 交卷：這時才批改。每個字都走 recordAnswer（錯字自動進「🔁 複習錯過的字」），答對給金幣
