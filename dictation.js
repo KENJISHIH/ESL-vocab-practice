@@ -7,7 +7,7 @@ const DICTATION = {
     total: 10,           // 一次考幾個字；範圍不足就全部出，不補
     readingCount: 7,     // 其中 Reading 幾個
     scienceCount: 3,     // 其中 Science 幾個
-    pauseMs: 8000,       // 每題唸完後留多久給她打字
+    pauseMs: 20000,      // 每題唸完後留多久給她打字（2026-10-11 從 8 秒改 20 秒）
     stepGapMs: 400,      // 「Number N」→ 單字 → 例句 → 單字，每段之間停多久
     reviewGapMs: 1500,   // 最後快速重唸一輪時，每題之間停多久
     stepMaxMs: 12000,    // 單段播音最多等多久（音檔壞掉或 TTS 沒回 end 事件時不會卡死）
