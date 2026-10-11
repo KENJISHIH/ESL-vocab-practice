@@ -370,6 +370,16 @@
         .nav-icon { font-size: 1.5em; display: block; margin-bottom: 3px; }
         .nav-text { font-size: 0.8em; }
 
+        /* --- Spell「只聽不看」：不顯示挖空字母，自己打整個字 --- */
+        .spell-mode-btn {
+            display: inline-block; margin: 0 auto 12px; padding: 6px 16px; border-radius: 20px;
+            border: 2px solid #bbb; background: white; color: #888; font-weight: bold; cursor: pointer;
+        }
+        .spell-mode-btn.on { border-color: var(--accent-color); background: #fff8e1; color: #b26a00; }
+        .spell-type-row { display: flex; gap: 8px; margin-top: 4px; }
+        .spell-type-row .dict-input { flex: 1; min-width: 0; }
+        .spell-type-diff { margin-top: 10px; line-height: 1.8; }
+
         /* --- 聽寫考試 Dictation --- */
         .dict-intro { color: #666; line-height: 1.7; margin: 8px 0 18px; font-size: 0.95em; text-align: left; }
         .dict-start {
@@ -561,10 +571,21 @@
         <div class="quiz-container">
             <h3>Spelling Practice</h3>
             <div style="color:#666; margin-bottom:10px;">Earn <span style="color:orange; font-weight:bold;">10 Coins</span>!</div>
+            <button type="button" id="spell-mode-btn" class="spell-mode-btn" onclick="toggleSpellBlind()">🙈 只聽不看：關</button>
             <div id="spelling-hint" class="spelling-hint"></div>
             <button onclick="if (currentSpell) speak(currentSpell.word)" style="display:block; margin:0 auto 12px; padding:6px 16px; border-radius:20px; border:2px solid var(--primary-color); background:white; color:var(--primary-color); font-weight:bold; cursor:pointer;">🔈 再聽一次</button>
             <div id="spelling-display" class="spelling-word">_ _ _ _</div>
             <div id="spelling-options" class="spelling-options"></div>
+            <!-- 只聽不看：不出現單字與挖空，自己打整個字（比對規則跟聽寫考試同一支 isDictationCorrect） -->
+            <div id="spell-type" style="display:none;">
+                <div class="spell-type-row">
+                    <input id="spell-type-input" class="dict-input" type="text"
+                        autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false"
+                        inputmode="text" enterkeyhint="done" placeholder="打出聽到的字">
+                    <button type="button" id="spell-type-btn" class="dict-btn solid" onclick="checkSpellTyped()">確認</button>
+                </div>
+                <div id="spell-type-diff" class="spell-type-diff"></div>
+            </div>
             <div id="spelling-feedback" class="feedback-msg" style="height:20px; margin-top:10px;"></div>
             <button onclick="generateSpellingQuiz()" class="option-btn" style="background:var(--primary-color); color:white; border:none; margin-top:20px;">Next Word</button>
         </div>
@@ -1652,6 +1673,7 @@
                 document.getElementById('spelling-options').innerHTML = '';
                 hintEl.innerHTML = '';
                 currentSpell = null;
+                applySpellBlind();
                 return;
             }
 
@@ -1681,6 +1703,88 @@
 
             renderSpellingDisplay();
             renderSpellingOptions();
+            applySpellBlind();
+        }
+
+        // --- Spell「只聽不看」---
+        // 開關打開：挖空字母列與四選一字母按鈕都藏起來，換成輸入框自己打整個字；
+        // 提示（定義＋中文）和「再聽一次」保留。抽題照原本的隨機規則，所有週次都能用。
+        let spellBlind = false;
+        try { spellBlind = localStorage.getItem('esl_spell_blind') === '1'; } catch (e) {}
+
+        function toggleSpellBlind() {
+            spellBlind = !spellBlind;
+            try { localStorage.setItem('esl_spell_blind', spellBlind ? '1' : '0'); } catch (e) {}
+            generateSpellingQuiz();   // 換模式就換一題，避免剛剛看過的字直接拿來打
+        }
+
+        function applySpellBlind() {
+            const btn = document.getElementById('spell-mode-btn');
+            btn.classList.toggle('on', spellBlind);
+            btn.textContent = spellBlind ? '🙈 只聽不看：開' : '🙈 只聽不看：關';
+            const hasWord = !!currentSpell;
+            document.getElementById('spelling-display').style.display = spellBlind && hasWord ? 'none' : '';
+            document.getElementById('spelling-options').style.display = spellBlind ? 'none' : '';
+            document.getElementById('spell-type').style.display = spellBlind && hasWord ? '' : 'none';
+            if (!spellBlind || !hasWord) return;
+            maskWordInHint(currentSpell.word);
+            const input = document.getElementById('spell-type-input');
+            input.value = '';
+            input.disabled = false;
+            document.getElementById('spell-type-btn').disabled = false;
+            document.getElementById('spell-type-diff').innerHTML = '';
+        }
+
+        // 有些定義／中文本身就含答案（pajamas 的定義寫「(pajamas)」、larva 寫「plural → larvae」），
+        // 只聽不看時把提示裡的答案（含 larvae 這種接字尾的變形）換成底線。
+        // 只動文字節點，不動 HTML 標籤，紅圈關鍵字的框不會壞。
+        function maskWordInHint(word) {
+            const parts = String(word).trim().split(/\s+/).map(x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+            const re = new RegExp(`\\b${parts.join('\\s+')}[a-z]*\\b`, 'gi');
+            const walker = document.createTreeWalker(document.getElementById('spelling-hint'), NodeFilter.SHOW_TEXT);
+            const nodes = [];
+            while (walker.nextNode()) nodes.push(walker.currentNode);
+            nodes.forEach(n => { n.nodeValue = n.nodeValue.replace(re, '＿＿＿'); });
+        }
+
+        function checkSpellTyped() {
+            if (!currentSpell || !spellBlind) return;
+            const input = document.getElementById('spell-type-input');
+            if (input.disabled) return;
+            const typed = input.value;
+            if (!typed.trim()) { input.focus(); return; }   // 還沒打字就按確認，不算錯
+
+            const word = currentSpell.word;
+            const ok = isDictationCorrect(typed, word);
+            const feedback = document.getElementById('spelling-feedback');
+            input.disabled = true;
+            document.getElementById('spell-type-btn').disabled = true;
+
+            if (ok) {
+                const firstToday = recordAnswer(word, true);
+                if (firstToday) {
+                    feedback.innerText = `Correct! +${SPELL_COINS} Coins 💰`;
+                    addCoins(SPELL_COINS);
+                } else {
+                    feedback.innerText = 'Correct! （這個字今天已經拿過金幣了）';
+                }
+                feedback.style.color = 'green';
+                checkDailyGoal();
+            } else {
+                // 答錯才揭曉：她寫的錯字母標紅、正確拼法漏掉的字母標綠（跟聽寫考試結果頁同一套）
+                const d = dictationCharDiff(normalizeDictation(typed), normalizeDictation(word));
+                const paint = (parts, cls) => parts
+                    .map(p => p.ok ? escapeHtml(p.ch) : `<span class="${cls}">${escapeHtml(p.ch)}</span>`).join('');
+                document.getElementById('spell-type-diff').innerHTML =
+                    `<div>你寫的：<span class="dict-mono">${paint(d.got, 'dict-wrong-ch')}</span></div>
+                     <div>正確的：<span class="dict-mono">${paint(d.want, 'dict-miss-ch')}</span></div>`;
+                feedback.innerText = '再加油！';
+                feedback.style.color = 'red';
+                recordAnswer(word, false);
+            }
+            speak(word);
+            renderList();
+            renderDailyCard();
         }
 
         function renderSpellingDisplay() {
@@ -2230,6 +2334,11 @@
         // --- Init ---
 
         window.onload = function() {
+            document.getElementById('spell-type-input').addEventListener('keydown', e => {
+                if (e.key !== 'Enter') return;
+                e.preventDefault();
+                if (e.target.disabled) generateSpellingQuiz(); else checkSpellTyped();
+            });
             buildWeekSelector();
             loadProfile();
             changeWeek();
