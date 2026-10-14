@@ -2,6 +2,11 @@
 
 本專案的功能更新紀錄，最新在最上面。日期為實際上線（push）日。
 
+## 2026-10-14
+
+- **2026 Fall W9 上線**（ranger、urban、explore、path、visitor、tour、busy｜Science：endangered、drought、flood），含中文釋義、單字與例句發音；10/26 起首頁「今天」會自動排到 W9
+- 修正 giggle 按喇叭沒聲音（之前漏了單字音檔）
+
 ## 2026-10-11
 
 - **Spell 新增「🙈 只聽不看」開關**：打開後不顯示挖空字母和四選一字母按鈕，只聽發音、自己打出整個字，按確認（或 Enter）馬上批改
