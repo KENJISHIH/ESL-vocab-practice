@@ -5,6 +5,7 @@
 ## 2026-10-14
 
 - **2026 Fall W9 上線**（ranger、urban、explore、path、visitor、tour、busy｜Science：endangered、drought、flood），含中文釋義、單字與例句發音；10/26 起首頁「今天」會自動排到 W9
+- **2026 Fall W12 上線**（important、explain、teach、wade、search、Boy Scout、exciting｜Science：fossil、extinct、change），同樣含中文與發音；單字本沒有 W10、W11
 - 修正 giggle 按喇叭沒聲音（之前漏了單字音檔）
 
 ## 2026-10-11

@@ -43,6 +43,7 @@ const VOCAB_MANIFEST = [
     { semester: '2026-fall', semesterLabel: '2026 Fall', week: 7, dataVar: 'fall2026Week7Data', scriptSrc: 'fall2026_week07_data.js' },
     { semester: '2026-fall', semesterLabel: '2026 Fall', week: 8, dataVar: 'fall2026Week8Data', scriptSrc: 'fall2026_week08_data.js' },
     { semester: '2026-fall', semesterLabel: '2026 Fall', week: 9, dataVar: 'fall2026Week9Data', scriptSrc: 'fall2026_week09_data.js' },
+    { semester: '2026-fall', semesterLabel: '2026 Fall', week: 12, dataVar: 'fall2026Week12Data', scriptSrc: 'fall2026_week12_data.js' },
     // ─── 📗 Grammar 文法 ───
     { semester: 'grammar', semesterLabel: '📗 Grammar 文法', week: 3, dataVar: 'grammarUnit3Data', scriptSrc: 'grammar_week03_data.js' },
 ];
@@ -108,6 +109,7 @@ const VOCAB_DATA = {
     fall2026Week7Data,
     fall2026Week8Data,
     fall2026Week9Data,
+    fall2026Week12Data,
     // 📗 Grammar 文法
     grammarUnit3Data,
 };
