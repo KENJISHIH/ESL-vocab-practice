@@ -55,9 +55,9 @@ ok(orderVaried, '順序有洗牌（200 次不會全部同一個順序）');
 
 console.log('\n=== 範圍不足 10 字：全部出、不補 ===');
 const small = ctx.pickDictationWords(mockA.words);
-ok(mockA.words.length === 7, `錯字集中營只有 ${mockA.words.length} 字`);
-ok(small.length === 7, `抽出 ${small.length} 題（全部出）`);
-ok(new Set(small.map(w => w.word)).size === 7 && mockA.words.every(w => small.includes(w)), '7 個字每個都有、沒重複');
+ok(mockA.words.length === 9, `錯字集中營只有 ${mockA.words.length} 字`);
+ok(small.length === 9, `抽出 ${small.length} 題（全部出）`);
+ok(new Set(small.map(w => w.word)).size === 9 && mockA.words.every(w => small.includes(w)), '9 個字每個都有、沒重複');
 
 console.log('\n=== 某一類別不夠配額時從另一類補到 10（範圍本身 ≥ 10 字才會這樣）===');
 const lopsided = sp2.words.filter(w => w.category === 'Reading').slice(0, 12)
