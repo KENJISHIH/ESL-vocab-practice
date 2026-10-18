@@ -75,7 +75,7 @@ const fall2026Week2Data = [
     },
     {
         word: 'seedling',
-        zh: '幼苗；秧苗',
+        zh: '幼苗',
         pos: '(n.)',
         def: 'a young plant',
         keys: ['young'],

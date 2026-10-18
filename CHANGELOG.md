@@ -2,6 +2,10 @@
 
 本專案的功能更新紀錄，最新在最上面。日期為實際上線（push）日。
 
+## 2026-10-19
+
+- **統一 10 個單字的中文釋義**（Fall W1–W8）：habitat 只留「棲息地」、camouflage 主譯名改「保護色」、adult 改「成體（長大的動物）」、lantern 改「提燈；露營燈」、noise 改「聲音；吵鬧聲」、surprise 補「驚喜」、seedling 只留「幼苗」、trait 括號改「生物的特點」、shelter 解釋收進括號、mineral 補「礦物」；分號前第一個是主譯名
+
 ## 2026-10-14
 
 - **2026 Fall W9 上線**（ranger、urban、explore、path、visitor、tour、busy｜Science：endangered、drought、flood），含中文釋義、單字與例句發音；10/26 起首頁「今天」會自動排到 W9

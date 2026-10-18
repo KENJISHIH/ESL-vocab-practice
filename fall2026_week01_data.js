@@ -85,7 +85,7 @@ const fall2026Week1Data = [
     },
     {
         word: 'mineral',
-        zh: '礦物質',
+        zh: '礦物質；礦物',
         pos: '(n.)',
         def: 'a bit of rock and soil that helps plants and animals grow',
         keys: ['rock', 'soil', 'plants', 'animals grow'],

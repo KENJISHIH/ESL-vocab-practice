@@ -66,7 +66,7 @@ const fall2026Week7Data = [
     },
     {
         word: 'habitat',
-        zh: '棲地；棲息地',
+        zh: '棲息地',
         pos: '(n.)',
         def: 'a place where animals or plants can get everything they need to live',
         ex: '1. Animals live and grow in their own habitats.<br>2. A habitat has everything a plant or animal needs.',
@@ -74,7 +74,7 @@ const fall2026Week7Data = [
     },
     {
         word: 'shelter',
-        zh: '遮蔽處；躲避危險或壞天氣的地方',
+        zh: '遮蔽處（躲避危險或壞天氣的地方）',
         pos: '(n.)',
         def: 'protection from danger or bad weather',
         ex: '1. You should keep your new bike under shelter.<br>2. Bears find shelter in a hole or cave.',

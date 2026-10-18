@@ -66,7 +66,7 @@ const fall2026Week6Data = [
     },
     {
         word: 'camouflage',
-        zh: '偽裝；保護色',
+        zh: '保護色；偽裝',
         pos: '(n.)',
         def: 'a way that animals blend into their surroundings',
         ex: '1. Animals use camouflage to stay safe.<br>2. Camouflage allows animals to hide from predators.',

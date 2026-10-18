@@ -31,7 +31,7 @@ const fall2026Week3Data = [
     },
     {
         word: 'noise',
-        zh: '噪音；吵鬧聲',
+        zh: '聲音；吵鬧聲',
         pos: '(n.)',
         def: 'a loud sound',
         keys: ['loud'],
@@ -40,7 +40,7 @@ const fall2026Week3Data = [
     },
     {
         word: 'surprise',
-        zh: '驚訝；意外的感覺',
+        zh: '驚訝；驚喜',
         pos: '(n.)',
         def: 'the feeling caused by something unexpected',
         keys: ['unexpected'],
@@ -67,7 +67,7 @@ const fall2026Week3Data = [
     },
     {
         word: 'trait',
-        zh: '特徵（生物長相上的特點）',
+        zh: '特徵（生物的特點）',
         pos: '(n.)',
         def: 'the way a living thing looks',
         keys: ['living thing looks'],

@@ -18,7 +18,7 @@ const fall2026Week8Data = [
     },
     {
         word: 'lantern',
-        zh: '提燈；燈籠',
+        zh: '提燈；露營燈',
         pos: '(n.)',
         def: 'a type of light that can be carried',
         ex: '1. My art teacher taught me how to make a paper lantern.<br>2. There is a jack-o-lantern made from a pumpkin.',

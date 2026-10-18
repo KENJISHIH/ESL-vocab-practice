@@ -74,7 +74,7 @@ const fall2026Week5Data = [
     },
     {
         word: 'adult',
-        zh: '成蟲；完全長大的個體',
+        zh: '成體（長大的動物）；成蟲',
         pos: '(n.)',
         def: 'a fully grown person or animal',
         ex: '1. An adult butterfly looks different from a larva.<br>2. Children may watch this movie with adults.',
