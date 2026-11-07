@@ -12,6 +12,7 @@
 - **熟練度追蹤**：每個字的對錯次數會記在瀏覽器裡，單字列表標示 ✅ 熟了 / 🔁 要複習 / 📖 練習中
 - **四種練習模式**：單字列表（Study）、字卡（Cards）、選擇題（Quiz，雙向出題）、拼字（Spell，帶提示與多空格；可切「🙈 只聽不看」自己打整個字）
 - **🎧 聽寫考試（Dictation）**：照學校 Spelling Check Part A 的節奏唸題、自己打字、交卷才批改（目前只開 W4–W6 範圍）
+- **🔀 易混淆練習區**：長得像、意思不同的字對（scratched／stretchy、protect／predator…）。對照卡＋選擇題＋選對後自己拼出來；答錯的字進複習。題庫在 `confusable_sets.js`
 - **Reading / Science 類別切換**，可只練某一類
 - **Achernar 真人發音**：預錄音檔，無音檔時自動退回瀏覽器語音
 - **中文釋義開關**：一鍵展開／收合該週所有單字的中文意思（預設收合）
@@ -22,7 +23,7 @@
 ## 技術
 
 - 單檔 SPA：原生 HTML + vanilla JS（不依賴框架／打包工具）
-- 資料驅動：`vocab_manifest.js` 登記週次、考試範圍與每日進度計畫（`DAILY_PLAN`），各週單字存在 `*_data.js`
+- 資料驅動：`vocab_manifest.js` 登記週次、考試範圍與每日進度計畫（`DAILY_PLAN`），各週單字存在 `*_data.js`；易混淆字對存在 `confusable_sets.js`（刻意不叫 `*_data.js`，否則 `tools/sync_manifest.py` 會把它當週次資料）
 - 學習進度：存在瀏覽器 `localStorage`（`esl_user_profile`），換裝置不會同步
 - 發音：`audio/*.m4a`（Gemini TTS Achernar 語音預先產生）
 - 離線：`sw.js`（程式與單字走 network-first，音檔與圖片走 cache-first）

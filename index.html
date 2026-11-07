@@ -419,6 +419,37 @@
         .dict-wrong-ch { color: var(--danger); font-weight: bold; text-decoration: underline; }
         .dict-miss-ch { color: var(--success); font-weight: bold; text-decoration: underline; }
 
+        /* --- 🔀 易混淆練習區 --- */
+        .conf-set { background: #f4fbfc; border: 3px solid #cfeff3; border-radius: 18px; padding: 12px 14px; margin: 10px 0; cursor: pointer; text-align: center; }
+        .conf-set:active { background: #e3f6f9; }
+        .conf-set-words { font-family: "Times New Roman", Times, serif; font-size: 1.55em; color: #263238; line-height: 1.5; }
+        .conf-set-words i { font-style: normal; color: var(--primary-color); margin: 0 10px; font-size: 0.8em; }
+        .conf-set-meta { color: #888; font-size: 0.85em; margin-top: 2px; }
+        .conf-word { margin: 12px 0 18px; }
+        .conf-big { font-family: "Times New Roman", Times, serif; font-size: 2.6em; line-height: 1.25; color: #111; border: 3px solid #455a64; border-radius: 14px; padding: 6px 12px; background: #fff; box-shadow: 0 6px 0 #bbdefb; word-break: break-all; }
+        .conf-diff { color: #d81b60; font-weight: bold; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 5px; }
+        .conf-meta { margin-top: 12px; font-size: 1.05em; color: #37474f; }
+        .conf-tip { margin-top: 4px; color: #666; font-size: 0.95em; line-height: 1.6; text-align: left; }
+        .conf-forms { margin-top: 8px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+        .conf-chip { padding: 8px 14px; border-radius: 18px; border: 2px solid var(--primary-color); background: white; color: var(--primary-color); font-weight: bold; font-size: 1em; cursor: pointer; }
+        .conf-why-box { background: #fff8e1; border-radius: 14px; padding: 10px 14px; text-align: left; color: #6d4c41; line-height: 1.7; margin: 10px 0 14px; font-size: 0.95em; }
+        .conf-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+        .conf-back { border: none; background: none; color: #888; font-size: 0.95em; cursor: pointer; padding: 6px 4px; }
+        .conf-sentence { font-family: "Times New Roman", Times, serif; font-size: 1.6em; line-height: 1.6; color: #111; text-align: left; margin: 10px 0 14px; }
+        .conf-blank { display: inline-block; min-width: 4.5em; border-bottom: 4px solid #455a64; text-align: center; color: transparent; margin: 0 4px; }
+        .conf-blank.filled { color: #33691e; border-bottom-color: #8bc34a; font-weight: bold; }
+        .conf-hint { color: #78909c; font-size: 0.75em; margin-right: 4px; }
+        .conf-opt { display: block; width: 100%; box-sizing: border-box; margin-top: 12px; padding: 12px 16px; font-family: "Times New Roman", Times, serif; font-size: 2em; color: #111; background: #fff; border: 3px solid #455a64; border-radius: 14px; box-shadow: 0 6px 0 #bbdefb; cursor: pointer; transition: 0.15s; }
+        .conf-opt:active { transform: translateY(3px); box-shadow: 0 3px 0 #bbdefb; }
+        .conf-opt:disabled { cursor: default; }
+        .conf-opt.correct { background: #dcedc8; border-color: #8bc34a; color: #33691e; }
+        .conf-opt.wrong { background: #ffcdd2; border-color: #e57373; color: #b71c1c; }
+        .conf-spell-box { margin-top: 10px; padding: 12px; border: 3px dashed var(--primary-color); border-radius: 16px; }
+        .conf-spell-title { font-weight: bold; color: var(--primary-color); margin-bottom: 8px; }
+        .conf-zh { color: #37474f; font-size: 1em; margin-top: 8px; text-align: left; }
+        .conf-result-row { text-align: left; padding: 8px 4px; border-bottom: 1px solid #f0f0f0; font-family: "Times New Roman", Times, serif; font-size: 1.1em; }
+        .conf-result-row b { color: #33691e; }
+
         /* --- 家長設定視窗 --- */
         .modal-backdrop {
             position: fixed; inset: 0; z-index: 300;
@@ -601,6 +632,15 @@
         </div>
     </div>
 
+    <!-- 4c. 🔀 易混淆練習區：長得像、意思不同的字對。題庫在 confusable_sets.js，純邏輯在 confusable.js。
+         不依賴上方選的週次範圍，任何時候都能進 -->
+    <div id="section-confuse" class="section">
+        <div class="quiz-container">
+            <h3>🔀 易混淆練習區</h3>
+            <div id="conf-stage"></div>
+        </div>
+    </div>
+
     <!-- 5. Shop -->
     <div id="section-shop" class="section">
         <h2 style="text-align:center; color:var(--text-color)">✨ Avatar Shop</h2>
@@ -679,6 +719,10 @@
             <span class="nav-icon">🎧</span>
             <span class="nav-text">聽寫</span>
         </div>
+        <div class="nav-item" onclick="showSection('confuse', this)">
+            <span class="nav-icon">🔀</span>
+            <span class="nav-text">易混淆</span>
+        </div>
         <div class="nav-item" onclick="showSection('shop', this)">
             <span class="nav-icon">👕</span>
             <span class="nav-text">Shop</span>
@@ -734,6 +778,8 @@
     <script src="vocab_manifest.js"></script>
     <script src="shop_data.js"></script>
     <script src="dictation.js"></script>
+    <script src="confusable_sets.js"></script>
+    <script src="confusable.js"></script>
 
     <script>
         // --- 1. 全域變數與存檔系統 ---
@@ -1891,6 +1937,7 @@
             if(id === 'quiz') generateQuiz();
             if(id === 'spelling') generateSpellingQuiz();
             if(id === 'dictation') renderDictation();
+            if(id === 'confuse') renderConfuse();
         }
 
         // 預錄音檔優先（單字＝一查究竟 Achernar，例句＝Edge TTS Jenny，見 tools/），
@@ -1913,6 +1960,264 @@
             audio.onerror = fallback;
             currentAudio = audio;
             audio.play().catch(fallback);
+        }
+
+        // --- 🔀 易混淆練習區（題庫 confusable_sets.js、純邏輯 confusable.js；這裡只管畫面與進度）---
+        // 流程：字對列表 → 對照卡 → 選擇題（兩三個長得像的字選一個）→ 選對後「拼出來」→ 看理由 → 下一題。
+        // 答錯：馬上看理由，同一題稍後重現一次；錯的字用 recordAnswer 記進「🔁 複習錯過的字」。
+        // 金幣：選對一題 +CONFUSABLE.coins，每個單字每天一次（沿用 recordAnswer 的規則）。
+        let confState = { phase: 'list' };   // phase: list | card | q | result
+
+        const confSet = id => CONFUSABLE_SETS.find(s => s.id === id);
+        const confStage = () => document.getElementById('conf-stage');
+
+        function renderConfuse() {
+            const ph = confState.phase;
+            if (ph === 'card') confRenderCard();
+            else if (ph === 'q') confRenderQuestion();
+            else if (ph === 'result') confRenderResult();
+            else confRenderList();
+        }
+
+        function confGoList() { confState = { phase: 'list' }; renderConfuse(); }
+        function confOpenCard(id) { confState = { phase: 'card', setId: id }; renderConfuse(); window.scrollTo(0, 0); }
+
+        function confRenderList() {
+            const total = CONFUSABLE_SETS.reduce((n, s) => n + s.questions.length, 0);
+            const cards = CONFUSABLE_SETS.map(s => {
+                const pair = s.words.map(w => `<span>${escapeHtml(w.show)}</span>`).join('<i>↔</i>');
+                return `<div class="conf-set" onclick="confOpenCard('${s.id}')">
+                            <div class="conf-set-words">${pair}</div>
+                            <div class="conf-set-meta">${s.questions.length} 題 ・ 點開看對照卡</div>
+                        </div>`;
+            }).join('');
+            confStage().innerHTML = `
+                <div class="dict-intro">長得很像、意思不一樣的字最容易搞混。先看<b>對照卡</b>，再做選擇題；選對後還要<b>自己拼出來</b>。答錯的字會自動進「🔁 複習錯過的字」。</div>
+                ${cards}
+                <button class="dict-start" style="margin-top:14px" onclick="confStart('all')">🎲 全部混合（${Math.min(CONFUSABLE.roundMax, total)} 題）</button>`;
+        }
+
+        function confPaint(parts) {
+            return parts.map(p => p.ok ? escapeHtml(p.ch) : `<span class="conf-diff">${escapeHtml(p.ch)}</span>`).join('');
+        }
+
+        function confRenderCard() {
+            const s = confSet(confState.setId);
+            if (!s) { confGoList(); return; }
+            let bigs = s.words.map(w => escapeHtml(w.show));
+            if (s.words.length === 2) {   // 兩個字：把不同的字母標色（只有剛好兩個字才有意義）
+                const d = confCardDiff(s.words[0].show, s.words[1].show);
+                bigs = [confPaint(d.got), confPaint(d.want)];
+            }
+            const words = s.words.map((w, i) => `
+                <div class="conf-word">
+                    <div class="conf-big">${bigs[i]}</div>
+                    <div class="conf-meta"><b>${escapeHtml(w.pos)}</b>　${escapeHtml(w.zh)}</div>
+                    <div class="conf-tip">${escapeHtml(w.tip)}</div>
+                    <div class="conf-forms">${w.forms.map(f =>
+                        `<button type="button" class="conf-chip" data-w="${escapeHtml(f)}" onclick="speak(this.dataset.w)">🔈 ${escapeHtml(f)}</button>`).join('')}</div>
+                </div>`).join('');
+            confStage().innerHTML = `
+                <div class="conf-top"><button class="conf-back" onclick="confGoList()">← 回列表</button><span></span></div>
+                ${words}
+                <div class="conf-why-box">💡 為什麼會混淆：${escapeHtml(s.why)}</div>
+                <button class="dict-start" onclick="confStart('${s.id}')">▶ 開始練習（${s.questions.length} 題）</button>`;
+        }
+
+        function confStart(setId) {
+            const queue = confBuildRound(CONFUSABLE_SETS, setId);
+            confState = { phase: 'q', setId, queue, idx: 0, results: [], step: 'choose', total: queue.length, token: (confState.token || 0) + 1 };
+            renderConfuse();
+            window.scrollTo(0, 0);
+        }
+
+        function confBack() {
+            const id = confState.setId;
+            confState = id && id !== 'all' ? { phase: 'card', setId: id } : { phase: 'list' };
+            renderConfuse();
+        }
+
+        function confRenderQuestion() {
+            const st = confState;
+            const q = st.queue[st.idx];
+            if (!q) { confRenderResult(); return; }
+            const parts = confSplitSentence(q);
+            const n = st.queue.slice(0, st.idx + 1).filter(x => !x.retry).length;
+            const counter = q.retry ? '🔁 再試一次' : `第 ${n} / ${st.total} 題`;
+            const opts = q.options.map((o, i) =>
+                `<button type="button" class="conf-opt" onclick="confChoose(${i})">${escapeHtml(o)}</button>`).join('');
+            confStage().innerHTML = `
+                <div class="conf-top"><button class="conf-back" onclick="confBack()">← 返回</button><span class="dict-counter">${counter}</span></div>
+                <div class="conf-sentence">${escapeHtml(parts.before)}<span id="conf-blank" class="conf-blank">______</span>${parts.hint ? `<span class="conf-hint">${escapeHtml(parts.hint)}</span>` : ''}${escapeHtml(parts.after)}</div>
+                <div id="conf-opts">${opts}</div>
+                <div id="conf-feedback" class="feedback-msg" style="min-height:24px; margin-top:12px;"></div>
+                <div id="conf-spell"></div>
+                <div id="conf-extra"></div>
+                <button id="conf-next" class="dict-start" style="display:none; margin-top:14px;" onclick="confNext()">Next ▶</button>`;
+        }
+
+        function confSentenceAudio(q) {
+            const full = confFilledSentence(q);
+            speak(full, exAudioPath(full));
+        }
+
+        function confFillBlank(q) {
+            const el = document.getElementById('conf-blank');
+            if (!el) return;
+            el.textContent = q.a;       // 填的是正解，一律綠色（答錯時紅字會讓人以為這個字是錯的）
+            el.classList.add('filled');
+        }
+
+        function confShowReason(q) {
+            const el = document.getElementById('conf-extra');
+            if (el) el.innerHTML = `<div class="conf-zh">📖 ${escapeHtml(q.zh)}</div><div class="conf-why-box">💡 ${escapeHtml(q.why)}</div>`;
+        }
+
+        function confShowNext() {
+            const b = document.getElementById('conf-next');
+            if (b) b.style.display = 'block';
+        }
+
+        function confChoose(i) {
+            const st = confState;
+            if (st.phase !== 'q' || st.step !== 'choose') return;
+            st.step = 'busy';
+            const q = st.queue[st.idx];
+            const ok = q.options[i] === q.a;
+            const btns = [...document.querySelectorAll('#conf-opts .conf-opt')];
+            btns.forEach(b => { b.disabled = true; });
+            const firstToday = recordAnswer(q.base, ok);      // 每字每天只給一次金幣；答錯會進「複習錯過的字」
+            if (!q.retry) st.results.push({ q, ok });
+            const fb = document.getElementById('conf-feedback');
+
+            if (ok) {
+                btns[i].classList.add('correct');
+                fb.style.color = 'green';
+                if (firstToday) { fb.innerText = `Correct! +${CONFUSABLE.coins} Coins 💰`; addCoins(CONFUSABLE.coins); }
+                else fb.innerText = 'Correct! （這個字今天已經拿過金幣了）';
+                speak('Correct');
+                checkDailyGoal();
+                // 選對了才進「拼出來」；理由要等拼完才顯示（理由裡有答案，先給她就變成抄字）
+                st.step = 'spell';
+                confShowSpell(q);
+                const tk = st.token, ix = st.idx;
+                setTimeout(() => { if (confState.token === tk && confState.idx === ix && confState.step === 'spell') speak(q.a); }, 900);
+            } else {
+                btns[i].classList.add('wrong');
+                btns.forEach(b => { if (b.textContent === q.a) b.classList.add('correct'); });
+                fb.style.color = 'red';
+                fb.innerText = '不對喔，看看為什麼 👇';
+                confFillBlank(q);
+                confShowReason(q);
+                confSentenceAudio(q);
+                if (!q.retry) st.queue.push(confRetryCopy(q));   // 稍後重現一次（不計入成績）
+                st.step = 'next';
+                confShowNext();
+            }
+            renderList();
+            renderDailyCard();
+        }
+
+        function confShowSpell(q) {
+            document.getElementById('conf-opts').style.display = 'none';   // 把選項藏起來，不然就是抄字
+            document.getElementById('conf-spell').innerHTML = `
+                <div class="conf-spell-box">
+                    <div class="conf-spell-title">✍️ 拼出剛剛選的那個字（看不到了，聽聽看）</div>
+                    <div class="spell-type-row">
+                        <input id="conf-spell-input" class="dict-input" type="text" autocapitalize="off" autocorrect="off"
+                            autocomplete="off" spellcheck="false" inputmode="text" enterkeyhint="done" placeholder="打出這個字"
+                            onkeydown="if (event.key === 'Enter') confCheckSpell()">
+                        <button type="button" id="conf-spell-btn" class="dict-btn solid" onclick="confCheckSpell()">確認</button>
+                    </div>
+                    <div style="margin-top:10px;"><button type="button" class="dict-btn" onclick="confReplayWord()">🔈 再聽一次</button></div>
+                    <div id="conf-spell-diff" class="spell-type-diff"></div>
+                </div>`;
+            const inp = document.getElementById('conf-spell-input');
+            if (inp) inp.focus();
+        }
+
+        function confReplayWord() {
+            const q = confState.queue[confState.idx];
+            if (q) speak(q.a);
+            const inp = document.getElementById('conf-spell-input');
+            if (inp && !inp.disabled) inp.focus();
+        }
+
+        function confCheckSpell() {
+            const st = confState;
+            if (st.phase !== 'q' || st.step !== 'spell') return;
+            const q = st.queue[st.idx];
+            const inp = document.getElementById('conf-spell-input');
+            if (!inp || !inp.value.trim()) { if (inp) inp.focus(); return; }   // 還沒打字就按確認，不算錯
+            const r = confCheckSpelling(inp.value, q);
+            const rec = st.results.find(x => x.q === q);    // 首次作答才有紀錄；重現題沒有
+            if (rec) rec.spellOk = r.ok;
+            inp.disabled = true;
+            document.getElementById('conf-spell-btn').disabled = true;
+            const fb = document.getElementById('conf-feedback');
+            if (r.ok) {
+                fb.style.color = 'green';
+                fb.innerText = 'Perfect! 拼對了 ✍️';
+            } else {
+                // 她寫的錯字母標紅、正確拼法漏掉的字母標綠（跟聽寫考試結果頁同一套）
+                document.getElementById('conf-spell-diff').innerHTML =
+                    `<div>你寫的：<span class="dict-mono">${confPaintDiff(r.diff.got, 'dict-wrong-ch')}</span></div>
+                     <div>正確的：<span class="dict-mono">${confPaintDiff(r.diff.want, 'dict-miss-ch')}</span></div>`;
+                fb.style.color = 'red';
+                fb.innerText = '差一點！看看哪裡不一樣';
+                recordAnswer(q.base, false);    // 拼錯也要進複習清單
+                renderList();
+                renderDailyCard();
+            }
+            confFillBlank(q);
+            confShowReason(q);
+            confSentenceAudio(q);
+            st.step = 'next';
+            confShowNext();
+        }
+
+        function confPaintDiff(parts, cls) {
+            return parts.map(p => p.ok ? escapeHtml(p.ch) : `<span class="${cls}">${escapeHtml(p.ch)}</span>`).join('');
+        }
+
+        function confNext() {
+            const st = confState;
+            if (st.phase !== 'q' || st.step !== 'next') return;
+            st.idx++;
+            st.step = 'choose';
+            if (st.idx >= st.queue.length) { st.phase = 'result'; renderConfuse(); }
+            else { renderConfuse(); }
+            window.scrollTo(0, 0);
+        }
+
+        function confRenderResult() {
+            const st = confState;
+            const sc = confScore(st.results);
+            const wrong = st.results.filter(r => !r.ok);
+            const rows = wrong.map(r => {
+                const full = confFilledSentence(r.q);
+                return `<div class="conf-result-row"><b>${escapeHtml(r.q.a)}</b>　${escapeHtml(full)}
+                    <button type="button" class="conf-chip" style="padding:3px 10px; margin-left:6px;" data-w="${escapeHtml(full)}" onclick="speak(this.dataset.w, exAudioPath(this.dataset.w))">🔈</button></div>`;
+            }).join('');
+            const spellWrong = st.results.filter(r => r.ok && r.spellOk === false);
+            let msg = wrong.length === 0 ? '🎉 選擇全部一次就對！' : `選錯 ${wrong.length} 題，這些字已記進「🔁 複習錯過的字」（之後答對 3 次就畢業）。`;
+            if (spellWrong.length) msg += `<br>選對但拼錯 ${spellWrong.length} 題（${spellWrong.map(r => escapeHtml(r.q.a)).join('、')}），也記進複習了。`;
+            confStage().innerHTML = `
+                <div class="dict-score">${sc.right}<span> / ${sc.total}</span></div>
+                <div class="dict-status">${msg}</div>
+                ${wrong.length ? `<div style="margin-top:10px; text-align:left; font-weight:bold; color:#888;">要再注意的：</div>${rows}` : ''}
+                <div class="dict-actions">
+                    <button class="dict-btn solid" onclick="confStart('${st.setId}')">🔁 再練一次</button>
+                    <button class="dict-btn" onclick="confGoList()">↩ 回字對列表</button>
+                    ${wrong.length ? '<button class="dict-btn" onclick="confGoReview()">🔁 去複習錯過的字</button>' : ''}
+                </div>`;
+        }
+
+        function confGoReview() {
+            const sel = document.getElementById('week-selector');
+            sel.value = 'wrong';
+            changeWeek();
+            showSection('home', document.querySelector('.nav-item'));
         }
 
         // --- 聽寫考試 Dictation（抽題／比對的純邏輯在 dictation.js，這裡只管畫面與播音節奏）---

@@ -2,6 +2,20 @@
 
 本專案的功能更新紀錄，最新在最上面。日期為實際上線（push）日。
 
+## 2026-11-07
+
+- **新增「🔀 易混淆練習區」**（底部導覽「易混淆」，不管下拉選哪一週都能進）：專門練「長得像、意思不同」的字
+  - 起因：複習期中考時發現心心常把 **scratched／stretchy** 搞混
+  - 進去先看**字對卡片列表**，點一組看**對照卡**：兩個字上下並排大字、**不同的字母標色**、詞性＋中文＋提示，每個字和它的變化形都有 🔈
+  - 練習流程：一句有空格的例句 → 選正確的字（二選一、三選一）→ **選對後把字藏起來，自己拼出來**（不容錯，錯的字母標紅）→ 看中文翻譯與理由
+  - 答錯：馬上標出正解和理由，同一題稍後**再出一次**（不算成績）；錯的字、拼錯的字都會進「🔁 複習錯過的字」
+  - 金幣沿用既有規則：選對 +10，每個單字每天一次
+  - 目前 6 組、共 43 題：scratch／stretchy、protect／predator、giggle／shiver／snuggle（她 11/4 Reading 複習卷的錯）、crunch／crash、larva／pupa、petal／pollen（Science）
+  - 另有「🎲 全部混合」（每組輪流抽，一輪 10 題）
+  - 例句都是自編的；新增 53 個音檔（變化形單字 10 個、例句 43 句，Edge TTS Jenny）
+- 要加新字對：在 `confusable_sets.js` 加一組 → `node tools/test_confusable.js` → `python3 tools/gen_confusable_tts.py` → `sw.js` 的 CACHE 跳版
+- 幕後：純邏輯在 `confusable.js`，`node tools/test_confusable.js` 守著（38 項）；`sw.js` 快取跳到 v4（新音檔是 cache-first）
+
 ## 2026-10-19
 
 - **統一 10 個單字的中文釋義**（Fall W1–W8）：habitat 只留「棲息地」、camouflage 主譯名改「保護色」、adult 改「成體（長大的動物）」、lantern 改「提燈；露營燈」、noise 改「聲音；吵鬧聲」、surprise 補「驚喜」、seedling 只留「幼苗」、trait 括號改「生物的特點」、shelter 解釋收進括號、mineral 補「礦物」；分號前第一個是主譯名
