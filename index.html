@@ -1172,7 +1172,7 @@
             showZh = false;  // 換週預設關閉中文釋義
             const value = document.getElementById('week-selector').value;
             currentMode = value;
-            let dictOk = false;   // 只有 EXAM_RANGES 標 dictation: true 的範圍才開聽寫入口
+            let dictOk = false;   // 週、範圍、ALL、錯過的字都開聽寫入口（「今天」只有兩個字，不開）
 
             if (value === 'today') {
                 const plan = getTodayPlan();
@@ -1188,13 +1188,14 @@
             } else if (value === 'wrong') {
                 rawWordsForWeek = getReviewWords();
                 distractorPool = allWordsFlat();
+                dictOk = rawWordsForWeek.length > 0;
             } else {
                 const selection = resolveSelection(value);
                 if (!selection) {
                     alert("Data missing for this week! Please check if JS files are loaded.");
                     return;
                 }
-                dictOk = !!selection.dictation;
+                dictOk = selection.words.length > 0;
                 rawWordsForWeek = (selection.kind === 'all' || selection.kind === 'range')
                     ? selection.words.slice().sort(() => Math.random() - 0.5)   // 跨週合併後洗牌一次
                     : selection.words;

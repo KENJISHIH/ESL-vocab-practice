@@ -62,7 +62,7 @@ const EXAM_RANGES = [
     // camouflage 兩次都錯，是最頑固的一個
     { semester: '2026-fall', id: 'wrong_mockA', label: '❌ 錯字集中營（模擬考A＋W6小考）', weeks: [4, 5, 6],
       only: ['ceiling', 'stretchy', 'amphibian', 'larva', 'camouflage', 'pajamas', 'ambulance', 'commotion', 'adaptation'], dictation: true },
-    { semester: '2026-fall', id: 'midterm', label: '📝 期中考範圍 (W1-W9)', weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9], dictation: true },
+    { semester: '2026-fall', id: 'midterm', label: '📝 Week 1–9 期中考範圍', weeks: [1, 2, 3, 4, 5, 6, 7, 8, 9], dictation: true },
     // 期中複習卷（11/4）錯字＋先前錯字集中營去重；protect/predator 混淆、release/reptile/trait/balanced diet/breathe 拼寫錯
     { semester: '2026-fall', id: 'wrong_midterm', label: '❌ 期中錯字集中營', weeks: [1, 3, 4, 5, 6, 7, 8],
       only: ['protect', 'predator', 'shiver', 'giggle', 'snuggle', 'release', 'reptile', 'trait', 'balanced diet', 'breathe',
